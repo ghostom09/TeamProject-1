@@ -63,3 +63,5 @@ crashlytics-build.properties
 
 # Unity 레이아웃 파일 (사용자별)
 UserSettings/Layouts/*.dwlt
+UserSettings/
+.idea/

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 534b895238e678946b74d826fd0a771f, type: 3}
+  m_Name: Sword
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterData
+  JobType: 0
+  MoveSpeed: 6
+  Damage: 12
+  Hp: 120
+  Range: 2
+  AttackSpeed: 1.1
+  Skills:
+  - {fileID: 11400000, guid: c130601a776845a43ad4b9c119f2348a, type: 2}
+  - {fileID: 11400000, guid: 9096fe3d961bb134782929f569e4daba, type: 2}
+  Ult: {fileID: 11400000, guid: 586d6ffe4af425e488e051996840c60a, type: 2}

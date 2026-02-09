@@ -405,10 +405,12 @@ GameObject:
   - component: {fileID: 996285917}
   - component: {fileID: 996285916}
   - component: {fileID: 996285915}
+  - component: {fileID: 996285924}
   - component: {fileID: 996285914}
   - component: {fileID: 996285921}
   - component: {fileID: 996285920}
   - component: {fileID: 996285919}
+  - component: {fileID: 996285923}
   - component: {fileID: 996285922}
   m_Layer: 0
   m_Name: Player(Sample)
@@ -867,6 +869,32 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+--- !u!114 &996285923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 996285913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 263631ecdd9993845b3f077b3f71e55d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSkillExecutor
+--- !u!114 &996285924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 996285913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e01f4ea7be3702a46a4084c00c199c1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player
+  playerSkillExecutor: {fileID: 996285923}
+  character: {fileID: 11400000, guid: 6c9cdfd605f355340ac2b3041233929a, type: 2}
 --- !u!1 &1300888264
 GameObject:
   m_ObjectHideFlags: 0

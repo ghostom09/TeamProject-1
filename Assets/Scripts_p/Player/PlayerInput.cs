@@ -8,6 +8,7 @@ public class PlayerInput : MonoBehaviour
     public event Action onJump;
     public event Action<bool> onJumpHeld;
     public event Action<bool> onDash;
+    public event Action onAttack;
 
 
 
@@ -26,5 +27,13 @@ public class PlayerInput : MonoBehaviour
     {
         if (context.performed) onDash?.Invoke(true);
         else if(context.canceled) onDash?.Invoke(false);
+    }
+
+    public void OnAttack(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            onAttack?.Invoke();
+        }
     }
 }

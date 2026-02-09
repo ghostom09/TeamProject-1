@@ -1,31 +1,22 @@
 using UnityEngine;
-<<<<<<< HEAD
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
-
-public class Player : MonoBehaviour
-{ 
-    [SerializeField] private PlayerSkillExecutor playerSkillExecutor;
     
-    [SerializeField] private CharacterData character;
-
-    private void Start()
-    {
-        Init(character);
-    }
-=======
+    
 
 public class Player : MonoBehaviour
 {
     [SerializeField] private PlayerSkillExecutor playerSkillExecutor;
-
->>>>>>> origin/SkillData
+    [SerializeField] private CharacterData character;
+    
+    private void Start()
+    {
+        Init(character);
+    }
     public void Init(CharacterData data)
     {
         playerSkillExecutor.Init(data.Skills);
     }
-<<<<<<< HEAD
-
     private void Update()
     {
         if (Keyboard.current.numpad1Key.wasPressedThisFrame)
@@ -36,6 +27,4 @@ public class Player : MonoBehaviour
             playerSkillExecutor.UseSkill(1,Vector2.zero);
         }
     }
-=======
->>>>>>> origin/SkillData
 }

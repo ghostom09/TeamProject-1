@@ -62,4 +62,10 @@ sysinfo.txt
 crashlytics-build.properties
 
 # Unity 레이아웃 파일 (사용자별)
+<<<<<<< HEAD
 UserSettings/Layouts/*.dwlt
+=======
+UserSettings/
+.idea/
+*.dwlt
+>>>>>>> origin/SkillData

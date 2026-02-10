@@ -1,12 +1,13 @@
-using UnityEngine;
-using UnityEngine.EventSystems;
-using System;
+    using UnityEngine;
+    using UnityEngine.EventSystems;
+    using System;
 
-public class ArgumentClick : MonoBehaviour, IPointerClickHandler
-{
-    public event Action OnClick;
-    public void OnPointerClick(PointerEventData eventData)
+    public class ArgumentClick : MonoBehaviour
     {
-        OnClick?.Invoke();
+        [SerializeField]private ArgumentDisplay argumentDisplay;
+        public void OnClick()
+        {
+            ArgumentManager.Instance.OnArgumentClick(argumentDisplay);
+            argumentDisplay.ApplyArgument(); 
+        }
     }
-}

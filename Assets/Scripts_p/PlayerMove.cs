@@ -22,7 +22,7 @@ public class PlayerMove : MonoBehaviour
     private float _jumpBufferCounter;
     private bool _isGrounded;
     private bool _isDashing;
-    private int _jumpCount;
+    [SerializeField] private int _jumpCount;
 
 
     private void Awake()

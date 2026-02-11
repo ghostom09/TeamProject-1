@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80d18b770d1292f468264a4794af2708, type: 3}
   m_Name: NormalEnemy
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
+  enemyType: 1
   health: 35
   speed: 3.6
   damage: 9
-  attackSpeed: 1
   attackRange: 2.5
+  attackSpeed: 1
+  jumpForce: 13

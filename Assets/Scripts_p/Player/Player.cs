@@ -14,17 +14,22 @@ public class Player : MonoBehaviour
     }
     public void Init(CharacterData data)
     {
-        playerSkillExecutor.Init(data.Skills);
-        attacker.Init(data.JobType);
+        playerSkillExecutor.Init(data.Skills, data);
+        attacker.Init(data);
     }
     private void Update()
     {
-        if (Keyboard.current.numpad1Key.wasPressedThisFrame)
+        Vector2 mouseScreen = Mouse.current.position.ReadValue();
+        Vector2 mouseWorld = Camera.main.ScreenToWorldPoint(mouseScreen);
+
+        Vector2 dir = (mouseWorld - (Vector2)transform.position).normalized;
+        
+        if (Keyboard.current.qKey.wasPressedThisFrame)
         {
-            playerSkillExecutor.UseSkill(0,Vector2.zero);
-        }else if (Keyboard.current.numpad2Key.wasPressedThisFrame)
+            playerSkillExecutor.UseSkill(0,dir);
+        }else if (Keyboard.current.eKey.wasPressedThisFrame)
         {
-            playerSkillExecutor.UseSkill(1,Vector2.zero);
+            playerSkillExecutor.UseSkill(1,dir);
         }
     }
 }

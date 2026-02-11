@@ -14,7 +14,9 @@ public class PlayerSkillExecutor : MonoBehaviour
     private SkillData[] _skills;
     private Dictionary<SkillType, ISkillAction> _actions;
 
-    public void Init(SkillData[] skills)
+    private CharacterData data;
+
+    public void Init(SkillData[] skills, CharacterData data)
     {
         _skills = skills;
         
@@ -25,12 +27,15 @@ public class PlayerSkillExecutor : MonoBehaviour
             { SkillType.Gun1, new Gun1() },
             { SkillType.Gun2, new Gun2() }
         };
+
+        this.data = data;
+
     }
 
     public void UseSkill(int index, Vector2 dir)
     {
         SkillType type = _skills[index].SkillName;
-
+        _actions[type].Init(data);
         _actions[type].TryUse(gameObject, dir);
     }
 }

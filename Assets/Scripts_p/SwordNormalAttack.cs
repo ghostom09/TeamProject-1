@@ -1,47 +1,70 @@
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class SwordNormalAttack : INormalAttack
 {
     private int comboIndex = 0;
     private float lastAttackTime;
 
-    private float comboResetTime = 0.7f;
+    private float comboResetTime = 1.5f;
 
-    // 콤보별 쿨타임
-    private float[] comboCooldowns = { 0.3f, 0.35f, 0.5f};
+    private CharacterData data;
 
-    public void TryAttack(GameObject user, Vector2 dir)
+    public void Init(CharacterData data)
+    {
+        this.data = data;
+    }
+    public bool TryAttack(GameObject user, Vector2 dir, GameObject hitBox)
     {
         if (Time.time > lastAttackTime + comboResetTime)
         {
             comboIndex = 0;
         }
-        
-        if (Time.time < lastAttackTime + comboCooldowns[comboIndex])
-            return;
+
+        if (Time.time < lastAttackTime + 1 / data.AttackSpeed)
+        {
+            Debug.Log("공격 쿨타임!!!");
+            return false;
+        }
+            
 
         lastAttackTime = Time.time;
-
-        DoComboAttack(user, dir);
+        DoComboAttack(user, dir, hitBox);
+        return true;
     }
 
-    private void DoComboAttack(GameObject user, Vector2 dir)
+    public void EndAttack(GameObject user, GameObject hitBox)
     {
+        hitBox.SetActive(false);
+    }
+
+    private void DoComboAttack(GameObject user, Vector2 dir, GameObject hitBox)
+    {
+        hitBox.SetActive(true);
         switch (comboIndex)
         {
+            
             case 0:
-                Debug.Log("검 1타!");
+                HitBox(user,dir, data.Range * 2 * 0.8f, hitBox);
                 break;
 
             case 1:
-                Debug.Log("검 2타!");
+                HitBox(user,dir, data.Range * 2, hitBox);
                 break;
 
             case 2:
-                Debug.Log("검 3타!");
+                HitBox(user,dir, data.Range * 2 * 1.2f, hitBox);
                 break;
         }
 
-        comboIndex = (comboIndex + 1) % comboCooldowns.Length;
+        comboIndex = (comboIndex + 1) % 3;
+    }
+
+    private void HitBox(GameObject user, Vector2 dir, float range, GameObject hitBox)
+    {
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        hitBox.transform.rotation = Quaternion.Euler(0, 0, angle);
+        hitBox.transform.localScale = new Vector3(range, range, 1);
+        hitBox.transform.localPosition = dir.normalized * range/2;
     }
 }

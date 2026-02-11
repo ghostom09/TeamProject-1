@@ -4,8 +4,15 @@ using UnityEngine;
 public abstract class SkillBase : ISkillAction
 {
     protected float cooldown;
-    private float lastUsedTime = -999f;
+    protected CharacterData data;
+    protected float lastUsedTime = -999f;
+    
 
+
+    public void Init(CharacterData data)
+    {
+        this.data = data;
+    }
     protected SkillBase(float cooldown)
     {
         this.cooldown = cooldown;
@@ -24,11 +31,7 @@ public abstract class SkillBase : ISkillAction
             Debug.Log($"남은 쿨타임: {remain:F2}");
             return;
         }
-            
-
-        lastUsedTime = Time.time;
         Execute(user, dir);
     }
-
     protected abstract void Execute(GameObject user, Vector2 dir);
 }

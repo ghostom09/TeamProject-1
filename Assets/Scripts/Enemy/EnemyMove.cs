@@ -13,6 +13,7 @@ public class EnemyMove : MonoBehaviour
     private Rigidbody2D rb2d;
     private Enemy enemyStat;
     private float speed;
+    private float attackRange;
     private EnemyType enemyType;
     [SerializeField] private float jumpForce;
     private int jumpTry = 0;
@@ -23,7 +24,7 @@ public class EnemyMove : MonoBehaviour
     private bool isrightWall;
     private bool isJumping = false;
     
-    [SerializeField] private float rangedInterval;
+    private float rangedInterval;
     [SerializeField] private float reverseDeceleration;
 
     private float distance;
@@ -45,6 +46,8 @@ public class EnemyMove : MonoBehaviour
         speed = enemyStat.stats.speed;
         jumpForce = enemyStat.stats.jumpForce;
         enemyType = enemyStat.stats.enemyType;
+        attackRange = enemyStat.stats.attackRange;
+        rangedInterval = attackRange * 0.8f;
     }
     
     private void FixedUpdate()

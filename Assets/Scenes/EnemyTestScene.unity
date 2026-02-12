@@ -375,7 +375,6 @@ MonoBehaviour:
   leftwallCheck: {fileID: 1824265227}
   rightwallCheck: {fileID: 384033151}
   jumpForce: 0
-  rangedInterval: 0
   reverseDeceleration: 0
   stopThreshold: 0.05
   distanceThreshold: 0.1
@@ -608,7 +607,6 @@ MonoBehaviour:
   leftwallCheck: {fileID: 1919218558}
   rightwallCheck: {fileID: 631000611}
   jumpForce: 0
-  rangedInterval: 0
   reverseDeceleration: 0
   stopThreshold: 0.05
   distanceThreshold: 0.1
@@ -903,7 +901,6 @@ MonoBehaviour:
   leftwallCheck: {fileID: 353916651}
   rightwallCheck: {fileID: 675659713}
   jumpForce: 0
-  rangedInterval: 0
   reverseDeceleration: 0
   stopThreshold: 0.05
   distanceThreshold: 0.1
@@ -1136,7 +1133,6 @@ MonoBehaviour:
   leftwallCheck: {fileID: 1005277594}
   rightwallCheck: {fileID: 1605555044}
   jumpForce: 0
-  rangedInterval: 3
   reverseDeceleration: 0.5
   stopThreshold: 0.05
   distanceThreshold: 0.1
@@ -1176,7 +1172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a64867dbfcd7c34aba6d81b99aea059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  stats: {fileID: 11400000, guid: af7ac4d9355eb514d8c5f6a50c89e148, type: 2}
+  stats: {fileID: 11400000, guid: 6be3d5f074ce1134fbbba712be05f614, type: 2}
 --- !u!61 &341952465
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1829,7 +1825,6 @@ MonoBehaviour:
   leftwallCheck: {fileID: 107828262}
   rightwallCheck: {fileID: 184356149}
   jumpForce: 0
-  rangedInterval: 0
   reverseDeceleration: 0
   stopThreshold: 0.05
   distanceThreshold: 0.1
@@ -2296,7 +2291,6 @@ MonoBehaviour:
   leftwallCheck: {fileID: 1245053563}
   rightwallCheck: {fileID: 521987584}
   jumpForce: 0
-  rangedInterval: 0
   reverseDeceleration: 0
   stopThreshold: 0.05
   distanceThreshold: 0.1

@@ -12,7 +12,7 @@ TagManager:
   - Water
   - UI
   - Wall
-  - 
+  - Enemy
   - 
   - 
   - 
@@ -37,9 +37,14 @@ TagManager:
   - 
   - Weapon
   - Player
+  - 
+  - 
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Jumpable
+    uniqueID: 692186607
     locked: 0
   m_RenderingLayers:
   - Default

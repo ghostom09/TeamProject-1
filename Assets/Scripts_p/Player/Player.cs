@@ -1,21 +1,33 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDamageable
 {
     [SerializeField] private PlayerSkillExecutor playerSkillExecutor;
     [SerializeField] private CharacterData character;
     [SerializeField] private PlayerAttack attacker;
     
+    public float currentGauge;
+    public float maxGauge = 100f;
+    public bool isInvincible;
+    public bool isUsingUltimate;
+
     private void Start()
     {
         Init(character);
+        UnLockedUlt();
     }
     public void Init(CharacterData data)
     {
         playerSkillExecutor.Init(data.Skills, data);
         attacker.Init(data);
+    }
+
+    public void UnLockedUlt()
+    {
+        StartCoroutine(GetGauge());
     }
     private void Update()
     {
@@ -30,6 +42,51 @@ public class Player : MonoBehaviour
         }else if (Keyboard.current.eKey.wasPressedThisFrame)
         {
             playerSkillExecutor.UseSkill(1,dir);
+        }else if (Keyboard.current.rKey.wasPressedThisFrame)
+        {
+            playerSkillExecutor.UseSkill(2,dir);
         }
     }
+
+    private IEnumerator GetGauge()
+    {
+        while (true)
+        {
+            AddGauge(1);
+            yield return new WaitForSeconds(1f);
+        }
+    }
+    public bool UseGauge(float amount)
+    {
+        if (currentGauge < amount)
+            return false;
+
+        currentGauge -= amount;
+        return true;
+    }
+
+    public void AddGauge(float amount)
+    {
+        currentGauge = Mathf.Clamp(currentGauge + amount, 0, maxGauge);
+    }
+
+    public void TakeDamage(float amount)
+    {
+        if (isInvincible) return;
+    }
+
+    public void ApplySlow(float percent, float duration)
+    {
+        if (isInvincible) return;
+    }
+
+    public void ApplyKnockback(Vector2 dir, float power, float duration)
+    {
+        if (isInvincible) return;
+    }
+    public void StopUltimate()
+    {
+        isUsingUltimate = false;
+    }
+    
 }

@@ -6,11 +6,16 @@ public class Sword1 : SkillBase
     private LayerMask enemyLayer;
     public Sword1() : base(3f)
     {
-        enemyLayer = LayerMask.GetMask("Water");
+        enemyLayer = LayerMask.GetMask("Enemy");
         Debug.Log("레이어 설정 완료");
     }
     protected override void Execute(GameObject user, Vector2 dir)
     {
+        Player player = user.GetComponent<Player>();
+
+        if (player.isUsingUltimate)
+            return;
+        
         dir = dir.normalized;
         
         RaycastHit2D hit = Physics2D.Raycast(
@@ -29,12 +34,13 @@ public class Sword1 : SkillBase
         // 2. 적에게 순간이동
         Vector2 enemyPos = hit.collider.transform.position;
         user.transform.position = enemyPos;
-
+        
         // 3. 데미지
         if (hit.collider.TryGetComponent(out IDamageable target))
         {
             target.TakeDamage(data.Damage * 1.2f);
             target.ApplyKnockback(dir, 6f, 0.15f);
+            user.GetComponent<Player>().AddGauge(1);
         }
 
         // 4. 연출용 로그

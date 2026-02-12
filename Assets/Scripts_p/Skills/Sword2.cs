@@ -5,6 +5,7 @@ public class Sword2 : SkillBase
 {
     private GameObject bladePrefab;
     private float throwSpeed = 8f;
+    private float slowPercent = 25;
 
     public Sword2() : base(13f)
     {
@@ -24,11 +25,11 @@ public class Sword2 : SkillBase
 
         // 2. 초기화
         blade.GetComponent<BhanIn>()
-            .Init(user , data.Damage * 0.05f);
+            .Init(user , data.Damage * 0.05f, slowPercent);
 
         // 3. 발사
         Rigidbody2D rb = blade.GetComponent<Rigidbody2D>();
-        rb.linearVelocity = dir * throwSpeed;
+        rb.AddForce(dir * throwSpeed, ForceMode2D.Impulse);
 
         // 4. 방향 회전
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;

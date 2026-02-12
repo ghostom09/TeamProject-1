@@ -14,21 +14,42 @@ public class SwordNormalAttack : INormalAttack
     {
         this.data = data;
     }
+    private float GetComboRangeMultiplier()
+    {
+        return comboIndex switch
+        {
+            0 => 0.8f,
+            1 => 1.0f,
+            2 => 1.2f,
+            _ => 1f
+        };
+    }
+    private float GetComboDamageMultiplier()
+    {
+        return comboIndex switch
+        {
+            0 => 0.9f,
+            1 => 1.0f,
+            2 => 1.3f,
+            _ => 1f
+        };
+    }
     public bool TryAttack(GameObject user, Vector2 dir, GameObject hitBox)
     {
+        // 콤보 리셋
         if (Time.time > lastAttackTime + comboResetTime)
-        {
             comboIndex = 0;
-        }
 
-        if (Time.time < lastAttackTime + 1 / data.AttackSpeed)
+        float attackInterval = 1f / data.AttackSpeed;
+
+        if (Time.time < lastAttackTime + attackInterval)
         {
             Debug.Log("공격 쿨타임!!!");
             return false;
         }
-            
 
         lastAttackTime = Time.time;
+
         DoComboAttack(user, dir, hitBox);
         return true;
     }
@@ -41,22 +62,15 @@ public class SwordNormalAttack : INormalAttack
     private void DoComboAttack(GameObject user, Vector2 dir, GameObject hitBox)
     {
         hitBox.SetActive(true);
-        switch (comboIndex)
-        {
-            
-            case 0:
-                HitBox(user,dir, data.Range * 2 * 0.8f, hitBox);
-                break;
 
-            case 1:
-                HitBox(user,dir, data.Range * 2, hitBox);
-                break;
+        float range = data.Range * 2 * GetComboRangeMultiplier();
+        float damage = data.Damage * GetComboDamageMultiplier();
 
-            case 2:
-                HitBox(user,dir, data.Range * 2 * 1.2f, hitBox);
-                break;
-        }
-
+        HitBox(user, dir, range, hitBox);
+        
+        var hb = hitBox.GetComponent<HitBox>();
+        hb.SetDamage(damage);
+        
         comboIndex = (comboIndex + 1) % 3;
     }
 

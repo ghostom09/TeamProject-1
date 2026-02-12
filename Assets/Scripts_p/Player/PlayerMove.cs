@@ -1,14 +1,15 @@
 using System;
 using UnityEngine;
 
-public class PlayerMove : MonoBehaviour
+public class PlayerMove : MonoBehaviour, IPlayerMover
 {
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform groundCheck;
     
     private Rigidbody2D _rb;
     private Vector2 _movement;
-    
+
+    private float _originGravity;
     private float _acceleration = 25f;
     private float _deceleration = 35f;
     private float _turnDeceleration = 60f;
@@ -22,6 +23,7 @@ public class PlayerMove : MonoBehaviour
     private float _jumpBufferCounter;
     private bool _isGrounded;
     private bool _isDashing;
+    private bool _isMoveLocked;
     private int _jumpCount;
 
 
@@ -84,6 +86,8 @@ public class PlayerMove : MonoBehaviour
     }
     private void HandleJump()
     {
+        if (_isMoveLocked)
+            return;
         if (_jumpBufferCounter > 0 && CanJump())
         {
             _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, _jumpForce);
@@ -106,6 +110,8 @@ public class PlayerMove : MonoBehaviour
 
     private void HandleMove()
     {
+        if (_isMoveLocked)
+            return;
         float maxSpeed = _isDashing ? _dashSpeed : _moveSpeed;
         
         float targetSpeed = _movement.x * maxSpeed;
@@ -132,5 +138,18 @@ public class PlayerMove : MonoBehaviour
         );
 
         _rb.linearVelocity = new Vector2(newSpeed, _rb.linearVelocity.y);
+    }
+    
+    public void SetMoveLock(bool lockState)
+    {
+        _isMoveLocked = lockState;
+        
+        if (lockState)
+        {
+            _originGravity = _rb.gravityScale;
+            // 즉시 정지
+            _rb.linearVelocity = new Vector2(0, 0);
+            _rb.gravityScale = _originGravity * 0.1f;
+        }else _rb.gravityScale = _originGravity;
     }
 }

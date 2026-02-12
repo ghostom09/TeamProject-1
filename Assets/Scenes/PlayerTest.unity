@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 192126920}
   - component: {fileID: 192126919}
   - component: {fileID: 192126921}
+  - component: {fileID: 192126922}
   m_Layer: 31
   m_Name: HitBox
   m_TagString: Untagged
@@ -256,6 +257,18 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &192126922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 192126918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47297eee813c9cd4ca19a6fab35c1b78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitBox
 --- !u!1 &624861704
 GameObject:
   m_ObjectHideFlags: 0
@@ -1061,7 +1074,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
   hitBox: {fileID: 192126918}
-  attackTime: 0.5
+  attackTime: 0.1
 --- !u!114 &996285926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1377,7 +1390,7 @@ Transform:
   m_GameObject: {fileID: 1998995718}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.42, y: -2.47, z: 0}
+  m_LocalPosition: {x: 4.42, y: -3.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1398,7 +1411,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 0
+  m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -1409,7 +1422,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 3
+  m_Constraints: 4
 --- !u!114 &1998995723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1423,6 +1436,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Test
   hp: 9999
+  distance: 3
+  moveSpeed: 4
 --- !u!1 &2089189741
 GameObject:
   m_ObjectHideFlags: 0

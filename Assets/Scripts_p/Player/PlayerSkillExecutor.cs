@@ -38,4 +38,8 @@ public class PlayerSkillExecutor : MonoBehaviour
         _actions[type].Init(data);
         _actions[type].TryUse(gameObject, dir);
     }
+    public SkillBase GetSkill(SkillType type)
+    {
+        return _actions[type] as SkillBase;
+    }
 }

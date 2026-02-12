@@ -30,12 +30,11 @@ public class Sword1 : SkillBase
         Vector2 enemyPos = hit.collider.transform.position;
         user.transform.position = enemyPos;
 
-        user.transform.GetComponent<Rigidbody2D>().linearVelocity = dir * 5f;
-
         // 3. 데미지
         if (hit.collider.TryGetComponent(out IDamageable target))
         {
-            target.TakeDamage(data.Damage * 0.7f);
+            target.TakeDamage(data.Damage * 1.2f);
+            target.ApplyKnockback(dir, 6f, 0.15f);
         }
 
         // 4. 연출용 로그

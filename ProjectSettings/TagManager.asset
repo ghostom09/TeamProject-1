@@ -37,6 +37,8 @@ TagManager:
   - 
   - Weapon
   - Player
+  - 
+  - 
   m_SortingLayers:
   - name: Default
     uniqueID: 0

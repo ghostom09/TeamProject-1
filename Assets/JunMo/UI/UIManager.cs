@@ -14,4 +14,14 @@ public class UIManager : MonoBehaviour
         }
         else Destroy(gameObject);
     }
+
+    public void Open(GameObject obj)
+    {
+        obj.SetActive(true);
+    }
+
+    public void Close(GameObject obj)
+    { 
+        obj.SetActive(false);
+    }
 }

@@ -128,6 +128,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 78726748}
+  - component: {fileID: 78726750}
   - component: {fileID: 78726749}
   m_Layer: 5
   m_Name: ArgumentManager
@@ -164,26 +165,39 @@ MonoBehaviour:
   m_GameObject: {fileID: 78726747}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da598bc34dc96fe4495cb77bed58191a, type: 3}
+  m_Script: {fileID: 11500000, guid: 97563105e22af23429e58f591e4c081a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeManager
+  argumentManager: {fileID: 78726750}
+  allSkills:
+  - {fileID: 11400000, guid: 0b31983466681ba4791c024b5ed06f22, type: 2}
+  - {fileID: 11400000, guid: 7e05ca7ee855e71458fa931a09e7e83a, type: 2}
+  - {fileID: 11400000, guid: defd5a4572fa042468a5ded304c50db5, type: 2}
+  - {fileID: 11400000, guid: 0c6f66637b032bb4baca1b445fb67cc5, type: 2}
+  - {fileID: 11400000, guid: c5cae7860d63ff747ab609e761935297, type: 2}
+  - {fileID: 11400000, guid: be05b17604f48564c9e4b77ce8405faf, type: 2}
+  allStats:
+  - {fileID: 11400000, guid: 3d471b0e5dcfc4d419d91515c58fa168, type: 2}
+  - {fileID: 11400000, guid: aec4646c8bdcd3d4fa5050c93e7eebb6, type: 2}
+  - {fileID: 11400000, guid: a5dcee2a4a9f4294991a9e3bb31d05da, type: 2}
+  - {fileID: 11400000, guid: 7f2067aabd2a6e043877bb8a175a7c0b, type: 2}
+  - {fileID: 11400000, guid: 14ffc0310ae62ad42b41700d6e7d5750, type: 2}
+  - {fileID: 11400000, guid: da57280b4259917479855dcaf0e7edf8, type: 2}
+--- !u!114 &78726750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 78726747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1823ef65ae614494bb556cc6dfca8e08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ArgumentManager
-  argumentClick: {fileID: 4673648018239615591, guid: 54307197f203e87409a195c8cb51cd9f, type: 3}
-  argumentDisplay: {fileID: 8570596616840126029, guid: 54307197f203e87409a195c8cb51cd9f, type: 3}
-  allArguments:
-  - {fileID: 11400000, guid: 667b9fb2e3c787c41b49e40803c6664b, type: 2}
-  - {fileID: 11400000, guid: d2e4d531737a6a949bfe30845906be8e, type: 2}
-  - {fileID: 11400000, guid: 5a512ebe20150804099f10443ffde3ad, type: 2}
-  - {fileID: 11400000, guid: a65f0b8d695240f48b10232850304738, type: 2}
-  - {fileID: 11400000, guid: 54af4ee3d8397a14bbd5386a9ac5739a, type: 2}
-  - {fileID: 11400000, guid: 7af05022c4d51c940a7093e0e9b212e3, type: 2}
-  - {fileID: 11400000, guid: 31193bef05bb05c4982a3c99d465610f, type: 2}
-  - {fileID: 11400000, guid: 36515542f575ad54b815f4831b82a747, type: 2}
-  - {fileID: 11400000, guid: 86fca24fa0705fa4ab0684c78692c92f, type: 2}
-  - {fileID: 11400000, guid: 345915c8bdd707b4fa69bee004c58471, type: 2}
-  - {fileID: 11400000, guid: baddf8cd2badce44b9e395a8fe02cbf6, type: 2}
-  nowArguments: []
-  ArgumentCard: {fileID: 6057273295143903499, guid: 54307197f203e87409a195c8cb51cd9f, type: 3}
-  maxWidth: 1000
+  upgradeManager: {fileID: 78726749}
+  argument: {fileID: 8570596616840126029, guid: 54307197f203e87409a195c8cb51cd9f, type: 3}
+  argumentPanel: {fileID: 6057273295143903499, guid: 54307197f203e87409a195c8cb51cd9f, type: 3}
 --- !u!1 &424464837
 GameObject:
   m_ObjectHideFlags: 0
@@ -218,8 +232,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 402, y: -252.29987}
-  m_SizeDelta: {x: 46.26, y: 97.64}
+  m_AnchoredPosition: {x: -783.2001, y: 462.99997}
+  m_SizeDelta: {x: 245.56, y: 65}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &424464839
 MonoBehaviour:
@@ -425,8 +439,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e01eead458404e4fba6da6e8deea702, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
-  argumentManager: {fileID: 78726749}
-  spawnCount: 4
 --- !u!4 &742831115
 Transform:
   m_ObjectHideFlags: 0
@@ -592,8 +604,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 402, y: -134}
-  m_SizeDelta: {x: 46.26, y: 334.24}
+  m_AnchoredPosition: {x: -534, y: 463}
+  m_SizeDelta: {x: 743.96, y: 65}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1920577426
 MonoBehaviour:

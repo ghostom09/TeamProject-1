@@ -32,8 +32,6 @@ public class Argument : MonoBehaviour
     
     public void OnClick()
     {
-        Debug.Log($"Invoke Try : {argumentID}");
-        Debug.Log(on_Click);
         on_Click?.Invoke(argumentID);
     }
     

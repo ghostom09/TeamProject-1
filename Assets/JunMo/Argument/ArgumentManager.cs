@@ -52,7 +52,6 @@ public class ArgumentManager : MonoBehaviour
     
     void OnArgumentClicked(int argumentID)
     {
-        Debug.Log(argumentID);
         foreach (Argument clickedArgument in arguments)
         {
             if (clickedArgument == arguments[argumentID])

@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9abad1e31d4f6a8468642f1214131b54, type: 3}
   m_Name: GunTrigger
   m_EditorClassIdentifier: Assembly-CSharp::SkillArgumentData
-  itemName: faaf
+  itemName: gun
   description: asdsadaasd
   icon: {fileID: -1316839025742549532, guid: 5ccbf8878d49c5d45a8fed53dc69fdc4, type: 3}
-  skillType: 4
+  skillKind: 0
+  jobType: 0
   maxLevel: 3
   level: 1
   levelValues:

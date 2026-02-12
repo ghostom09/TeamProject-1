@@ -5,7 +5,7 @@ public enum JobType
     Gun,
     Sword,
 }
-public enum SkillType
+public enum SkillKind
 {
     SwordMove,
     SwordCC,
@@ -18,7 +18,7 @@ public enum SkillType
 [CreateAssetMenu(fileName = "SkillArgumentData", menuName = "Scriptable Objects/SkillArgumentData")]
 public class SkillArgumentData : ArgumentData
 {
-    public SkillType skillType;
+    public SkillKind skillKind;
     public JobType jobType;
     
     public int maxLevel = 5;

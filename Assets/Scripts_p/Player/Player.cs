@@ -9,6 +9,7 @@ public class Player : MonoBehaviour, IDamageable
     [SerializeField] private CharacterData character;
     [SerializeField] private PlayerAttack attacker;
     
+    public float invincibilityDuration;
     public float currentGauge;
     public float maxGauge = 100f;
     public bool isInvincible;
@@ -56,6 +57,13 @@ public class Player : MonoBehaviour, IDamageable
             yield return new WaitForSeconds(1f);
         }
     }
+
+    private IEnumerator Invincibility(float duration)
+    {
+        isInvincible = true;
+        yield return new WaitForSeconds(duration);
+        isInvincible = false;
+    }
     public bool UseGauge(float amount)
     {
         if (currentGauge < amount)
@@ -73,6 +81,7 @@ public class Player : MonoBehaviour, IDamageable
     public void TakeDamage(float amount)
     {
         if (isInvincible) return;
+        StartCoroutine(Invincibility(invincibilityDuration));
     }
 
     public void ApplySlow(float percent, float duration)

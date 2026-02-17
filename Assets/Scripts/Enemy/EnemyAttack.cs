@@ -21,4 +21,6 @@ public class EnemyAttack : MonoBehaviour
         attackSpeed = enemyStat.stats.attackSpeed;
         enemyType = enemyStat.stats.enemyType;
     }
+    
+    
 }

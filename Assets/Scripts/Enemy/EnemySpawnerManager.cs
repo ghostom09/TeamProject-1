@@ -19,6 +19,10 @@ public class EnemySpawnerManager : MonoBehaviour
     private void Update()
     {
         timer += Time.deltaTime;
-        
+        if (timer >= 15f)
+        {
+            timer = 0f;
+            
+        }
     }
 }

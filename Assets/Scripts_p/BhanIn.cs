@@ -12,6 +12,7 @@ public class BhanIn : MonoBehaviour
     private Vector2 ownerPos;
     private Rigidbody2D rb;
     private BhanInRange detector;
+    private Player player;
 
     private float slowPercent;
     private float stayTime;
@@ -23,6 +24,7 @@ public class BhanIn : MonoBehaviour
     {
         this.damage = damage;
         this.slowPercent = slowPercent;
+        player = user.GetComponent<Player>();
         
         rb = GetComponent<Rigidbody2D>();
         detector = GetComponentInChildren<BhanInRange>(true);
@@ -59,7 +61,7 @@ public class BhanIn : MonoBehaviour
         range.SetActive(true);
         range.transform.localScale = Vector2.one * 10f;
 
-        StartCoroutine(DamageOverTime(damage, 0.1f,slowPercent));
+        StartCoroutine(DamageOverTime(damage, 0.3f,slowPercent));
     }
 
     private IEnumerator DamageOverTime(float dmg, float interval,float slowPercent)
@@ -72,7 +74,7 @@ public class BhanIn : MonoBehaviour
 
         while (true)
         {
-            detector.DealDamageToAll(dmg,slowPercent);
+            detector.DealDamageToAll(dmg,slowPercent,player);
             yield return new WaitForSeconds(interval);
         }
     }

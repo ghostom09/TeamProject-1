@@ -7,6 +7,10 @@ public class Gun2 : SkillBase
 
     protected override void Execute(GameObject user, Vector2 dir)
     {
+        Player player = user.GetComponent<Player>();
+
+        if (player.isUsingUltimate)
+            return;
         var executor = user.GetComponent<PlayerSkillExecutor>();
         user.GetComponent<MonoBehaviour>()
             .StartCoroutine(TriggerAwakening(executor));

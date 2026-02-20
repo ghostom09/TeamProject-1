@@ -21,7 +21,7 @@ public class BhanInRange : MonoBehaviour
         }
     }
 
-    public void DealDamageToAll(float damage, float slowPercent)
+    public void DealDamageToAll(float damage, float slowPercent, Player player)
     {
         if (enemies == null || enemies.Count == 0)
         {
@@ -31,7 +31,8 @@ public class BhanInRange : MonoBehaviour
         foreach (var enemy in enemies)
         {
             enemy.TakeDamage(damage);
-            enemy.ApplySlow(slowPercent, 0.2f);
+            enemy.ApplySlow(slowPercent, 0.3f);
+            player.AddGauge(1);
         }
         Debug.Log("공격중!!!");
     }

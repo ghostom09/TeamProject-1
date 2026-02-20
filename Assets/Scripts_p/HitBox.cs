@@ -13,7 +13,7 @@ public class HitBox : MonoBehaviour
     {
         if (other.TryGetComponent<IDamageable>(out var target))
         {
-            Vector2 dir = other.transform.position - transform.position;
+            Vector2 dir = other.transform.position - transform.parent.position;
             target.TakeDamage(damage);
             target.ApplyKnockback(dir, 3f, 0.15f);
         }

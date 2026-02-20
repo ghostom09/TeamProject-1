@@ -149,7 +149,7 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
             _originGravity = _rb.gravityScale;
             // 즉시 정지
             _rb.linearVelocity = new Vector2(0, 0);
-            _rb.gravityScale = _originGravity * 0.1f;
+            _rb.gravityScale = 0;
         }else _rb.gravityScale = _originGravity;
     }
 }

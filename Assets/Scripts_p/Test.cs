@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class Test : MonoBehaviour, IDamageable
@@ -18,7 +19,6 @@ public class Test : MonoBehaviour, IDamageable
     private int count;
     private float moveTimer = 0f;
     private Rigidbody2D rb;
-
     private bool isKnocked;
     private float knockMultiplier = 1f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -98,7 +98,7 @@ public class Test : MonoBehaviour, IDamageable
     private IEnumerator Hit()
     {
         float time = 0;
-        while (time < 0.3f)
+        while (time < 0.05f)
         {
             _renderer.color = Color.red;
             time += Time.deltaTime;
@@ -106,5 +106,6 @@ public class Test : MonoBehaviour, IDamageable
         }
         _renderer.color = Color.white;
     }
+    
     
 }

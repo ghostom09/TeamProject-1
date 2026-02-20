@@ -5,15 +5,20 @@ public class Sword2 : SkillBase
 {
     private GameObject bladePrefab;
     private float throwSpeed = 8f;
-    private float slowPercent = 25;
+    private float slowPercent = 40;
 
-    public Sword2() : base(13f)
+    public Sword2()
     {
         bladePrefab = Resources.Load<GameObject>("BhanIn");
     }
 
     protected override void Execute(GameObject user, Vector2 dir)
     {
+        Player player = user.GetComponent<Player>();
+
+        if (player.isUsingUltimate)
+            return;
+        
         dir = dir.normalized;
 
         // 1. 생성
@@ -25,7 +30,7 @@ public class Sword2 : SkillBase
 
         // 2. 초기화
         blade.GetComponent<BhanIn>()
-            .Init(user , data.Damage * 0.05f, slowPercent);
+            .Init(user , data.Damage * 0.1f, slowPercent);
 
         // 3. 발사
         Rigidbody2D rb = blade.GetComponent<Rigidbody2D>();

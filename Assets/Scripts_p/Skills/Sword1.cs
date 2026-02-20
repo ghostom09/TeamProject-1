@@ -2,43 +2,60 @@ using UnityEngine;
 
 public class Sword1 : SkillBase
 {
-    private float maxDistance = 6f;
     private LayerMask enemyLayer;
-    public Sword1() : base(3f)
+    public Sword1()
     {
-        enemyLayer = LayerMask.GetMask("Water");
-        Debug.Log("레이어 설정 완료");
+        enemyLayer = LayerMask.GetMask("Enemy");
     }
     protected override void Execute(GameObject user, Vector2 dir)
     {
+        Player player = user.GetComponent<Player>();
+
+        if (player.isUsingUltimate)
+            return;
+        
         dir = dir.normalized;
         
-        RaycastHit2D hit = Physics2D.Raycast(
+        Collider2D[] hits = Physics2D.OverlapCircleAll(
             user.transform.position,
-            dir,
             data.Range * 3,
             enemyLayer
         );
 
-        if (hit.collider == null)
+        Collider2D bestTarget = null;
+        float bestAngle = 30f;
+
+        foreach (var h in hits)
+        {
+            Vector2 toTarget = (h.transform.position - user.transform.position).normalized;
+            float angle = Vector2.Angle(dir, toTarget);
+
+            if (angle < bestAngle)
+            {
+                bestAngle = angle;
+                bestTarget = h;
+            }
+        }
+
+        if (bestTarget == null)
         {
             Debug.Log("신법 실패: 적 없음");
             return;
         }
 
-        // 2. 적에게 순간이동
-        Vector2 enemyPos = hit.collider.transform.position;
+        Vector2 enemyPos = bestTarget.transform.position;
         user.transform.position = enemyPos;
 
-        // 3. 데미지
-        if (hit.collider.TryGetComponent(out IDamageable target))
+        // 데미지 처리
+        if (bestTarget.TryGetComponent(out IDamageable target) && user.TryGetComponent<IDamageable>(out IDamageable damageable))
         {
             target.TakeDamage(data.Damage * 1.2f);
             target.ApplyKnockback(dir, 6f, 0.15f);
+            player.AddGauge(1);
+            damageable.ApplyKnockback(-dir, 10f, 0.15f);
+            
         }
-
-        // 4. 연출용 로그
-        Debug.Log($"신법 성공! 대상: {hit.collider.name}");
+        
         lastUsedTime = Time.time;
     }
 }

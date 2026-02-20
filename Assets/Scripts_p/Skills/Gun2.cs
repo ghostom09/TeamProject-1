@@ -3,10 +3,14 @@ using UnityEngine;
 
 public class Gun2 : SkillBase
 {
-    public Gun2() : base(25f) { }
+    public Gun2() { }
 
     protected override void Execute(GameObject user, Vector2 dir)
     {
+        Player player = user.GetComponent<Player>();
+
+        if (player.isUsingUltimate)
+            return;
         var executor = user.GetComponent<PlayerSkillExecutor>();
         user.GetComponent<MonoBehaviour>()
             .StartCoroutine(TriggerAwakening(executor));

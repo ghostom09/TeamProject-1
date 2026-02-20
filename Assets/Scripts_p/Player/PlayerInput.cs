@@ -6,7 +6,6 @@ public class PlayerInput : MonoBehaviour
 {
     public event Action<Vector2> onMove;
     public event Action onJump;
-    public event Action<bool> onJumpHeld;
     public event Action<bool> onDash;
     public event Action onAttack;
 

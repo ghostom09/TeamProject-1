@@ -59,11 +59,15 @@ public class Gun1 : SkillBase
 
         if (!hit) return;
         
-        RaycastHit2D[] explosion = Physics2D.CircleCastAll(hit.transform.position, data.Range / 4, dir.normalized, hitLayer);
+        Collider2D[] explosion = Physics2D.OverlapCircleAll(
+            hit.point,
+            data.Range / 4,
+            hitLayer
+        );
 
-        foreach (var a in explosion)
+        foreach (var col in explosion)
         {
-            if (a.transform.TryGetComponent<IDamageable>(out var target))
+            if (col.TryGetComponent<IDamageable>(out var target))
             {
                 target.TakeDamage(data.Damage * 2.5f);
                 target.ApplyKnockback(dir, 6f, 0.15f);

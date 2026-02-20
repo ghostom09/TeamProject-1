@@ -10,6 +10,7 @@ public class Sword1 : SkillBase
     protected override void Execute(GameObject user, Vector2 dir)
     {
         Player player = user.GetComponent<Player>();
+        PlayerAttack playerAttack = user.GetComponent<PlayerAttack>();
 
         if (player.isUsingUltimate)
             return;
@@ -53,8 +54,9 @@ public class Sword1 : SkillBase
             target.ApplyKnockback(dir, 6f, 0.15f);
             player.AddGauge(1);
             damageable.ApplyKnockback(-dir, 10f, 0.15f);
-            
         }
+        
+        playerAttack.FireIllusions(bestTarget.transform);
         
         lastUsedTime = Time.time;
     }

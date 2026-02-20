@@ -2,25 +2,34 @@ using UnityEngine;
 
 public class EnemyAttack : MonoBehaviour
 {
-    private Enemy enemyStat;
-    
-    private float damage;
-    private float attackRange;
-    private float attackSpeed;
-    private EnemyType enemyType;
-    
+    [SerializeField] private GameObject projectilePrefab;
+
+    private Enemy enemy;
+    private IEnemyAttackStrategy strategy;
+
+    [SerializeField] private Transform player;
+
     private void Awake()
     {
-        enemyStat = GetComponent<Enemy>();
+        enemy = GetComponent<Enemy>();
     }
 
     private void OnEnable()
     {
-        damage = enemyStat.stats.damage;
-        attackRange = enemyStat.stats.attackRange;
-        attackSpeed = enemyStat.stats.attackSpeed;
-        enemyType = enemyStat.stats.enemyType;
+        strategy = enemy.stats.enemyType switch
+        {
+            EnemyType.Normal  => new MeleeAttack(),
+            EnemyType.tanker  => new MeleeAttack(),
+            EnemyType.Ranged  => new RangedAttack(),
+            EnemyType.suport  => new SupportAttack(),
+            _ => null
+        };
+
+        strategy?.Init(enemy.stats);
     }
-    
-    
+
+    private void Update()
+    {
+        strategy?.TryAttack(transform, player);
+    }
 }

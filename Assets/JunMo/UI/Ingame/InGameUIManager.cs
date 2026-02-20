@@ -16,9 +16,10 @@ public class InGameUIManager : MonoBehaviour
     [SerializeField] private Image backBar;
     [SerializeField] private Image experienceBar;
     [SerializeField] private Image ultraBar;
-    [SerializeField] private List<Image> skillIcons;
     [SerializeField] private Image profile;
     [SerializeField] private TextMeshProUGUI levelText;
+    [SerializeField] private GameObject skillPanel;
+    [SerializeField] Canvas canvas;
     
     private float lerpSpeed = 20f;
     
@@ -28,13 +29,27 @@ public class InGameUIManager : MonoBehaviour
     
     private Coroutine delayRoutine;
     private Coroutine AutoFill;
-    
 
+    private List<SkillTimer> skillTimers = new();
+    private int spawnCount = 3;
+    
     private void Awake()
     {
         displayedHealth = 0;
         displayedUltra = 0;
         displayedExperience = 0;
+
+        UpdateLevel(1);
+        UpdateUltimate(100, 0);
+        UpdateExperience(100, 0);
+        
+        Spawn(spawnCount);
+    }
+
+    void Start()
+    {
+        UIManager.Instance.SetHUD(this);
+        UIManager.Instance.UpdateInGameUI();
     }
     void OnEnable()
     {
@@ -62,17 +77,7 @@ public class InGameUIManager : MonoBehaviour
     {
         profile.sprite = sprite;
     }
-
-    public void UpdateSkillIcon(List<Sprite> sprites)
-    {
-        int count = Mathf.Min(skillIcons.Count, sprites.Count);
-
-        for (int i = 0; i < count; i++)
-        {
-            skillIcons[i].sprite = sprites[i];
-        }
-
-    }
+    
     public void UpdateHealth(int max, int now)
     {
         float targetHP = Mathf.Clamp(now, 0, max);
@@ -141,5 +146,33 @@ public class InGameUIManager : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
         AutoFill = null;
+    }
+
+    public void UpdateSkillTime(int skillTime1, int skillTime2, int skillTime3)
+    {
+        skillTimers[0].Timer(skillTime1);
+        skillTimers[1].Timer(skillTime2);
+        skillTimers[2].Timer(skillTime3);
+    }
+
+    public void UpdateSkillTimer(int cnt)
+    {
+        skillTimers[cnt].UseSkill();
+    }
+
+    private void Spawn(int count)
+    {
+        int spawnX = 543;
+        for (int i = 0; i < count; i++)
+        {
+            GameObject obj = Instantiate(skillPanel, canvas.transform, false);
+            RectTransform rt = obj.transform as RectTransform;
+            SkillTimer skillTimer = obj.GetComponent<SkillTimer>();
+            skillTimers.Add(skillTimer);
+            rt.anchoredPosition = new Vector2(spawnX, 425);
+            rt.localScale = Vector3.one;
+            rt.sizeDelta = ((RectTransform)skillPanel.transform).sizeDelta;
+            spawnX += 147;
+        }
     }
 }

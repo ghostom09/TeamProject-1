@@ -52,7 +52,7 @@ public class Argument : MonoBehaviour
         if (data == null) 
             return;
         
-        kind = ArgumentKind.Skill;
+        kind = ArgumentKind.Stat;
         statData = data;
         skillData = null;
         SetUI(data.itemName, data.description, data.icon, "");
@@ -80,7 +80,7 @@ public class Argument : MonoBehaviour
     
     public void FadeOut(float duration)
     {
-        StopAllCoroutines();
+        StopCoroutine(FadeCoroutine(duration));
         StartCoroutine(FadeCoroutine(duration));
     }
     private IEnumerator FadeCoroutine(float duration)

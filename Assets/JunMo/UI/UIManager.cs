@@ -11,18 +11,20 @@ public class UIManager : MonoBehaviour
     [SerializeField] private List<Sprite> swordSkills;
     [SerializeField] private List<Sprite> gunSkills;
     
-    [SerializeField]private InGameUIManager hudManager;
     [SerializeField]private GameObject pop;
     [SerializeField]private GameObject stopGame;
+    private InGameUIManager hudManager;
     
     private bool isPaused = false;
+    private int playerLevel;
+    private JobType jobType;
 
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(this);
+            DontDestroyOnLoad(gameObject);
         }
         else Destroy(gameObject);
     }
@@ -30,15 +32,27 @@ public class UIManager : MonoBehaviour
 
     private void OnEnable()
     {
-        hudManager.on_esc += OnEsc;
+        if (hudManager != null)
+            hudManager.on_esc += OnEsc;
     }
 
     private void OnDisable()
     {
-        hudManager.on_esc -= OnEsc;
+        if (hudManager != null)
+            hudManager.on_esc -= OnEsc;
     }
-
-
+    
+    public void SetHUD(InGameUIManager hud)
+    {
+        if (hudManager != null)
+            hudManager.on_esc -= OnEsc;
+    
+        hudManager = hud;
+    
+        if (hudManager != null)
+            hudManager.on_esc += OnEsc;
+    }
+    
     private void OnEsc()
     {
         if (isPaused)
@@ -46,21 +60,20 @@ public class UIManager : MonoBehaviour
         else
             PauseGame();
     }
-
     private void PauseGame()
     {
         isPaused = true;
         stopGame.SetActive(true);
         Time.timeScale = 0;
+        AudioListener.pause = true;
     }
-
     private void ResumeGame()
     {
         isPaused = false;
         stopGame.SetActive(false);
         Time.timeScale = 1;
+        AudioListener.pause = false;
     }
-
     public void CloseStopUI()
     {
         ResumeGame();
@@ -80,5 +93,26 @@ public class UIManager : MonoBehaviour
     public void Close(GameObject obj)
     { 
         obj.SetActive(false);
+    }
+
+    public void UpdateInGameUI()
+    {
+        if (JobType.Sword == jobType)
+        {
+            SwordUI();
+        }
+        else GunUI();
+    }
+
+    private void SwordUI()
+    {
+        hudManager.UpdateProfile(swordIcon);
+        hudManager.UpdateSkillTime(10,10,10);
+    }
+
+    private void GunUI()
+    {
+        hudManager.UpdateProfile(gunIcon);
+        hudManager.UpdateSkillTime(10,10,10);
     }
 }

@@ -17,9 +17,9 @@ public class MeleeAttack : IEnemyAttackStrategy
         attackSpeed = stats.attackSpeed;
     }
 
-    public void TryAttack(Transform self, Transform target)
+    public void TryAttack(GameObject self, Transform target, Vector2 direction)
     {
-        distSqr = (target.position - self.position).sqrMagnitude;
+        distSqr = (target.position - self.transform.position).sqrMagnitude;
 
         if (distSqr > FIXED_RANGE * FIXED_RANGE)
             return;

@@ -3,5 +3,5 @@ using UnityEngine;
 public interface IEnemyAttackStrategy
 {
     void Init(EnemyStats stats);
-    void TryAttack(Transform self, Transform target);
+    void TryAttack(GameObject self, Transform target, Vector2 direction);
 }

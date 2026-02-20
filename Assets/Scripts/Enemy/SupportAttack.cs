@@ -12,7 +12,7 @@ public class SupportAttack : IEnemyAttackStrategy
         attackSpeed = stats.attackSpeed;
     }
 
-    public void TryAttack(Transform self, Transform target)
+    public void TryAttack(GameObject self, Transform target, Vector2 direction)
     {
         
     }

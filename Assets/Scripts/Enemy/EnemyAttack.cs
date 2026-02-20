@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class EnemyAttack : MonoBehaviour
 {
-    [SerializeField] private GameObject projectilePrefab;
-
     private Enemy enemy;
     private IEnemyAttackStrategy strategy;
 
-    [SerializeField] private Transform player;
+    [SerializeField] private Transform target;
+
+    private Vector2 dir;
 
     private void Awake()
     {
@@ -30,6 +30,7 @@ public class EnemyAttack : MonoBehaviour
 
     private void Update()
     {
-        strategy?.TryAttack(transform, player);
+        dir = ((Vector2)target.position - (Vector2)transform.position).normalized;
+        strategy?.TryAttack(gameObject, target, dir);
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class RangedAttack : IEnemyAttackStrategy
@@ -6,6 +7,14 @@ public class RangedAttack : IEnemyAttackStrategy
     private float attackSpeed;
     private float attackRange;
     private float lastAttackTime;
+    
+    private float distSqr;
+    private float interval;
+
+    private const float shootDelay = 0.5f;
+
+    private Rigidbody2D rb2d;
+    private EnemyMove enemyMove;
 
     public void Init(EnemyStats stats)
     {
@@ -14,27 +23,26 @@ public class RangedAttack : IEnemyAttackStrategy
         attackRange = stats.attackRange;
     }
 
-    public void TryAttack(Transform self, Transform target)
+    public void TryAttack(GameObject self, Transform target, Vector2 direction)
     {
-        float attackInterval = 1f / attackSpeed;
+        enemyMove = self.GetComponent<EnemyMove>();
+        
+        distSqr = (target.position - self.transform.position).sqrMagnitude;
+        interval = 1f / attackSpeed;
 
-        if (Time.time < lastAttackTime + attackInterval)
+        if (Time.time < lastAttackTime + interval || distSqr > attackRange * attackRange)
         {
-            Debug.Log("공격 쿨타임!!!!!!!");
             return;
         }
 
         lastAttackTime = Time.time;
 
-        // Shoot(self, dir);
-        return;
+        Shoot(self.transform, direction);
     }
     
     private void Shoot(Transform self, Vector2 dir)
     {
-        Debug.DrawRay(self.position, dir.normalized * attackRange, Color.cyan, 0.2f);
-
-        DoHitscan(self, dir);
+        self.GetComponent<MonoBehaviour>().StartCoroutine(ShootCoroutine(self, dir));
     }
     private void DoHitscan(Transform self, Vector2 dir)
     {
@@ -42,7 +50,7 @@ public class RangedAttack : IEnemyAttackStrategy
             self.position,
             dir.normalized,
             attackRange,
-            LayerMask.GetMask("Water")
+            LayerMask.GetMask("Player")
         );
 
         if (hit.collider != null)
@@ -53,5 +61,17 @@ public class RangedAttack : IEnemyAttackStrategy
                 target.ApplyKnockback(dir, 3f, 0.15f);
             }
         }
+    }
+    
+    private IEnumerator ShootCoroutine(Transform self, Vector2 dir)
+    {
+        enemyMove.SetMoveLock(true);
+        yield return new WaitForSeconds(shootDelay);
+        
+        Debug.DrawRay(self.position, dir.normalized * attackRange, Color.cyan, 0.2f);
+
+        DoHitscan(self, dir);
+        
+        enemyMove.SetMoveLock(false);
     }
 }

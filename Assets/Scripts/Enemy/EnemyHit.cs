@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class EnemyHit : MonoBehaviour, IDamageable
 {
-    private SpriteRenderer _renderer;
+    private SpriteRenderer renderer;
     private Enemy enemyStat;
+    private EnemyMove enemyMove;
     
     private float health;
     
@@ -14,7 +15,7 @@ public class EnemyHit : MonoBehaviour, IDamageable
     private float _x = 1;
     private int count;
     private float moveTimer = 0f;
-    private Rigidbody2D rb;
+    private Rigidbody2D rb2d;
 
     private bool isKnocked;
     private float knockMultiplier = 1f;
@@ -22,8 +23,9 @@ public class EnemyHit : MonoBehaviour, IDamageable
     private void Awake()
     {
         enemyStat = GetComponent<Enemy>();
-        _renderer = GetComponent<SpriteRenderer>();
-        rb = GetComponent<Rigidbody2D>();
+        renderer = GetComponent<SpriteRenderer>();
+        rb2d = GetComponent<Rigidbody2D>();
+        enemyMove = GetComponent<EnemyMove>();
     }
 
     private void OnEnable()
@@ -60,18 +62,18 @@ public class EnemyHit : MonoBehaviour, IDamageable
 
     private IEnumerator Knockback(Vector2 dir, float power, float duration)
     {
-        isKnocked = true;
+        enemyMove.SetMoveLock(true);
         
         float xDir = Mathf.Sign(dir.x);
 
-        rb.linearVelocity = new Vector2(
+        rb2d.linearVelocity = new Vector2(
             xDir * power,
-            2f
+            6f
         );
 
         yield return new WaitForSeconds(duration);
 
-        isKnocked = false;
+        enemyMove.SetMoveLock(false);
         knockRoutine = null;
     }
 
@@ -81,10 +83,10 @@ public class EnemyHit : MonoBehaviour, IDamageable
         float time = 0;
         while (time < 0.3f)
         {
-            _renderer.color = Color.red;
+            renderer.color = Color.red;
             time += Time.deltaTime;
             yield return null;
         }
-        _renderer.color = Color.white;
+        renderer.color = Color.white;
     }
 }

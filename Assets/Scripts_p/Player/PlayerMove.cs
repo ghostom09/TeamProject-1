@@ -39,7 +39,6 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
-        Init(5,13);
     }
 
     public void Init(float moveSpeed, float jumpForce)

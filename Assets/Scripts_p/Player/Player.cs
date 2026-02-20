@@ -24,6 +24,7 @@ public class Player : MonoBehaviour, IDamageable
     public void Init(CharacterData data)
     {
         playerSkillExecutor.Init(data.Skills, data);
+        move.Init(data.MoveSpeed, 13);
         attacker.Init(data);
     }
 

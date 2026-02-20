@@ -11,6 +11,7 @@ public class PlayerAttack : MonoBehaviour
     public float attackTime;
     
     private INormalAttack _normal;
+    private Player _player;
     
                                   
     private int _illusionCount;
@@ -28,7 +29,7 @@ public class PlayerAttack : MonoBehaviour
             _ => null
         };
         _normal?.Init(data);
-        
+        _player = GetComponent<Player>();
         hitBox?.SetActive(false);
     }
 
@@ -76,9 +77,10 @@ public class PlayerAttack : MonoBehaviour
         }
     }
     
-    public void FireIllusions(Transform target)
+    public void FireIllusions(Transform target, GameObject user)
     {
         StartCoroutine(FireSequential(target));
+        user.GetComponent<Player>().AddGauge(3);
     }
 
     private IEnumerator FireSequential(Transform target)

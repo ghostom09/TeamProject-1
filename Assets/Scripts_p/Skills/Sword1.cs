@@ -11,6 +11,8 @@ public class Sword1 : SkillBase
     {
         Player player = user.GetComponent<Player>();
         PlayerAttack playerAttack = user.GetComponent<PlayerAttack>();
+        
+        
 
         if (player.isUsingUltimate)
             return;
@@ -56,7 +58,7 @@ public class Sword1 : SkillBase
             damageable.ApplyKnockback(-dir, 10f, 0.15f);
         }
         
-        playerAttack.FireIllusions(bestTarget.transform);
+        playerAttack.FireIllusions(bestTarget.transform, user);
         
         lastUsedTime = Time.time;
     }

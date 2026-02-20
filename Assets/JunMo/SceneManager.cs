@@ -3,7 +3,8 @@ using UnityEngine;
 public enum SceneName
 {
     MainMenu,
-    PlayerTest
+    PlayerTest,
+    UI
 }
 public class SceneManager : MonoBehaviour
 {

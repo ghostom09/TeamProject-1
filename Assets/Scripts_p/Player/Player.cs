@@ -8,6 +8,7 @@ public class Player : MonoBehaviour, IDamageable
     [SerializeField] private PlayerSkillExecutor playerSkillExecutor;
     [SerializeField] private CharacterData character;
     [SerializeField] private PlayerAttack attacker;
+    [SerializeField] private PlayerMove move;
     
     public float invincibilityDuration;
     public float currentGauge;
@@ -87,11 +88,13 @@ public class Player : MonoBehaviour, IDamageable
     public void ApplySlow(float percent, float duration)
     {
         if (isInvincible) return;
+        move.Slow(percent, duration);
     }
 
     public void ApplyKnockback(Vector2 dir, float power, float duration)
     {
         if (isInvincible) return;
+        move.KnockBack(dir, power, duration);
     }
     public void StopUltimate()
     {

@@ -33,6 +33,8 @@ public class Gun1 : SkillBase
     {
         // 1. 플레이어 정지
         var mover = user.GetComponent<IPlayerMover>();
+        Player player = user.GetComponent<Player>();
+        
         if (!ignoreMoveLock)
             mover?.SetMoveLock(true);
 
@@ -41,10 +43,10 @@ public class Gun1 : SkillBase
         mover?.SetMoveLock(false);
 
         // 2. 히트스캔 발사
-        FireHitScan(user, dir);
+        FireHitScan(user, dir, player);
     }
 
-    private void FireHitScan(GameObject user, Vector2 dir)
+    private void FireHitScan(GameObject user, Vector2 dir, Player player)
     {
         Vector2 origin = user.transform.position;
 
@@ -69,9 +71,11 @@ public class Gun1 : SkillBase
         {
             if (col.TryGetComponent<IDamageable>(out var target))
             {
+                
                 target.TakeDamage(data.Damage * 2.5f);
                 target.ApplyKnockback(dir, 6f, 0.15f);
                 target.ApplySlow(SlowPercent, SlowDuration);
+                player.AddGauge(1);
             }
         }
         

@@ -5,7 +5,7 @@
     public class PlayerAttack : MonoBehaviour
     {
         [SerializeField] private GameObject hitBox;
-        [SerializeField] private float attackTime;
+        public float attackTime;
         
         private INormalAttack _normal;
 

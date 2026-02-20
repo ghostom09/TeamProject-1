@@ -13,7 +13,7 @@ public class Gun1 : SkillBase
     private LayerMask hitLayer;
     
 
-    public Gun1() : base(4f)
+    public Gun1()
     {
         hitLayer = LayerMask.GetMask("Enemy");
     }

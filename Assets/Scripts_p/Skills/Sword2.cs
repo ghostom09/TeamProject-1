@@ -7,7 +7,7 @@ public class Sword2 : SkillBase
     private float throwSpeed = 8f;
     private float slowPercent = 40;
 
-    public Sword2() : base(13f)
+    public Sword2()
     {
         bladePrefab = Resources.Load<GameObject>("BhanIn");
     }

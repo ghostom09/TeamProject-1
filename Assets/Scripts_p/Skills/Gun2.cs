@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Gun2 : SkillBase
 {
-    public Gun2() : base(25f) { }
+    public Gun2() { }
 
     protected override void Execute(GameObject user, Vector2 dir)
     {

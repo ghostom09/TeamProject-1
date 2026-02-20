@@ -41,7 +41,7 @@ public class PlayerSkillExecutor : MonoBehaviour
     public void UseSkill(int index, Vector2 dir)
     {
         SkillType type = _skills[index].SkillName;
-        _actions[type].Init(data);
+        _actions[type].Init(data,_skills[index]);
         _actions[type].TryUse(gameObject, dir);
     }
     public SkillBase GetSkill(SkillType type)

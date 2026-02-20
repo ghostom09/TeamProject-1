@@ -2,12 +2,10 @@ using UnityEngine;
 
 public class Sword1 : SkillBase
 {
-    private float maxDistance = 6f;
     private LayerMask enemyLayer;
-    public Sword1() : base(3f)
+    public Sword1()
     {
         enemyLayer = LayerMask.GetMask("Enemy");
-        Debug.Log("레이어 설정 완료");
     }
     protected override void Execute(GameObject user, Vector2 dir)
     {

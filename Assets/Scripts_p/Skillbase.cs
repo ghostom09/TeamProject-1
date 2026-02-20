@@ -5,15 +5,17 @@ public abstract class SkillBase : ISkillAction
 {
     protected float cooldown;
     protected CharacterData data;
+    protected SkillData skillData;
     protected float lastUsedTime = -999f;
     protected float baseCooldown;
     protected float bonusCooldown;
 
-    public float Cooldown => Mathf.Max(0.1f, baseCooldown + bonusCooldown);
+    public float Cooldown => Mathf.Max(0.1f, skillData.Cooldown + bonusCooldown);
 
 
-    public void Init(CharacterData data)
+    public void Init(CharacterData data, SkillData skillData)
     {
+        this.skillData = skillData;
         this.data = data;
     }
     public void AddCooldownBonus(float value)
@@ -24,11 +26,6 @@ public abstract class SkillBase : ISkillAction
     {
         bonusCooldown = 0;
     }
-    protected SkillBase(float cooldown)
-    {
-        baseCooldown = cooldown;
-    }
-
     public bool CanUse()
     {
         return Time.time >= lastUsedTime + Cooldown;

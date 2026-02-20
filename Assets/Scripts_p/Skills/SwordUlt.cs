@@ -3,11 +3,10 @@ using UnityEngine;
 
 public class SwordUlt : SkillBase
 {
-    private float duration = 1.6f;   // 20타 × 0.08 간격
     private int hitCount = 20;
     private float hitInterval = 0.08f;
 
-    public SwordUlt() : base(0f)
+    public SwordUlt()
     {
         
     }

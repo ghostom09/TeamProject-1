@@ -15,7 +15,6 @@ public class EnemyHit : MonoBehaviour, IDamageable
     private float _x = 1;
     private int count;
     private float moveTimer = 0f;
-    private Rigidbody2D rb2d;
 
     private bool isKnocked;
     private float knockMultiplier = 1f;
@@ -24,7 +23,6 @@ public class EnemyHit : MonoBehaviour, IDamageable
     {
         enemyStat = GetComponent<Enemy>();
         renderer = GetComponent<SpriteRenderer>();
-        rb2d = GetComponent<Rigidbody2D>();
         enemyMove = GetComponent<EnemyMove>();
     }
 
@@ -52,30 +50,8 @@ public class EnemyHit : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(duration);
         slowRoutine = null;
     }
-    public void ApplyKnockback(Vector2 dir, float power, float duration)
-    {
-        if (knockRoutine != null)
-            StopCoroutine(knockRoutine);
 
-        knockRoutine = StartCoroutine(Knockback(dir, power, duration));
-    }
-
-    private IEnumerator Knockback(Vector2 dir, float power, float duration)
-    {
-        enemyMove.SetMoveLock(true);
-        
-        float xDir = Mathf.Sign(dir.x);
-
-        rb2d.linearVelocity = new Vector2(
-            xDir * power,
-            6f
-        );
-
-        yield return new WaitForSeconds(duration);
-
-        enemyMove.SetMoveLock(false);
-        knockRoutine = null;
-    }
+    public void ApplyKnockback(Vector2 dir, float power, float duration){enemyMove.ApplyKnockback(dir, power, duration);}
 
 
     private IEnumerator Hit()

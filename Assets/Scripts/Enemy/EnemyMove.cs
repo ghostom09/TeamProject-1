@@ -1,8 +1,9 @@
 using System;
 using UnityEngine;
+using System.Collections;
 using Random = UnityEngine.Random;
 
-public class EnemyMove : MonoBehaviour, IEnemyMover
+public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable
 {
     [SerializeField] private GameObject target;
     [SerializeField] private LayerMask wallLayer;
@@ -17,7 +18,7 @@ public class EnemyMove : MonoBehaviour, IEnemyMover
     [SerializeField] private float jumpForce;
     private int jumpTry = 0;
     
-    private float groundRadius = 0.2f;
+    private float groundRadius = 0.35f;
     private bool isGrounded;
     private bool isleftWall;
     private bool isrightWall;
@@ -33,10 +34,15 @@ public class EnemyMove : MonoBehaviour, IEnemyMover
     [SerializeField] private float distanceThreshold = 0.1f;
     
     private bool _isMoveLocked;
+    
+    private Coroutine knockRoutine;
+
+    private EnemyHit _enemyHit;
 
     private void Awake()
     {
         rb2d = GetComponent<Rigidbody2D>();
+        _enemyHit = GetComponent<EnemyHit>();
     }
 
     public void Init(EnemyStats stats)
@@ -52,9 +58,12 @@ public class EnemyMove : MonoBehaviour, IEnemyMover
     {
         CheckGround();
         CheckWall();
+        
         if(_isMoveLocked)
             return;
+        
         horizontalmove();
+        
         if (isGrounded)
         {
             isJumping = false;
@@ -155,4 +164,34 @@ public class EnemyMove : MonoBehaviour, IEnemyMover
             rb2d.linearVelocity = new Vector2(0, 0);
         }
     }
+    
+    public void ApplyKnockback(Vector2 dir, float power, float duration)
+    {
+        if (knockRoutine != null)
+            StopCoroutine(knockRoutine);
+
+        knockRoutine = StartCoroutine(Knockback(dir, power, duration));
+    }
+
+    private IEnumerator Knockback(Vector2 dir, float power, float duration)
+    {
+        SetMoveLock(true);
+        isJumping = true;
+        
+        float xDir = Mathf.Sign(dir.x);
+
+        rb2d.linearVelocity = new Vector2(
+            xDir * power,
+            6f
+        );
+
+        yield return new WaitForSeconds(duration);
+
+        SetMoveLock(false);
+        knockRoutine = null;
+    }
+
+    public void TakeDamage(float damage){_enemyHit.TakeDamage(damage);}
+
+    public void ApplySlow(float percent, float duration){_enemyHit.ApplySlow(percent, duration);}
 }

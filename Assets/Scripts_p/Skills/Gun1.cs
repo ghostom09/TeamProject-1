@@ -59,11 +59,17 @@ public class Gun1 : SkillBase
 
         if (!hit) return;
         
-        if (hit.collider.TryGetComponent<IDamageable>(out var target))
+        RaycastHit2D[] explosion = Physics2D.CircleCastAll(hit.transform.position, data.Range / 4, dir.normalized, hitLayer);
+
+        foreach (var a in explosion)
         {
-            target.TakeDamage(data.Damage * 2.5f);
-            target.ApplyKnockback(dir, 6f, 0.15f);
-            target.ApplySlow(SlowPercent, SlowDuration);
+            if (a.transform.TryGetComponent<IDamageable>(out var target))
+            {
+                target.TakeDamage(data.Damage * 2.5f);
+                target.ApplyKnockback(dir, 6f, 0.15f);
+                target.ApplySlow(SlowPercent, SlowDuration);
+            }
         }
+        
     }
 }

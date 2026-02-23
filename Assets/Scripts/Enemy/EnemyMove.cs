@@ -3,9 +3,9 @@ using UnityEngine;
 using System.Collections;
 using Random = UnityEngine.Random;
 
-public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable
+public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
 {
-    [SerializeField] private GameObject target;
+    private GameObject movingTarget;
     [SerializeField] private LayerMask wallLayer;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Transform leftwallCheck;
@@ -45,13 +45,15 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable
         _enemyHit = GetComponent<EnemyHit>();
     }
 
-    public void Init(EnemyStats stats)
+    public void Init(EnemyStats stats, GameObject target)
     {
         speed = stats.speed;
         jumpForce = stats.jumpForce;
         enemyType = stats.enemyType;
         attackRange = stats.attackRange;
         rangedInterval = attackRange * 0.8f;
+        
+        movingTarget = target;
     }
     
     private void FixedUpdate()
@@ -73,7 +75,7 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable
             }
             else
             {
-                if (target.transform.position.y > transform.position.y)
+                if (movingTarget.transform.position.y > transform.position.y)
                 {
                     jumpTry = Random.Range(50, 100);
                     if(jumpTry == 90)
@@ -81,7 +83,7 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable
                 }
             }
         }
-        else if(!isJumping&&!isGrounded&&target.transform.position.y > transform.position.y)
+        else if(!isJumping&&!isGrounded&&movingTarget.transform.position.y > transform.position.y)
         {
             verticalmove();
         }
@@ -118,12 +120,12 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable
 
     private void horizontalmove()
     {
-        distance = ((target.transform.position.x - transform.position.x) *
-                    (target.transform.position.x - transform.position.x)) +
-                   ((target.transform.position.y - transform.position.y) *
-                    (target.transform.position.y - transform.position.y));
+        distance = ((movingTarget.transform.position.x - transform.position.x) *
+                    (movingTarget.transform.position.x - transform.position.x)) +
+                   ((movingTarget.transform.position.y - transform.position.y) *
+                    (movingTarget.transform.position.y - transform.position.y));
 
-        direction = target.transform.position.x - transform.position.x;
+        direction = movingTarget.transform.position.x - transform.position.x;
 
         if (direction > -stopThreshold && direction < stopThreshold)
         {

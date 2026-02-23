@@ -1,22 +1,17 @@
 using UnityEngine;
 
-public class EnemyAttack : MonoBehaviour
+public class EnemyAttack : MonoBehaviour, IEnemyReset
 {
-    private Enemy enemy;
     private IEnemyAttackStrategy strategy;
 
-    [SerializeField] private Transform target;
+    private Transform attackTarget;
 
     private Vector2 dir;
 
-    private void Awake()
-    {
-        enemy = GetComponent<Enemy>();
-    }
 
-    private void OnEnable()
+    public void Init(EnemyStats stats, GameObject target)
     {
-        strategy = enemy.stats.enemyType switch
+        strategy = stats.enemyType switch
         {
             EnemyType.Normal  => new MeleeAttack(),
             EnemyType.tanker  => new MeleeAttack(),
@@ -25,12 +20,14 @@ public class EnemyAttack : MonoBehaviour
             _ => null
         };
 
-        strategy?.Init(enemy.stats);
+        attackTarget = target.transform;
+        
+        strategy?.Init(stats);
     }
 
     private void Update()
     {
-        dir = ((Vector2)target.position - (Vector2)transform.position).normalized;
-        strategy?.TryAttack(gameObject, target, dir);
+        dir = ((Vector2)attackTarget.position - (Vector2)transform.position).normalized;
+        strategy?.TryAttack(gameObject, attackTarget, dir);
     }
 }

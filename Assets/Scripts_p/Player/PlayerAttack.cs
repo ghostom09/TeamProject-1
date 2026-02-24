@@ -60,18 +60,25 @@ public class PlayerAttack : MonoBehaviour
     {
         ClearIllusions();
 
-        for (int i = 0; i < 3; i++)
-        {
-            Vector3 offset = new Vector3(i - 1, 0.5f, 0); // 좌우 배치
+        int count = 3;
+        float radius = 1.5f;
+        float totalAngle = 80f;
 
-            GameObject obj = Instantiate(
-                illusionPrefab,
-                transform.position + offset,
-                Quaternion.identity
-            );
+        for (int i = 0; i < count; i++)
+        {
+            float angle = (i - (count - 1) / 2f) * (totalAngle / (count - 1));
+            
+            float radian = (angle + 90f) * Mathf.Deg2Rad;
+            Vector3 offset = new Vector3(Mathf.Cos(radian), Mathf.Sin(radian), 0) * radius;
+            
+            Vector3 spawnPos = transform.position + offset;
+            
+            Quaternion spawnRot = Quaternion.Euler(0, 0, angle);
+
+            GameObject obj = Instantiate(illusionPrefab, spawnPos, spawnRot);
 
             var illusion = obj.GetComponent<SwordIllusionProjectile>();
-            illusion.Init(damage);
+            illusion.Init(damage); 
 
             _illusions.Add(illusion);
         }

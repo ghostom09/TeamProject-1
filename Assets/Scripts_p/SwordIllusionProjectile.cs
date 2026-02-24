@@ -8,10 +8,19 @@ public class SwordIllusionProjectile : MonoBehaviour
 
     private bool _isFired = false;
 
+    private float _hoverTimer;
+    private Transform _playerTransform;
+    private Vector3 _relativeOffset; // 생성 시 부여받은 상대적 위치
+
+    private Vector3 _startPos;
+    private float _randomOffset;
+
     public void Init(float damage)
     {
         _damage = damage;
         _speed = 14f;
+        _startPos = transform.position;
+        _randomOffset = Random.Range(0f, Mathf.PI * 2f);
     }
 
     public void Fire(Transform target)
@@ -25,20 +34,28 @@ public class SwordIllusionProjectile : MonoBehaviour
     private void Update()
     {
         if (!_isFired)
-            return;
-        
-        if (_target == null)
         {
-            Destroy(gameObject);
+            float hoverY = Mathf.Sin(Time.time * 3f + _randomOffset) * 0.15f;
+            
+            float shakeX = Mathf.Cos(Time.time * 20f + _randomOffset) * 0.02f;
+            
+            float tilt = Mathf.Sin(Time.time * 2f + _randomOffset) * 5f;
+
+            transform.position = _startPos + new Vector3(shakeX, hoverY, 0);
+            transform.rotation = Quaternion.Euler(0, 0, tilt + 90f); 
             return;
         }
+        
+        if (_target == null) { Destroy(gameObject); return; }
 
-        Vector2 dir = (_target.position - transform.position).normalized;
+        Vector2 targetDir = (_target.position - transform.position).normalized;
+        
+        float rotateSpeed = 10f; 
+        float angle = Mathf.Atan2(targetDir.y, targetDir.x) * Mathf.Rad2Deg;
+        Quaternion targetRotation = Quaternion.Euler(0, 0, angle - 90);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotateSpeed * Time.deltaTime);
 
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, 0, angle - 90);
-
-        transform.position += (Vector3)(dir * (_speed * Time.deltaTime));
+        transform.position += transform.up * (_speed * Time.deltaTime);
     }
 
     private void OnTriggerEnter2D(Collider2D other)

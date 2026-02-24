@@ -280,7 +280,7 @@ GameObject:
   - component: {fileID: 624861707}
   - component: {fileID: 624861706}
   - component: {fileID: 624861705}
-  m_Layer: 1
+  m_Layer: 6
   m_Name: Ground (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -417,7 +417,7 @@ GameObject:
   - component: {fileID: 895982957}
   - component: {fileID: 895982956}
   - component: {fileID: 895982955}
-  m_Layer: 1
+  m_Layer: 6
   m_Name: Ground (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -887,7 +887,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
   groundLayer:
     serializedVersion: 2
-    m_Bits: 2
+    m_Bits: 64
   groundCheck: {fileID: 1920537437}
 --- !u!114 &996285920
 MonoBehaviour:
@@ -1059,7 +1059,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   playerSkillExecutor: {fileID: 996285923}
-  character: {fileID: 11400000, guid: 6c9cdfd605f355340ac2b3041233929a, type: 2}
+  character: {fileID: 11400000, guid: 4906926dc1371e24da7fc7f1e6cd86a4, type: 2}
   attacker: {fileID: 996285925}
   move: {fileID: 996285919}
   invincibilityDuration: 0
@@ -1186,7 +1186,7 @@ GameObject:
   - component: {fileID: 1300888266}
   - component: {fileID: 1300888265}
   - component: {fileID: 1300888267}
-  m_Layer: 1
+  m_Layer: 6
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}

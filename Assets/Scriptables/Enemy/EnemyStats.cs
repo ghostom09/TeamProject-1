@@ -3,10 +3,10 @@ using UnityEngine;
 public enum EnemyType
 {
     None,
-    Normal,
+    normal,
     tanker,
-    Ranged,
-    suport
+    ranged,
+    support
 }
 
 [CreateAssetMenu(fileName = "EnemyStats")]

@@ -11,7 +11,7 @@ public class MeleeAttack : IEnemyAttackStrategy
 
     private const float FIXED_RANGE = 1.5f;
 
-    public void Init(EnemyStats stats)
+    public void Init(EnemyStats stats, EnemyMove move)
     {
         damage = stats.damage;
         attackSpeed = stats.attackSpeed;

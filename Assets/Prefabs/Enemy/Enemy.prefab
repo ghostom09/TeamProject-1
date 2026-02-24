@@ -215,7 +215,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a64867dbfcd7c34aba6d81b99aea059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  stats: {fileID: 11400000, guid: af7ac4d9355eb514d8c5f6a50c89e148, type: 2}
+  stats: {fileID: 0}
+  target: {fileID: 0}
 --- !u!114 &2430412054728463434
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,7 +229,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3fb08e9af8dd84479b7d0d92268632c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack
-  target: {fileID: 0}
 --- !u!114 &6543969131592568899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,7 +253,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4bb8ffa83b093e4b9ee4a47cb7c4e77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMove
-  target: {fileID: 0}
   wallLayer:
     serializedVersion: 2
     m_Bits: 64

@@ -45,19 +45,24 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
         _enemyHit = GetComponent<EnemyHit>();
     }
 
-    public void Init(EnemyStats stats, GameObject target)
+    public void Init(EnemyStats stats, GameObject target, EnemySpawnerManager m)
     {
         speed = stats.speed;
         jumpForce = stats.jumpForce;
         enemyType = stats.enemyType;
         attackRange = stats.attackRange;
-        rangedInterval = attackRange * 0.8f;
+        if(enemyType == EnemyType.ranged)
+            rangedInterval = attackRange * 0.8f;
+        else if(enemyType == EnemyType.support)
+            rangedInterval = attackRange * 0.2f;
         
         movingTarget = target;
     }
     
     private void FixedUpdate()
     {
+        if(movingTarget == null)
+            return;
         CheckGround();
         CheckWall();
         
@@ -135,7 +140,7 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
 
         direction = direction < 0f ? -1f : 1f;
 
-        if (enemyType == EnemyType.Ranged)
+        if (enemyType == EnemyType.ranged || enemyType == EnemyType.support)
         {
             if (distance > (rangedInterval * rangedInterval) - distanceThreshold &&
                 distance < (rangedInterval * rangedInterval) + distanceThreshold)
@@ -169,6 +174,8 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
     
     public void ApplyKnockback(Vector2 dir, float power, float duration)
     {
+        if(!gameObject.activeInHierarchy)
+            return;
         if (knockRoutine != null)
             StopCoroutine(knockRoutine);
 

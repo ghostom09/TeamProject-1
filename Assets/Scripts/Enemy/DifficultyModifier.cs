@@ -9,6 +9,8 @@ public struct DifficultyModifier
     public float rangedSpawnPercent;
     public float supportSpawnPercent;
     public float specialSpawnPercent;
+    
+    public float enemySpawnPercent;
 }
 
 public static class DifficultyCalculator
@@ -27,12 +29,20 @@ public static class DifficultyCalculator
             result.healthMultiplier *= Mathf.Pow(1.03f, count);
             result.damageMultiplier *= Mathf.Pow(1.025f, count);
         }
+        
+        // 3 스파이크
+        if (level >= 3)
+        {
+            result.rangedSpawnPercent += 0.04f;
+            result.tankerSpawnPercent += 0.06f;
+        }
 
         // 5 스파이크
         if (level >= 5)
         {
             result.healthMultiplier *= 1.08f;
             result.damageMultiplier *= 1.07f;
+            result.enemySpawnPercent += 0.0005f;
         }
 
         // 6~13
@@ -42,6 +52,7 @@ public static class DifficultyCalculator
             result.healthMultiplier *= Mathf.Pow(1.06f, count);
             result.damageMultiplier *= Mathf.Pow(1.06f, count);
             result.specialSpawnPercent += count * 0.015f;
+            result.enemySpawnPercent += 0.0001f;
         }
 
         // 13 스파이크
@@ -50,6 +61,7 @@ public static class DifficultyCalculator
             result.healthMultiplier *= 1.25f;
             result.damageMultiplier *= 1.08f;
             result.supportSpawnPercent += 0.05f;
+            result.enemySpawnPercent += 0.0005f;
         }
 
         // 14~21
@@ -59,6 +71,7 @@ public static class DifficultyCalculator
             result.healthMultiplier *= Mathf.Pow(1.08f, count);
             result.damageMultiplier *= Mathf.Pow(1.07f, count);
             result.specialSpawnPercent += count * 0.02f;
+            result.enemySpawnPercent += 0.0001f;
         }
 
         // 21 스파이크
@@ -66,6 +79,7 @@ public static class DifficultyCalculator
         {
             result.healthMultiplier *= 1.35f;
             result.damageMultiplier *= 1.12f;
+            result.enemySpawnPercent += 0.001f;
         }
 
         // 22~
@@ -75,6 +89,7 @@ public static class DifficultyCalculator
             result.healthMultiplier *= Mathf.Pow(1.04f, extra);
             result.damageMultiplier *= Mathf.Pow(1.04f, extra);
             result.specialSpawnPercent += extra * 0.03f;
+            result.enemySpawnPercent += 0.0001f;
         }
 
         return result;

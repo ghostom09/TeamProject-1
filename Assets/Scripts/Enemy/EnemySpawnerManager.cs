@@ -4,24 +4,63 @@ using System.Collections.Generic;
 public class EnemySpawnerManager : MonoBehaviour
 {
     [SerializeField] private GameObject enemyPrefab;
-    [SerializeField] private List<EnemyStats> resetStats;
+    [SerializeField] private GameObject target;
 
+    [SerializeField] private List<EnemyStats> resetStats;
     [SerializeField] private List<EnemyStats> _runTimeStats = new();
 
-    private int normalIndex;
-    private int rangedIndex;
-    private int tankerIndex;
-    private int supportIndex;
+    private List<Transform> _spawnPoints = new List<Transform>();
 
     [SerializeField] private float tankerMaxProb = 0.25f;
     [SerializeField] private float rangedMaxProb = 0.25f;
     [SerializeField] private float supportMaxProb = 0.15f;
 
-    private float tankerProb = 0;
-    private float rangedProb = 0;
-    private float supportProb = 0;
+    private float tankerProb = 0f;
+    private float rangedProb = 0f;
+    private float supportProb = 0f;
 
-    private void Start()
+    [SerializeField] private float enemyProb = 0.001f;
+    [SerializeField] private float enemyMaxProb = 0.006f;
+
+    private int normalIndex;
+    private int rangedIndex;
+    private int tankerIndex;
+    private int supportIndex;
+    
+    private Queue<Enemy> pool = new Queue<Enemy>();
+    
+    [SerializeField] private Transform poolParent;
+    [SerializeField] private int initialPoolSize = 30;
+    
+    [SerializeField] private int maxActiveEnemy = 30;
+    [SerializeField] private int ActiveEnemy = 0;
+
+    private void Awake()
+    {
+        InitializeStats();
+        InitializeSpawnPoints();
+        InitPool();
+    }
+    
+    private void InitPool()
+    {
+        for (int i = 0; i < initialPoolSize; i++)
+        {
+            GameObject obj = Instantiate(enemyPrefab, poolParent);
+            obj.SetActive(false);
+
+            pool.Enqueue(obj.GetComponent<Enemy>());
+        }
+    }
+    
+    public void ReturnToPool(Enemy enemy)
+    {
+        ActiveEnemy--;
+        enemy.gameObject.SetActive(false);
+        pool.Enqueue(enemy);
+    }
+
+    private void InitializeStats()
     {
         _runTimeStats.Clear();
 
@@ -29,21 +68,33 @@ public class EnemySpawnerManager : MonoBehaviour
         {
             EnemyStats clone = Instantiate(resetStats[i]);
             _runTimeStats.Add(clone);
+
             switch (resetStats[i].enemyType)
             {
-                case EnemyType.Normal:
+                case EnemyType.normal:
                     normalIndex = i;
                     break;
-                case EnemyType.Ranged:
+                case EnemyType.ranged:
                     rangedIndex = i;
                     break;
                 case EnemyType.tanker:
                     tankerIndex = i;
                     break;
-                case EnemyType.suport:
+                case EnemyType.support:
                     supportIndex = i;
                     break;
             }
+        }
+    }
+
+    private void InitializeSpawnPoints()
+    {
+        _spawnPoints.Clear();
+
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            _spawnPoints.Add(transform.GetChild(i));
+            _spawnPoints[i].GetComponent<EnemySpawner>().Init(this);
         }
     }
 
@@ -80,6 +131,16 @@ public class EnemySpawnerManager : MonoBehaviour
         supportProb = Mathf.Min(
             mod.supportSpawnPercent + mod.specialSpawnPercent,
             supportMaxProb);
+
+        enemyProb = Mathf.Min(
+            enemyProb + mod.enemySpawnPercent,
+            enemyMaxProb);
+    }
+    
+
+    public bool CanSpawn()
+    {
+        return Random.value <= enemyProb;
     }
 
     public EnemyStats GetRandomEnemy()
@@ -100,5 +161,38 @@ public class EnemySpawnerManager : MonoBehaviour
             return _runTimeStats[supportIndex];
 
         return _runTimeStats[normalIndex];
+    }
+
+    public void SpawnFromPoint(Vector3 position)
+    {
+        if(ActiveEnemy>=maxActiveEnemy)
+            return;
+        Enemy enemy;
+
+        if (pool.Count > 0)
+        {
+            enemy = pool.Dequeue();
+        }
+        else
+        {
+            GameObject obj = Instantiate(enemyPrefab, poolParent);
+            enemy = obj.GetComponent<Enemy>();
+        }
+
+        enemy.transform.position = position;
+        enemy.gameObject.SetActive(true);
+        
+        EnemyStats stats = GetRandomEnemy();
+
+        if (stats.enemyType == EnemyType.support)
+        {
+            
+        }
+        else
+        {
+            enemy.Init(stats, target, this);
+        }
+
+        ActiveEnemy++;
     }
 }

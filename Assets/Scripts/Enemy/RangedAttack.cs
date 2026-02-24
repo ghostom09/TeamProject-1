@@ -16,17 +16,16 @@ public class RangedAttack : IEnemyAttackStrategy
     private Rigidbody2D rb2d;
     private EnemyMove enemyMove;
 
-    public void Init(EnemyStats stats)
+    public void Init(EnemyStats stats, EnemyMove move)
     {
         damage = stats.damage;
         attackSpeed = stats.attackSpeed;
         attackRange = stats.attackRange;
+        enemyMove =  move;
     }
 
     public void TryAttack(GameObject self, Transform target, Vector2 direction)
     {
-        enemyMove = self.GetComponent<EnemyMove>();
-        
         distSqr = (target.position - self.transform.position).sqrMagnitude;
         interval = 1f / attackSpeed;
 

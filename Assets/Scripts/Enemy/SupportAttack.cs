@@ -6,7 +6,7 @@ public class SupportAttack : IEnemyAttackStrategy
     private float attackSpeed;
     private float lastAttackTime;
 
-    public void Init(EnemyStats stats)
+    public void Init(EnemyStats stats, EnemyMove move)
     {
         attackRange = stats.attackRange;
         attackSpeed = stats.attackSpeed;

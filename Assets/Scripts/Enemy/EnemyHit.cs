@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class EnemyHit : MonoBehaviour, IDamageable
+public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset
 {
     private SpriteRenderer renderer;
-    private Enemy enemyStat;
     private EnemyMove enemyMove;
+    private EnemySpawnerManager spawnerManager;
     
     private float health;
     
@@ -21,24 +21,31 @@ public class EnemyHit : MonoBehaviour, IDamageable
     
     private void Awake()
     {
-        enemyStat = GetComponent<Enemy>();
         renderer = GetComponent<SpriteRenderer>();
         enemyMove = GetComponent<EnemyMove>();
     }
 
-    private void OnEnable()
+    public void Init(EnemyStats stats, GameObject target, EnemySpawnerManager m)
     {
-        health = enemyStat.stats.health;
+        health = stats.health;
+        spawnerManager = m;
     }
 
     public void TakeDamage(float dmg)
     {
         health -= dmg;
         StartCoroutine(Hit());
+        
+        if (health <= 0)
+        {
+            Die();
+        }
     }
 
     public void ApplySlow(float slowPercent, float slowDuration)
     {
+        if(!gameObject.activeInHierarchy)
+            return;
         if (slowRoutine != null)
             StopCoroutine(slowRoutine);
 
@@ -57,12 +64,20 @@ public class EnemyHit : MonoBehaviour, IDamageable
     private IEnumerator Hit()
     {
         float time = 0;
-        while (time < 0.3f)
+        while (time < 0.5f)
         {
             renderer.color = Color.red;
             time += Time.deltaTime;
             yield return null;
         }
         renderer.color = Color.white;
+    }
+    
+    private void Die()
+    {
+        StopAllCoroutines();
+        gameObject.SetActive(false);
+
+        spawnerManager.ReturnToPool(GetComponent<Enemy>());
     }
 }

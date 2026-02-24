@@ -673,7 +673,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  hudManager: {fileID: 1699844687}
   pop: {fileID: 0}
   stopGame: {fileID: 1769371753}
 --- !u!4 &742831115
@@ -1348,6 +1347,7 @@ MonoBehaviour:
   profile: {fileID: 117971816}
   levelText: {fileID: 988810010}
   skillPanel: {fileID: 2447850408149012629, guid: b185a036e176bad4094a670a3de0b8af, type: 3}
+  canvas: {fileID: 2145905947}
 --- !u!4 &1699844688
 Transform:
   m_ObjectHideFlags: 0

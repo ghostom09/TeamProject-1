@@ -26,12 +26,12 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
     private float _coyoteTimeCounter;
     private float _jumpBufferCounter;
     private float _slowMultiplier = 1f;
+    private float _defaultGravity;  
     private bool _isGrounded;
     private bool _isDashing;
-    private bool _isMoveLocked;
     private bool _isKnocked;
+    private bool _isMoveLocked;
     private int _jumpCount;
-    
     
     
 
@@ -39,7 +39,7 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
-        Init(5,13);
+        _defaultGravity = _rb.gravityScale;
     }
 
     public void Init(float moveSpeed, float jumpForce)
@@ -154,16 +154,17 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
     public void SetMoveLock(bool lockState)
     {
         _isMoveLocked = lockState;
-        
+
         if (lockState)
         {
-            _originGravity = _rb.gravityScale;
-            // 즉시 정지
-            _rb.linearVelocity = new Vector2(0, 0);
-            _rb.gravityScale = 0;
-        }else _rb.gravityScale = _originGravity;
+            _rb.linearVelocity = Vector2.zero;
+            _rb.gravityScale = 0f;
+        }
+        else
+        {
+            _rb.gravityScale = _defaultGravity;
+        }
     }
-
     public void KnockBack(Vector2 dir, float force, float duration)
     {
         if (_knockRoutine != null)

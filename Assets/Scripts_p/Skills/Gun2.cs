@@ -11,9 +11,16 @@ public class Gun2 : SkillBase
 
         if (player.isUsingUltimate)
             return;
+
         var executor = user.GetComponent<PlayerSkillExecutor>();
-        user.GetComponent<MonoBehaviour>()
-            .StartCoroutine(TriggerAwakening(executor));
+
+        if (executor == null)
+        {
+            Debug.LogError("PlayerSkillExecutor 없음!");
+            return;
+        }
+
+        executor.StartCoroutine(TriggerAwakening(executor));
     }
 
     private IEnumerator TriggerAwakening(PlayerSkillExecutor executor)
@@ -21,6 +28,12 @@ public class Gun2 : SkillBase
         Debug.Log("트리거 발동");
 
         var golden = executor.GetSkill(SkillType.Gun1) as Gun1;
+        
+        if (golden == null)
+        {
+            Debug.LogError("Gun1 스킬을 찾을 수 없음");
+            yield break;
+        }
 
         // 1. 기존 상태 저장
         float originBonus = golden.Cooldown;

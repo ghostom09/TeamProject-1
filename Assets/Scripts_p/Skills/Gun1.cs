@@ -6,7 +6,7 @@ public class Gun1 : SkillBase
 {
     public bool ignoreMoveLock = false;
     
-    private const float StopTime = 0.3f;
+    private const float StopTime = 0.5f;
     private const float SlowPercent = 25f;
     private const float SlowDuration = 2.5f;
 
@@ -15,7 +15,7 @@ public class Gun1 : SkillBase
 
     public Gun1()
     {
-        hitLayer = LayerMask.GetMask("Enemy");
+        hitLayer = LayerMask.GetMask("Enemy","Wall");
     }
 
     protected override void Execute(GameObject user, Vector2 dir)
@@ -31,18 +31,19 @@ public class Gun1 : SkillBase
 
     private IEnumerator GoldenShotRoutine(GameObject user, Vector2 dir)
     {
-        // 1. 플레이어 정지
         var mover = user.GetComponent<IPlayerMover>();
         Player player = user.GetComponent<Player>();
-        
+
+        float waitTime = ignoreMoveLock ? 0f : StopTime;
+
         if (!ignoreMoveLock)
             mover?.SetMoveLock(true);
 
-        yield return new WaitForSeconds(StopTime);
+        if (waitTime > 0f)
+            yield return new WaitForSeconds(waitTime);
 
         mover?.SetMoveLock(false);
 
-        // 2. 히트스캔 발사
         FireHitScan(user, dir, player);
     }
 

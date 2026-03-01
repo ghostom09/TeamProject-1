@@ -55,7 +55,7 @@ public class GunNormalAttack : INormalAttack
             user.transform.position,
             dir.normalized,
             range,
-            LayerMask.GetMask("Enemy")
+            LayerMask.GetMask("Enemy","Wall")
         );
 
         if (hit.collider != null)
@@ -73,7 +73,7 @@ public class GunNormalAttack : INormalAttack
             user.transform.position,
             dir.normalized,
             range * 2,
-            LayerMask.GetMask("Enemy")
+            LayerMask.GetMask("Enemy","Wall")
         );
 
         foreach (var hit in hits)

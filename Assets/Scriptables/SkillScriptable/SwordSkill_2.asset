@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: SwordSkill_2
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
   SkillName: 1
-  Cooldown: 5
+  Cooldown: 8

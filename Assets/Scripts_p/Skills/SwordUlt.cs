@@ -4,7 +4,7 @@ using UnityEngine;
 public class SwordUlt : SkillBase
 {
     private int hitCount = 20;
-    private float hitInterval = 0.08f;
+    private float hitInterval = 0.1f;
 
     public SwordUlt()
     {

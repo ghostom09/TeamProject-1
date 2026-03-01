@@ -9,8 +9,9 @@ public class UltraVFXController : MonoBehaviour
 
     public static bool usingUltra = false;
     
-    
     private JobType jobType = JobType.Gun;
+    
+    [SerializeField]private
 
     void Job(JobType jobType)
     {

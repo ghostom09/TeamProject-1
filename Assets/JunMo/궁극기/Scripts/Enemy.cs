@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,12 +9,16 @@ public class EnemyTest : MonoBehaviour
     [SerializeField] private SpriteRenderer enemy;
     [SerializeField]private GameObject ultra;
     [SerializeField] private ParticleSystem ultraSparkParticle;
+    [SerializeField] private GameObject player;
+    
+    public float offsetDistance = 1f;
 
     void Start()
     {
         ultra.SetActive(false);
         mainParticle.Stop();
         sparkParticle.Stop();
+        ultraSparkParticle.Stop();
     }
 
     void Update()
@@ -41,14 +44,28 @@ public class EnemyTest : MonoBehaviour
     private IEnumerator UltraAttack()
     {
         ultra.SetActive(true);
-        ultraSparkParticle.Play();
+        SpawnHitEffect(player.transform, gameObject.transform);
         enemy.color = new Color(1f, 1f, 1f, 1f);
 
         yield return new WaitForSeconds(0.3f);
         
         ultra.SetActive(false);
-        ultraSparkParticle.Stop();
         enemy.color = new Color(1f, 0f, 0f, 1f);
+    }
+
+    public void SpawnHitEffect(Transform attacker, Transform target)
+    {
+        Vector3 hitDirection = (target.position - attacker.position).normalized;
+        Vector3 effectDirection = hitDirection;
+    
+        Vector3 effectPosition = target.position + effectDirection * offsetDistance;
+    
+        ParticleSystem ps = Instantiate(ultraSparkParticle, effectPosition, Quaternion.identity);
+    
+        var shape = ps.shape;
+        ps.Play();
+    
+        Destroy(ps.gameObject, ps.main.duration + ps.main.startLifetime.constantMax);
     }
 
     void Attacked()

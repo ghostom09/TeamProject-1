@@ -2,15 +2,36 @@ using UnityEngine;
 
 public class CameraMove : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public float duration = 0.15f;
+    public float magnitude = 0.2f;
+
+    float timeLeft;
+    Vector3 originalPos;
+
     void Start()
     {
-        
+        originalPos = transform.localPosition;
     }
 
-    // Update is called once per frame
+    public void Shake(float power)
+    {
+        magnitude = power;
+        timeLeft = duration;
+    }
+
     void Update()
     {
-        
+        // Shake(0.1f);
+        if (timeLeft > 0)
+        {
+            transform.localPosition =
+                originalPos + Random.insideUnitSphere * magnitude;
+
+            timeLeft -= Time.deltaTime;
+        }
+        else
+        {
+            transform.localPosition = originalPos;
+        }
     }
 }

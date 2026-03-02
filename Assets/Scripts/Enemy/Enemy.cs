@@ -25,10 +25,10 @@ public class Enemy : MonoBehaviour, IEnemyReset
         hit.Init(enemyStats, target, m);
         
         if(enemyStats.enemyType == EnemyType.support)
-            GetComponent<Renderer>().material.color = Color.blue;
+            GetComponent<SpriteRenderer>().color = Color.blue;
         else if(enemyStats.enemyType == EnemyType.ranged)
-            GetComponent<Renderer>().material.color = Color.green;
+            GetComponent<SpriteRenderer>().color = Color.green;
         else if(enemyStats.enemyType == EnemyType.tanker)
-            GetComponent<Renderer>().material.color = Color.yellow;
+            GetComponent<SpriteRenderer>().color = Color.yellow;
     }
 }

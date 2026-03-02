@@ -7,8 +7,10 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset
     private SpriteRenderer renderer;
     private EnemyMove enemyMove;
     private EnemySpawnerManager spawnerManager;
+    private Color color;
     
     public float health;
+    public float maxHealth;
     
     private Coroutine slowRoutine;
     private Coroutine knockRoutine;
@@ -28,7 +30,9 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset
     public void Init(EnemyStats stats, GameObject target, EnemySpawnerManager m)
     {
         health = stats.health;
+        maxHealth = stats.health;
         spawnerManager = m;
+        color = renderer.color;
     }
 
     public void TakeDamage(float dmg)
@@ -63,7 +67,6 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset
 
     private IEnumerator Hit()
     {
-        Color color = renderer.color;
         float time = 0;
         while (time < 0.5f)
         {

@@ -17,6 +17,9 @@ public class SupportAttack : IEnemyAttackStrategy
 
     public void TryAttack(GameObject self, Transform target, Vector2 direction)
     {
+        
+        interval = 1f / attackSpeed;
+        
         if (Time.time < lastAttackTime + interval)
             return;
 
@@ -36,13 +39,13 @@ public class SupportAttack : IEnemyAttackStrategy
             {
                 EnemyHit enemyHitComponent = enemy.GetComponent<EnemyHit>();
                 if (enemyHitComponent.health * (1 + healPersent) >=
-                    enemyComponent.enemyStats.health)
+                    enemyHitComponent.maxHealth)
                 {
-                    enemyHitComponent.health = enemyComponent.enemyStats.health;
+                    enemyHitComponent.health = enemyHitComponent.maxHealth;
                 }
                 else
                 {
-                    enemyHitComponent.health *= (1 + healPersent);
+                    enemyHitComponent.health += enemyHitComponent.maxHealth * healPersent;
                 }
                 
             }

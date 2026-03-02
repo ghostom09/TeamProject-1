@@ -184,14 +184,7 @@ public class EnemySpawnerManager : MonoBehaviour
         
         EnemyStats stats = GetRandomEnemy();
 
-        if (stats.enemyType == EnemyType.support)
-        {
-            
-        }
-        else
-        {
-            enemy.Init(stats, target, this);
-        }
+        enemy.Init(stats, target, this);
 
         ActiveEnemy++;
     }

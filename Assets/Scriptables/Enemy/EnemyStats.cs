@@ -20,4 +20,5 @@ public class EnemyStats : ScriptableObject
     public float attackRange;
     public float attackSpeed;
     public float jumpForce;
+    public int exp;
 }

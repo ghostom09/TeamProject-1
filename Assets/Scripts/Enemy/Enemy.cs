@@ -7,6 +7,8 @@ public class Enemy : MonoBehaviour, IEnemyReset
     private EnemyAttack attack;
     private EnemyHit hit;
     
+    public EnemyStats enemyStats;
+    
     private void Awake()
     {
         move = GetComponent<EnemyMove>();
@@ -16,8 +18,17 @@ public class Enemy : MonoBehaviour, IEnemyReset
 
     public void Init(EnemyStats stats, GameObject target, EnemySpawnerManager m)
     {
-        move.Init(stats, target, m);
-        attack.Init(stats, target, m);
-        hit.Init(stats, target, m);
+        enemyStats = stats;
+        
+        move.Init(enemyStats, target, m);
+        attack.Init(enemyStats, target, m);
+        hit.Init(enemyStats, target, m);
+        
+        if(enemyStats.enemyType == EnemyType.support)
+            GetComponent<Renderer>().material.color = Color.blue;
+        else if(enemyStats.enemyType == EnemyType.ranged)
+            GetComponent<Renderer>().material.color = Color.green;
+        else if(enemyStats.enemyType == EnemyType.tanker)
+            GetComponent<Renderer>().material.color = Color.yellow;
     }
 }

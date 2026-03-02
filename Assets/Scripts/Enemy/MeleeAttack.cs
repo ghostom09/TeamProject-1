@@ -32,6 +32,5 @@ public class MeleeAttack : IEnemyAttackStrategy
         lastAttackTime = Time.time;
 
         target.GetComponent<IDamageable>()?.TakeDamage(damage);
-        Debug.Log($"Attacking {target.name}");
     }
 }

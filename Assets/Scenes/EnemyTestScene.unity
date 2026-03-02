@@ -285,7 +285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad7027da49fe6e944af7012a2820c9d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DifficultyLevelManager
-  interval: 15
+  interval: 3
   difficultyLevel: 1
   spawnManager: {fileID: 1740568948}
 --- !u!4 &30466399
@@ -435,6 +435,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6ae49e9442f3c844b73bd57e3e431d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHit
+  health: 0
 --- !u!114 &77102509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -459,6 +460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a64867dbfcd7c34aba6d81b99aea059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  enemyStats: {fileID: 0}
 --- !u!61 &77102511
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -665,6 +667,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6ae49e9442f3c844b73bd57e3e431d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHit
+  health: 0
 --- !u!114 &104059749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -689,6 +692,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a64867dbfcd7c34aba6d81b99aea059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  enemyStats: {fileID: 0}
 --- !u!61 &104059751
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -895,6 +899,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6ae49e9442f3c844b73bd57e3e431d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHit
+  health: 0
 --- !u!114 &331353863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -919,6 +924,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a64867dbfcd7c34aba6d81b99aea059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  enemyStats: {fileID: 0}
 --- !u!61 &331353865
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1125,6 +1131,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6ae49e9442f3c844b73bd57e3e431d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHit
+  health: 0
 --- !u!114 &341952463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1149,6 +1156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a64867dbfcd7c34aba6d81b99aea059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  enemyStats: {fileID: 0}
 --- !u!61 &341952465
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2971,6 +2979,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6ae49e9442f3c844b73bd57e3e431d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHit
+  health: 0
 --- !u!114 &1783924371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2995,6 +3004,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a64867dbfcd7c34aba6d81b99aea059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  enemyStats: {fileID: 0}
 --- !u!61 &1783924373
 BoxCollider2D:
   m_ObjectHideFlags: 0

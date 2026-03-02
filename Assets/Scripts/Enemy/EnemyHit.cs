@@ -8,7 +8,7 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset
     private EnemyMove enemyMove;
     private EnemySpawnerManager spawnerManager;
     
-    private float health;
+    public float health;
     
     private Coroutine slowRoutine;
     private Coroutine knockRoutine;
@@ -63,6 +63,7 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset
 
     private IEnumerator Hit()
     {
+        Color color = renderer.color;
         float time = 0;
         while (time < 0.5f)
         {
@@ -70,7 +71,7 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset
             time += Time.deltaTime;
             yield return null;
         }
-        renderer.color = Color.white;
+        renderer.color = color;
     }
     
     private void Die()

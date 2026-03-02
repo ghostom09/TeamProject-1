@@ -6,6 +6,7 @@ using Random = UnityEngine.Random;
 public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
 {
     private GameObject movingTarget;
+    
     [SerializeField] private LayerMask wallLayer;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Transform leftwallCheck;
@@ -51,10 +52,7 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
         jumpForce = stats.jumpForce;
         enemyType = stats.enemyType;
         attackRange = stats.attackRange;
-        if(enemyType == EnemyType.ranged)
-            rangedInterval = attackRange * 0.8f;
-        else if(enemyType == EnemyType.support)
-            rangedInterval = attackRange * 0.2f;
+        rangedInterval = attackRange * 0.8f;
         
         movingTarget = target;
     }
@@ -63,6 +61,7 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
     {
         if(movingTarget == null)
             return;
+        
         CheckGround();
         CheckWall();
         

@@ -6,6 +6,9 @@ public class SupportAttack : IEnemyAttackStrategy
     private float attackSpeed;
     private float lastAttackTime;
 
+    private float healPersent = 0.15f;
+    private float interval;
+
     public void Init(EnemyStats stats, EnemyMove move)
     {
         attackRange = stats.attackRange;
@@ -14,6 +17,35 @@ public class SupportAttack : IEnemyAttackStrategy
 
     public void TryAttack(GameObject self, Transform target, Vector2 direction)
     {
+        if (Time.time < lastAttackTime + interval)
+            return;
+
+        lastAttackTime = Time.time;
         
+        Collider2D[] enemys = Physics2D.OverlapCircleAll(
+            self.transform.position,
+            attackRange,
+            LayerMask.GetMask("Enemy"));
+        foreach (Collider2D enemy in enemys)
+        {
+            Enemy enemyComponent = enemy.GetComponent<Enemy>();
+            if (enemyComponent == null)
+                continue;
+
+            if (enemyComponent.enemyStats.enemyType != EnemyType.support)
+            {
+                EnemyHit enemyHitComponent = enemy.GetComponent<EnemyHit>();
+                if (enemyHitComponent.health * (1 + healPersent) >=
+                    enemyComponent.enemyStats.health)
+                {
+                    enemyHitComponent.health = enemyComponent.enemyStats.health;
+                }
+                else
+                {
+                    enemyHitComponent.health *= (1 + healPersent);
+                }
+                
+            }
+        }
     }
 }

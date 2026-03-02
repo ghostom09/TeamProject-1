@@ -16,7 +16,7 @@ public class Sword2 : SkillBase
 
         dir = dir.normalized;
 
-        float angleRange = 90f;
+        float angleRange = 125f;
 
         Vector2 origin = user.transform.position;
 

@@ -12,6 +12,10 @@ public class Sword2 : SkillBase
     protected override void Execute(GameObject user, Vector2 dir)
     {
         Player player = user.GetComponent<Player>();
+        
+        if (player.isUsingUltimate)
+            return;
+        
         PlayerAttack playerAttack = user.GetComponent<PlayerAttack>();
 
         dir = dir.normalized;

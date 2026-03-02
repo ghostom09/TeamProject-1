@@ -24,6 +24,7 @@ public class Gun1 : SkillBase
 
         if (player.isUsingUltimate)
             return;
+        
         lastUsedTime = Time.time;
         user.GetComponent<MonoBehaviour>()
             .StartCoroutine(GoldenShotRoutine(user, dir));

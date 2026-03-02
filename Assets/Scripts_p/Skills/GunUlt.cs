@@ -6,7 +6,7 @@ public class GunUlt : SkillBase
     private float gaugeDrainPerSecond = 6f;
     private float minGaugeToUse = 30f;
 
-    public GunUlt() : base(0f)   // 즉발 데미지 없음
+    public GunUlt()
     {
 
     }

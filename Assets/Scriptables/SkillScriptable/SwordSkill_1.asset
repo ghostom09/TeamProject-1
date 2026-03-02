@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a9cb32816a89b74b853879bb7f9390b, type: 3}
   m_Name: SwordSkill_1
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
-  SkillName: ShinBub
-  Cooldown: 3
+  SkillName: 0
+  Cooldown: 2

@@ -5,10 +5,12 @@ public class SwordNormalAttack : INormalAttack
 {
     private int comboIndex = 0;
     private float lastAttackTime;
-
     private float comboResetTime = 1.5f;
-
+    
+    
+    private PlayerAttack attacker;
     private CharacterData data;
+    
 
     public void Init(CharacterData data)
     {
@@ -28,9 +30,9 @@ public class SwordNormalAttack : INormalAttack
     {
         return comboIndex switch
         {
-            0 => 0.9f,
-            1 => 1.0f,
-            2 => 1.3f,
+            0 => 0.5f,
+            1 => 0.7f,
+            2 => 1.2f,
             _ => 1f
         };
     }
@@ -62,7 +64,7 @@ public class SwordNormalAttack : INormalAttack
     private void DoComboAttack(GameObject user, Vector2 dir, GameObject hitBox)
     {
         hitBox.SetActive(true);
-
+        
         float range = data.Range * 2 * GetComboRangeMultiplier();
         float damage = data.Damage * GetComboDamageMultiplier();
 

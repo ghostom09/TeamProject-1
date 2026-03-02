@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class PlayerMove : MonoBehaviour, IPlayerMover
 {
@@ -8,6 +10,8 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
     
     private Rigidbody2D _rb;
     private Vector2 _movement;
+    private Coroutine _knockRoutine;
+    private Coroutine _slowRoutine;
 
     private float _originGravity;
     private float _acceleration = 25f;
@@ -21,16 +25,21 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
     private float _jumpForce;
     private float _coyoteTimeCounter;
     private float _jumpBufferCounter;
+    private float _slowMultiplier = 1f;
+    private float _defaultGravity;  
     private bool _isGrounded;
     private bool _isDashing;
+    private bool _isKnocked;
     private bool _isMoveLocked;
     private int _jumpCount;
+    
+    
 
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
-        Init(5,13);
+        _defaultGravity = _rb.gravityScale;
     }
 
     public void Init(float moveSpeed, float jumpForce)
@@ -110,9 +119,11 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
 
     private void HandleMove()
     {
-        if (_isMoveLocked)
+        if (_isMoveLocked || _isKnocked)
             return;
-        float maxSpeed = _isDashing ? _dashSpeed : _moveSpeed;
+        
+        float baseSpeed = _isDashing ? _dashSpeed : _moveSpeed;
+        float maxSpeed = baseSpeed * _slowMultiplier;
         
         float targetSpeed = _movement.x * maxSpeed;
         float currentSpeed = _rb.linearVelocity.x;
@@ -143,13 +154,59 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
     public void SetMoveLock(bool lockState)
     {
         _isMoveLocked = lockState;
-        
+
         if (lockState)
         {
-            _originGravity = _rb.gravityScale;
-            // 즉시 정지
-            _rb.linearVelocity = new Vector2(0, 0);
-            _rb.gravityScale = 0;
-        }else _rb.gravityScale = _originGravity;
+            _rb.linearVelocity = Vector2.zero;
+            _rb.gravityScale = 0f;
+        }
+        else
+        {
+            _rb.gravityScale = _defaultGravity;
+        }
     }
+    public void KnockBack(Vector2 dir, float force, float duration)
+    {
+        if (_knockRoutine != null)
+            StopCoroutine(_knockRoutine);
+
+        _knockRoutine = StartCoroutine(Knockback(dir, force, duration));
+    }
+
+    public void Slow(float slowPercent, float slowDuration)
+    {
+        if (_slowRoutine != null)
+            StopCoroutine(_slowRoutine);
+
+        _slowRoutine = StartCoroutine(ApplySlow(slowPercent, slowDuration));
+    }
+
+    private IEnumerator ApplySlow(float percent, float duration)
+    {
+        _slowMultiplier = 1f - (percent / 100f);
+
+        yield return new WaitForSeconds(duration);
+
+        _slowMultiplier = 1f;
+        _slowRoutine = null;
+    }
+    
+    private IEnumerator Knockback(Vector2 dir, float power, float duration)
+    {
+        _isKnocked = true;
+
+        float timer = 0f;
+
+        while (timer < duration)
+        {
+            _rb.linearVelocity = dir * power;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        _isKnocked = false;
+        _knockRoutine = null;
+    }
+    
+    
 }

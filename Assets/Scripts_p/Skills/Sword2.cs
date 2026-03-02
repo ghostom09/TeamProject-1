@@ -1,47 +1,50 @@
-using Mono.Cecil.Cil;
 using UnityEngine;
 
 public class Sword2 : SkillBase
 {
-    private GameObject bladePrefab;
-    private float throwSpeed = 8f;
-    private float slowPercent = 40;
+    private LayerMask enemyLayer;
 
-    public Sword2() : base(13f)
+    public Sword2()
     {
-        bladePrefab = Resources.Load<GameObject>("BhanIn");
+        enemyLayer = LayerMask.GetMask("Enemy");
     }
 
     protected override void Execute(GameObject user, Vector2 dir)
     {
         Player player = user.GetComponent<Player>();
+        PlayerAttack playerAttack = user.GetComponent<PlayerAttack>();
 
-        if (player.isUsingUltimate)
-            return;
-        
         dir = dir.normalized;
 
-        // 1. 생성
-        GameObject blade = Object.Instantiate(
-            bladePrefab,
-            user.transform.position,
-            Quaternion.identity
+        float angleRange = 90f;
+
+        Vector2 origin = user.transform.position;
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(
+            origin,
+            3.5f,
+            LayerMask.GetMask("Enemy")
         );
 
-        // 2. 초기화
-        blade.GetComponent<BhanIn>()
-            .Init(user , data.Damage * 0.1f, slowPercent);
+        foreach (var hit in hits)
+        {
+            Vector2 toTarget = (hit.transform.position - user.transform.position).normalized;
 
-        // 3. 발사
-        Rigidbody2D rb = blade.GetComponent<Rigidbody2D>();
-        rb.AddForce(dir * throwSpeed, ForceMode2D.Impulse);
+            float angle = Vector2.Angle(dir, toTarget);
+            
+            if (angle <= angleRange * 0.5f)
+            {
+                if (hit.TryGetComponent(out IDamageable target))
+                {
+                    target.TakeDamage(data.Damage * 1.8f);
+                }
+            }
+        }
 
-        // 4. 방향 회전
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        blade.transform.rotation =
-            Quaternion.Euler(0, 0, angle);
+        // 환영 생성
+        playerAttack.SpawnIllusions(data.Damage * 0.35f);
 
-        Debug.Log("반인호 발사!");
         lastUsedTime = Time.time;
+
     }
 }

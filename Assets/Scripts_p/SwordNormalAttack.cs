@@ -38,7 +38,6 @@ public class SwordNormalAttack : INormalAttack
     }
     public bool TryAttack(GameObject user, Vector2 dir, GameObject hitBox)
     {
-        // 콤보 리셋
         if (Time.time > lastAttackTime + comboResetTime)
             comboIndex = 0;
 
@@ -51,7 +50,7 @@ public class SwordNormalAttack : INormalAttack
         }
 
         lastAttackTime = Time.time;
-
+        
         DoComboAttack(user, dir, hitBox);
         return true;
     }

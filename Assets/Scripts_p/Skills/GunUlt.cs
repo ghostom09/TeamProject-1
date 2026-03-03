@@ -39,7 +39,7 @@ public class GunUlt : SkillBase
 
         player.isUsingUltimate = true;
         player.isInvincible = true;
-        playerMove.SetMoveLock(true);
+        playerMove.SetMoveLock(MoveLockType.HorizontalOnly);
         gun.SetEnhancedMode(true);
 
         // 강화 사격 모드 ON
@@ -56,7 +56,7 @@ public class GunUlt : SkillBase
 
         // 종료 처리
         player.isInvincible = false;
-        playerMove.SetMoveLock(false);
+        playerMove.SetMoveLock(MoveLockType.None);
         player.isUsingUltimate = false;
 
  ;

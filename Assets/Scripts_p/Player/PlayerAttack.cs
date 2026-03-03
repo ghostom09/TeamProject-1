@@ -12,7 +12,7 @@ public class PlayerAttack : MonoBehaviour
     
     private INormalAttack _normal;
     private Player _player;
-    
+    private Coroutine _currentAttackCoroutine;
                                   
     private int _illusionCount;
     private float _illusionDamage;
@@ -42,7 +42,20 @@ public class PlayerAttack : MonoBehaviour
 
         if (_normal.TryAttack(gameObject, dir, hitBox))
         {
-            StartCoroutine(AttackCoroutine(dir));
+            if (_currentAttackCoroutine != null) 
+                StopCoroutine(_currentAttackCoroutine);
+            
+            _currentAttackCoroutine = StartCoroutine(AttackCoroutine(dir));
+        }
+    }
+    public void CancelNormalAttack()
+    {
+        if (_currentAttackCoroutine != null)
+        {
+            StopCoroutine(_currentAttackCoroutine);
+            _currentAttackCoroutine = null;
+            
+            _normal.EndAttack(gameObject, hitBox); 
         }
     }
     private IEnumerator AttackCoroutine(Vector2 dir)

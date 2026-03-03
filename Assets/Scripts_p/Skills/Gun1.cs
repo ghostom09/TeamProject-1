@@ -38,12 +38,12 @@ public class Gun1 : SkillBase
         float waitTime = ignoreMoveLock ? 0f : StopTime;
 
         if (!ignoreMoveLock)
-            mover?.SetMoveLock(true);
+            mover?.SetMoveLock(MoveLockType.FullLock);
 
         if (waitTime > 0f)
             yield return new WaitForSeconds(waitTime);
 
-        mover?.SetMoveLock(false);
+        mover?.SetMoveLock(MoveLockType.None);
 
         FireHitScan(user, dir, player);
     }

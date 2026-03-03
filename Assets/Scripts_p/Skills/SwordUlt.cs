@@ -29,7 +29,7 @@ public class SwordUlt : SkillBase
 
         player.isInvincible = true;
         player.isUsingUltimate = true;
-        playerMove.SetMoveLock(true);
+        playerMove.SetMoveLock(MoveLockType.FullLock);
         
         
         for (int i = 0; i < hitCount; i++)
@@ -40,7 +40,7 @@ public class SwordUlt : SkillBase
 
         player.isInvincible = false;
         player.isUsingUltimate = false;
-        playerMove.SetMoveLock(false);
+        playerMove.SetMoveLock(MoveLockType.None);
     }
     private void DoSlash(GameObject user)
     {

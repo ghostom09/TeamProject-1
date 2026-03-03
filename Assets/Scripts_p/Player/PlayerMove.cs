@@ -8,10 +8,13 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform groundCheck;
     
+    public bool isGrounded;
+    
     private Rigidbody2D _rb;
     private Vector2 _movement;
     private Coroutine _knockRoutine;
     private Coroutine _slowRoutine;
+    private MoveLockType _moveLockType = MoveLockType.None;
 
     private float _originGravity;
     private float _acceleration = 25f;
@@ -27,7 +30,6 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
     private float _jumpBufferCounter;
     private float _slowMultiplier = 1f;
     private float _defaultGravity;  
-    private bool _isGrounded;
     private bool _isDashing;
     private bool _isKnocked;
     private bool _isMoveLocked;
@@ -67,7 +69,7 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
     {
         CheckGround();
 
-        if (_isGrounded)
+        if (isGrounded)
         {
             _coyoteTimeCounter = _coyoteTime;
             _jumpCount = 0;
@@ -87,7 +89,7 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
 
     private void CheckGround()
     {
-        _isGrounded = Physics2D.OverlapCircle(
+        isGrounded = Physics2D.OverlapCircle(
             groundCheck.position,
             _groundRadius,
             groundLayer
@@ -95,8 +97,9 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
     }
     private void HandleJump()
     {
-        if (_isMoveLocked)
+        if (_moveLockType == MoveLockType.FullLock)
             return;
+        
         if (_jumpBufferCounter > 0 && CanJump())
         {
             _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, _jumpForce);
@@ -119,7 +122,10 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
 
     private void HandleMove()
     {
-        if (_isMoveLocked || _isKnocked)
+        if (_moveLockType == MoveLockType.FullLock || _isKnocked)
+            return;
+
+        if (_moveLockType == MoveLockType.HorizontalOnly)
             return;
         
         float baseSpeed = _isDashing ? _dashSpeed : _moveSpeed;
@@ -151,11 +157,11 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
         _rb.linearVelocity = new Vector2(newSpeed, _rb.linearVelocity.y);
     }
     
-    public void SetMoveLock(bool lockState)
+    public void SetMoveLock(MoveLockType type)
     {
-        _isMoveLocked = lockState;
+        _moveLockType = type;
 
-        if (lockState)
+        if (type == MoveLockType.FullLock)
         {
             _rb.linearVelocity = Vector2.zero;
             _rb.gravityScale = 0f;
@@ -170,7 +176,7 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
         if (_knockRoutine != null)
             StopCoroutine(_knockRoutine);
 
-        _knockRoutine = StartCoroutine(Knockback(dir, force, duration));
+        _knockRoutine = StartCoroutine(KnockBackCor(dir, force, duration));
     }
 
     public void Slow(float slowPercent, float slowDuration)
@@ -191,7 +197,7 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
         _slowRoutine = null;
     }
     
-    private IEnumerator Knockback(Vector2 dir, float power, float duration)
+    private IEnumerator KnockBackCor(Vector2 dir, float power, float duration)
     {
         _isKnocked = true;
 

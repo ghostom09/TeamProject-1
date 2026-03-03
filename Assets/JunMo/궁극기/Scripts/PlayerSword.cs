@@ -1,16 +1,32 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerSword : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private Camera cam;
+    [SerializeField] private GameObject dummy;
+
+    void UseSKill1()
+    {
+        Instantiate(dummy, transform.position, Quaternion.identity);
+        //skill 사용
+    }
+
+    void UseSKill2()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    void UseUltra()
     {
         
+    }
+
+    void Update()
+    {
+        if (Keyboard.current.qKey.wasPressedThisFrame)
+        {
+            UseSKill1();   
+        }
     }
 }

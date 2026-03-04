@@ -25,6 +25,8 @@ public class SupportAttack : IEnemyAttackStrategy
 
         lastAttackTime = Time.time;
         
+        DrawAttackRange(self.transform, 0.3f);
+        
         Collider2D[] enemys = Physics2D.OverlapCircleAll(
             self.transform.position,
             attackRange,
@@ -49,6 +51,25 @@ public class SupportAttack : IEnemyAttackStrategy
                 }
                 
             }
+        }
+    }
+    
+    private void DrawAttackRange(Transform self, float duration)
+    {
+        int segments = 40;
+        float angleStep = 360f / segments;
+        Vector3 prevPoint = self.position + Vector3.right * attackRange;
+
+        for (int i = 1; i <= segments; i++)
+        {
+            float angle = angleStep * i * Mathf.Deg2Rad;
+            Vector3 newPoint = self.position + new Vector3(
+                Mathf.Cos(angle) * attackRange,
+                Mathf.Sin(angle) * attackRange
+            );
+
+            Debug.DrawLine(prevPoint, newPoint, Color.cyan, duration);
+            prevPoint = newPoint;
         }
     }
 }

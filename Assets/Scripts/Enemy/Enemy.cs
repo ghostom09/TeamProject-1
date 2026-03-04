@@ -20,15 +20,17 @@ public class Enemy : MonoBehaviour, IEnemyReset
     {
         enemyStats = stats;
         
-        move.Init(enemyStats, target, m);
-        attack.Init(enemyStats, target, m);
-        hit.Init(enemyStats, target, m);
-        
         if(enemyStats.enemyType == EnemyType.support)
             GetComponent<SpriteRenderer>().color = Color.blue;
         else if(enemyStats.enemyType == EnemyType.ranged)
             GetComponent<SpriteRenderer>().color = Color.green;
         else if(enemyStats.enemyType == EnemyType.tanker)
             GetComponent<SpriteRenderer>().color = Color.yellow;
+        else if(enemyStats.enemyType == EnemyType.normal)
+            GetComponent<SpriteRenderer>().color = Color.white;
+        
+        move.Init(enemyStats, target, m);
+        attack.Init(enemyStats, target, m);
+        hit.Init(enemyStats, target, m);
     }
 }

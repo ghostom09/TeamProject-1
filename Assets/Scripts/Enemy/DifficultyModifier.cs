@@ -4,6 +4,7 @@ public struct DifficultyModifier
 {
     public float healthMultiplier;
     public float damageMultiplier;
+    public float speedMultiplier;
 
     public float tankerSpawnPercent;
     public float rangedSpawnPercent;
@@ -11,6 +12,8 @@ public struct DifficultyModifier
     public float specialSpawnPercent;
     
     public float enemySpawnPercent;
+
+    public int enemyLimit;
 }
 
 public static class DifficultyCalculator
@@ -21,8 +24,9 @@ public static class DifficultyCalculator
 
         result.healthMultiplier = 1f;
         result.damageMultiplier = 1f;
+        result.enemyLimit = 4;
 
-        // 2~5 (레벨당 3%, 2.5%)
+        // 2~5
         if (level >= 2)
         {
             int count = Mathf.Min(level, 5) - 1;
@@ -35,6 +39,7 @@ public static class DifficultyCalculator
         {
             result.rangedSpawnPercent += 0.04f;
             result.tankerSpawnPercent += 0.06f;
+            result.enemyLimit += 2;
         }
 
         // 5 스파이크
@@ -42,7 +47,9 @@ public static class DifficultyCalculator
         {
             result.healthMultiplier *= 1.08f;
             result.damageMultiplier *= 1.07f;
-            result.enemySpawnPercent += 0.0005f;
+            result.speedMultiplier *= 1.005f;
+            result.enemySpawnPercent += 0.0003f;
+            result.enemyLimit += 1;
         }
 
         // 6~13
@@ -53,6 +60,7 @@ public static class DifficultyCalculator
             result.damageMultiplier *= Mathf.Pow(1.06f, count);
             result.specialSpawnPercent += count * 0.015f;
             result.enemySpawnPercent += 0.0001f;
+            result.enemyLimit += 1 * count;
         }
 
         // 13 스파이크
@@ -62,6 +70,7 @@ public static class DifficultyCalculator
             result.damageMultiplier *= 1.08f;
             result.supportSpawnPercent += 0.05f;
             result.enemySpawnPercent += 0.0005f;
+            result.enemyLimit += 2;
         }
 
         // 14~21
@@ -72,6 +81,7 @@ public static class DifficultyCalculator
             result.damageMultiplier *= Mathf.Pow(1.07f, count);
             result.specialSpawnPercent += count * 0.02f;
             result.enemySpawnPercent += 0.0001f;
+            result.enemyLimit += 1 * count;
         }
 
         // 21 스파이크
@@ -79,7 +89,8 @@ public static class DifficultyCalculator
         {
             result.healthMultiplier *= 1.35f;
             result.damageMultiplier *= 1.12f;
-            result.enemySpawnPercent += 0.001f;
+            result.enemySpawnPercent += 0.0007f;
+            result.enemyLimit += 2;
         }
 
         // 22~
@@ -90,6 +101,7 @@ public static class DifficultyCalculator
             result.damageMultiplier *= Mathf.Pow(1.04f, extra);
             result.specialSpawnPercent += extra * 0.03f;
             result.enemySpawnPercent += 0.0001f;
+            result.enemyLimit += 2 * extra;
         }
 
         return result;

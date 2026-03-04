@@ -19,3 +19,4 @@ MonoBehaviour:
   attackRange: 0
   attackSpeed: 1
   jumpForce: 13
+  exp: 1

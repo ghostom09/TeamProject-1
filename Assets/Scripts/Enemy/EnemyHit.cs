@@ -7,10 +7,12 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset
     private SpriteRenderer renderer;
     private EnemyMove enemyMove;
     private EnemySpawnerManager spawnerManager;
+    private PlayerLevelManager levelManager;
     private Color color;
     
     public float health;
     public float maxHealth;
+    private int exp;
     
     private Coroutine slowRoutine;
     private Coroutine knockRoutine;
@@ -31,8 +33,10 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset
     {
         health = stats.health;
         maxHealth = stats.health;
+        exp = stats.exp;
         spawnerManager = m;
         color = renderer.color;
+        levelManager = target.GetComponent<PlayerLevelManager>();
     }
 
     public void TakeDamage(float dmg)
@@ -80,6 +84,7 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset
     private void Die()
     {
         StopAllCoroutines();
+        levelManager.AddExp(exp);
         gameObject.SetActive(false);
 
         spawnerManager.ReturnToPool(GetComponent<Enemy>());

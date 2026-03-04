@@ -774,6 +774,7 @@ GameObject:
   - component: {fileID: 595712795}
   - component: {fileID: 595712794}
   - component: {fileID: 595712793}
+  - component: {fileID: 595712805}
   - component: {fileID: 595712792}
   m_Layer: 31
   m_Name: Player(Sample)
@@ -1307,6 +1308,19 @@ Transform:
   - {fileID: 983775093}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &595712805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 595712791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3240ebf12cf579447b27aecc16e8c8a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerLevelManager
+  expTable: {fileID: 11400000, guid: e730112940376fe439e79e4676223c08, type: 2}
 --- !u!1001 &693782228
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1318,6 +1332,10 @@ PrefabInstance:
     - target: {fileID: 2572591908330749352, guid: d6a3a5d47d73d1b40bce0313908fc64c, type: 3}
       propertyPath: m_Name
       value: DPSmeter
+      objectReference: {fileID: 0}
+    - target: {fileID: 2572591908330749352, guid: d6a3a5d47d73d1b40bce0313908fc64c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6815481076527831419, guid: d6a3a5d47d73d1b40bce0313908fc64c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1683,14 +1701,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 410c5746340e64d44b3f715e7867bcdc, type: 2}
   - {fileID: 11400000, guid: 087443d8371b8ee48890f3a2ac9f7f20, type: 2}
   _runTimeStats: []
-  tankerMaxProb: 0
-  rangedMaxProb: 0
-  supportMaxProb: 0.5
+  tankerMaxProb: 0.25
+  rangedMaxProb: 0.25
+  supportMaxProb: 0.15
   enemyProb: 0.002
   enemyMaxProb: 0.006
   poolParent: {fileID: 420556475}
   initialPoolSize: 30
   maxActiveEnemy: 30
+  activeEnemyLimit: 4
   ActiveEnemy: 0
 --- !u!4 &1740568949
 Transform:
@@ -1798,7 +1817,7 @@ Transform:
   m_GameObject: {fileID: 1795025294}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -5.5, z: 0}
+  m_LocalPosition: {x: 0, y: -5.25, z: 0}
   m_LocalScale: {x: 30, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

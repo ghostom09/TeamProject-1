@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.Mathematics;
+using Random = UnityEngine.Random;
 
 public class EnemySpawnerManager : MonoBehaviour
 {
@@ -33,6 +35,7 @@ public class EnemySpawnerManager : MonoBehaviour
     [SerializeField] private int initialPoolSize = 30;
     
     [SerializeField] private int maxActiveEnemy = 30;
+    [SerializeField] private int activeEnemyLimit = 4;
     [SerializeField] private int ActiveEnemy = 0;
 
     private void Awake()
@@ -104,6 +107,10 @@ public class EnemySpawnerManager : MonoBehaviour
 
         ApplyStats(mod);
         ApplySpawnProbability(mod);
+
+        activeEnemyLimit = Mathf.Min(
+            mod.enemyLimit,
+            maxActiveEnemy);
     }
 
     private void ApplyStats(DifficultyModifier mod)
@@ -165,7 +172,7 @@ public class EnemySpawnerManager : MonoBehaviour
 
     public void SpawnFromPoint(Vector3 position)
     {
-        if(ActiveEnemy>=maxActiveEnemy)
+        if(ActiveEnemy>=activeEnemyLimit)
             return;
         Enemy enemy;
 

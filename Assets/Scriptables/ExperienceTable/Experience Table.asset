@@ -9,14 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80d18b770d1292f468264a4794af2708, type: 3}
-  m_Name: RangedEnemy
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
-  enemyType: 3
-  health: 25
-  speed: 2
-  damage: 8
-  attackRange: 5.5
-  attackSpeed: 1
-  jumpForce: 13
-  exp: 2
+  m_Script: {fileID: 11500000, guid: 18be2effc7de9934697a2e93441539cd, type: 3}
+  m_Name: Experience Table
+  m_EditorClassIdentifier: Assembly-CSharp::ExperienceTable
+  requiredExp: 050000000a00000014000000280000003c000000

@@ -41,6 +41,16 @@ public class PlayerSkillExecutor : MonoBehaviour
         }
     }
 
+    public void GetDirection(int index)
+    {
+        Vector2 mouseScreen = UnityEngine.InputSystem.Mouse.current.position.ReadValue();
+        
+        Vector2 mouseWorld = Camera.main.ScreenToWorldPoint(mouseScreen);
+        
+        Vector2 dir = (mouseWorld - (Vector2)transform.position).normalized;
+        
+        UseSkill(index, dir);
+    }
     public void UseSkill(int index, Vector2 dir)
     {
         SkillType type = _skills[index].SkillName;

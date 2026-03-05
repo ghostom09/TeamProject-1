@@ -558,6 +558,7 @@ GameObject:
   - component: {fileID: 996285914}
   - component: {fileID: 996285924}
   - component: {fileID: 996285921}
+  - component: {fileID: 996285927}
   - component: {fileID: 996285920}
   - component: {fileID: 996285919}
   - component: {fileID: 996285923}
@@ -1108,7 +1109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   playerSkillExecutor: {fileID: 996285923}
-  character: {fileID: 11400000, guid: 4906926dc1371e24da7fc7f1e6cd86a4, type: 2}
+  character: {fileID: 11400000, guid: 6c9cdfd605f355340ac2b3041233929a, type: 2}
   attacker: {fileID: 996285925}
   move: {fileID: 996285919}
   invincibilityDuration: 0
@@ -1145,6 +1146,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInputAttackConnector
   playerInput: {fileID: 996285920}
   playerAttack: {fileID: 996285925}
+--- !u!114 &996285927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 996285913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 228608ed53f9945458f7ff120371153a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInputSkillExecutorConnector
+  playerInput: {fileID: 996285920}
+  playerSkillExecutor: {fileID: 996285923}
 --- !u!1 &1114400205
 GameObject:
   m_ObjectHideFlags: 0

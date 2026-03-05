@@ -8,6 +8,9 @@ public class PlayerInput : MonoBehaviour
     public event Action onJump;
     public event Action<bool> onDash;
     public event Action onAttack;
+    public event Action onSkill_1;
+    public event Action onSkill_2;
+    public event Action onSkill_3;
 
 
 
@@ -34,5 +37,20 @@ public class PlayerInput : MonoBehaviour
         {
             onAttack?.Invoke();
         }
+    }
+
+    public void OnSkill_1(InputAction.CallbackContext context)
+    {
+        if(context.performed) onSkill_1?.Invoke();
+    }
+
+    public void OnSkill_2(InputAction.CallbackContext context)
+    {
+        if(context.performed) onSkill_2?.Invoke();
+    }
+
+    public void OnSkill_3(InputAction.CallbackContext context)
+    {
+        if(context.performed) onSkill_3?.Invoke();
     }
 }

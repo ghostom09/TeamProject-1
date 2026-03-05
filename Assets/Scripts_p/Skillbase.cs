@@ -39,6 +39,7 @@ public abstract class SkillBase : ISkillAction
             Debug.Log($"남은 쿨타임: {remain:F2}");
             return;
         }
+        
         Execute(user, dir);
     }
     protected abstract void Execute(GameObject user, Vector2 dir);

@@ -21,7 +21,7 @@ public class PlayerLevelManager : MonoBehaviour
         {
             CurrentExp -= expTable.GetRequiredExp(CurrentLevel);
             LevelUp();
-            GetComponent<IPlayerStatUp>().StatUp();
+            GetComponent<IPlayerStatUp>()?.StatUp();
         }
     }
 

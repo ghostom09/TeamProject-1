@@ -7,6 +7,7 @@ public class EnemySpawnerManager : MonoBehaviour
 {
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private GameObject target;
+    [SerializeField] private Transform poolParent;
 
     [SerializeField] private List<EnemyStats> resetStats;
     [SerializeField] private List<EnemyStats> _runTimeStats = new();
@@ -31,7 +32,6 @@ public class EnemySpawnerManager : MonoBehaviour
     
     private Queue<Enemy> pool = new Queue<Enemy>();
     
-    [SerializeField] private Transform poolParent;
     [SerializeField] private int initialPoolSize = 30;
     
     [SerializeField] private int maxActiveEnemy = 30;

@@ -4,7 +4,6 @@ public struct DifficultyModifier
 {
     public float healthMultiplier;
     public float damageMultiplier;
-    public float speedMultiplier;
 
     public float tankerSpawnPercent;
     public float rangedSpawnPercent;
@@ -47,7 +46,6 @@ public static class DifficultyCalculator
         {
             result.healthMultiplier *= 1.08f;
             result.damageMultiplier *= 1.07f;
-            result.speedMultiplier *= 1.005f;
             result.enemySpawnPercent += 0.0003f;
             result.enemyLimit += 1;
         }

@@ -5,27 +5,34 @@ using Random = UnityEngine.Random;
 
 public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
 {
-    private GameObject movingTarget;
+    [SerializeField] private GameObject movingTarget;
     
     [SerializeField] private LayerMask wallLayer;
     [SerializeField] private Transform groundCheck;
-    [SerializeField] private Transform leftwallCheck;
-    [SerializeField] private Transform rightwallCheck;
+    [SerializeField] private Transform leftWallCheck;
+    [SerializeField] private Transform rightWallCheck;
+    [SerializeField] private Transform leftSideGroundCheck;
+    [SerializeField] private Transform rightSideGroundCheck;
     
     private Rigidbody2D rb2d;
     private float speed;
     private float attackRange;
     private EnemyType enemyType;
     [SerializeField] private float jumpForce;
-    private int jumpTry = 0;
     
-    private float groundRadius = 0.35f;
+    [SerializeField] private float groundRadius = 0.35f;
+    [SerializeField] private float sideRadius = 0.1f;
     private bool isGrounded;
     private bool isleftWall;
     private bool isrightWall;
+
+    private bool leftSide;
+    private bool rightSide;
+    private bool isSide;
     private bool isJumping = false;
     
     private float rangedInterval;
+    [SerializeField] private float jumpPersent = 0.02f;
     [SerializeField] private float reverseDeceleration;
 
     private float distance;
@@ -55,6 +62,7 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
         rangedInterval = attackRange * 0.8f;
         
         movingTarget = target;
+        SetMoveLock(false);
     }
     
     private void FixedUpdate()
@@ -64,6 +72,7 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
         
         CheckGround();
         CheckWall();
+        CheckSide();
         
         if(_isMoveLocked)
             return;
@@ -73,7 +82,8 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
         if (isGrounded)
         {
             isJumping = false;
-            if (isleftWall || isrightWall)
+            if (isleftWall || isrightWall ||
+                (movingTarget.transform.position.y > transform.position.y && isSide))
             {
                 verticalmove();
             }
@@ -81,27 +91,22 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
             {
                 if (movingTarget.transform.position.y > transform.position.y)
                 {
-                    jumpTry = Random.Range(50, 100);
-                    if(jumpTry == 90)
+                    if(Random.value <= jumpPersent)
                         verticalmove();
                 }
             }
-        }
-        else if(!isJumping&&!isGrounded&&movingTarget.transform.position.y > transform.position.y)
-        {
-            verticalmove();
         }
     }
     
     private void CheckWall()
     {
         isleftWall = Physics2D.OverlapCircle(
-            leftwallCheck.position,
+            leftWallCheck.position,
             groundRadius,
             wallLayer
         );
         isrightWall = Physics2D.OverlapCircle(
-            rightwallCheck.position,
+            rightWallCheck.position,
             groundRadius,
             wallLayer
         );
@@ -114,7 +119,15 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
             groundRadius,
             wallLayer
         );
-    }   
+    }
+
+    private void CheckSide()
+    {
+         leftSide = Physics2D.OverlapCircle(leftSideGroundCheck.position, sideRadius, wallLayer);
+         rightSide = Physics2D.OverlapCircle(rightSideGroundCheck.position, sideRadius, wallLayer);
+        
+        isSide = leftSide ^ rightSide;
+    }
     
     private void verticalmove()
     {

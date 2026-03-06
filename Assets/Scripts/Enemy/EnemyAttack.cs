@@ -1,24 +1,41 @@
+using System;
 using UnityEngine;
 
-public class EnemyAttack : MonoBehaviour
+public class EnemyAttack : MonoBehaviour, IEnemyReset
 {
-    private Enemy enemyStat;
-    
-    private float damage;
-    private float attackRange;
-    private float attackSpeed;
-    private EnemyType enemyType;
-    
+    private IEnemyAttackStrategy strategy;
+
+    private Transform attackTarget;
+    private EnemyMove _enemyMove;
+
+    private Vector2 dir;
+
     private void Awake()
     {
-        enemyStat = GetComponent<Enemy>();
+        _enemyMove = GetComponent<EnemyMove>();
     }
 
-    private void OnEnable()
+    public void Init(EnemyStats stats, GameObject target, EnemySpawnerManager m)
     {
-        damage = enemyStat.stats.damage;
-        attackRange = enemyStat.stats.attackRange;
-        attackSpeed = enemyStat.stats.attackSpeed;
-        enemyType = enemyStat.stats.enemyType;
+        strategy = stats.enemyType switch
+        {
+            EnemyType.normal  => new MeleeAttack(),
+            EnemyType.tanker  => new MeleeAttack(),
+            EnemyType.ranged  => new RangedAttack(),
+            EnemyType.support  => new SupportAttack(),
+            _ => null
+        };
+
+        attackTarget = target.transform;
+        
+        strategy?.Init(stats, _enemyMove);
+    }
+
+    private void Update()
+    {
+        if(attackTarget == null)
+            return;
+        dir = ((Vector2)attackTarget.position - (Vector2)transform.position).normalized;
+        strategy?.TryAttack(gameObject, attackTarget, dir);
     }
 }

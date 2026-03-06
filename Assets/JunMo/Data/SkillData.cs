@@ -6,5 +6,3 @@ public class SkillData : ScriptableObject
     public SkillType SkillName;
     public float Cooldown;
 }
-
-

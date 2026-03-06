@@ -3,10 +3,10 @@ using UnityEngine;
 public enum EnemyType
 {
     None,
-    Normal,
+    normal,
     tanker,
-    Ranged,
-    suport
+    ranged,
+    support
 }
 
 [CreateAssetMenu(fileName = "EnemyStats")]
@@ -20,4 +20,5 @@ public class EnemyStats : ScriptableObject
     public float attackRange;
     public float attackSpeed;
     public float jumpForce;
+    public int exp;
 }

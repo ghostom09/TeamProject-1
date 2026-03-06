@@ -2,25 +2,43 @@ using UnityEngine;
 
 public class DifficultyLevelManager : MonoBehaviour
 {
-    private float timer = 0f;
     [SerializeField] private float interval = 15f;
+    [SerializeField] private int difficultyLevel = 1;
 
-    private int dificultyLevel = 0;
+    [SerializeField] private EnemySpawnerManager spawnManager;
 
-    void Update()
+    private float timer;
+
+    private void Start()
+    {
+        timer = 0f;
+
+        if (spawnManager != null)
+        {
+            spawnManager.ApplyDifficulty(difficultyLevel);
+        }
+    }
+
+    private void Update()
     {
         timer += Time.deltaTime;
 
         if (timer >= interval)
         {
-            timer = 0f;
-            dificultyLevel++;
-            
+            timer -= interval;
+            LevelUp();
         }
     }
 
-    private void DificultyLevelUp()
+    private void LevelUp()
     {
-        
+        difficultyLevel++;
+
+        if (spawnManager != null)
+        {
+            spawnManager.ApplyDifficulty(difficultyLevel);
+        }
+
+        Debug.Log($"Difficulty Level Up → {difficultyLevel}");
     }
 }

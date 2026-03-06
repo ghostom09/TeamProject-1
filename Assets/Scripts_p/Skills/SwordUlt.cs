@@ -30,13 +30,18 @@ public class SwordUlt : SkillBase
         player.isInvincible = true;
         player.isUsingUltimate = true;
         playerMove.SetMoveLock(MoveLockType.FullLock);
-        
-        
+    
         for (int i = 0; i < hitCount; i++)
         {
             DoSlash(user);
             yield return new WaitForSeconds(hitInterval);
         }
+        
+        yield return new WaitForSeconds(0.8f);
+        
+        DoFinalStrike(user);
+
+        
 
         player.isInvincible = false;
         player.isUsingUltimate = false;
@@ -58,6 +63,24 @@ public class SwordUlt : SkillBase
             {
                 enemy.TakeDamage(damage);
                 enemy.ApplySlow(99, 0.1f);
+            }
+        }
+    }
+    private void DoFinalStrike(GameObject user)
+    {
+        float finalDamage = data.Damage * 5.7f; // 강한 한 방
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(
+            user.transform.position,
+            data.Range * 3f,
+            LayerMask.GetMask("Enemy")
+        );
+
+        foreach (var hit in hits)
+        {
+            if (hit.TryGetComponent(out IDamageable enemy))
+            {
+                enemy.TakeDamage(finalDamage);
             }
         }
     }

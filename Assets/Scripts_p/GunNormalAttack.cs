@@ -81,7 +81,6 @@ public class GunNormalAttack : INormalAttack
             if (hit.collider.TryGetComponent<IDamageable>(out var target))
             {
                 target.TakeDamage(damage);
-                user.GetComponent<Player>().AddGauge(1);
                 // 강화 모드는 약한 넉백
                 target.ApplyKnockback(dir, 2f, 0.08f);
             }

@@ -7,6 +7,7 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
 {
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform groundCheck;
+    [SerializeField] private int _maxJumpCount = 2;
     
     public bool isGrounded;
     
@@ -33,6 +34,7 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
     private bool _isDashing;
     private bool _isKnocked;
     private bool _isMoveLocked;
+    private bool _hasJumpedFromGround;
     private int _jumpCount;
     
     
@@ -69,15 +71,16 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
     {
         CheckGround();
 
-        if (isGrounded)
+        if (isGrounded && _rb.linearVelocity.y <= 0)
         {
             _coyoteTimeCounter = _coyoteTime;
             _jumpCount = 0;
         }
         else
+        {
             _coyoteTimeCounter -= Time.deltaTime;
+        }
 
-        // Jump Buffer
         if (_jumpBufferCounter > 0)
             _jumpBufferCounter -= Time.deltaTime;
     }
@@ -97,29 +100,38 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
     }
     private void HandleJump()
     {
-        if (_moveLockType == MoveLockType.FullLock)
+        if (_isMoveLocked)
             return;
-        
-        if (_jumpBufferCounter > 0 && CanJump())
-        {
-            _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, _jumpForce);
 
-            _jumpBufferCounter = 0;
-            _coyoteTimeCounter = 0;
-            _jumpCount++;
+        if (_jumpBufferCounter <= 0)
+            return;
+
+        // 첫 점프
+        if (_jumpCount == 0)
+        {
+            Jump();
+
+            // 땅에서 점프했는지 기록 
+            _hasJumpedFromGround = isGrounded;
+
+            return;
+        }
+
+        // 두번째 점프 (땅에서 시작했을 때만)
+        if (_hasJumpedFromGround && _jumpCount == 1)
+        {
+            Jump();
         }
     }
-    private bool CanJump()
+    private void Jump()
     {
-        if (_coyoteTimeCounter > 0)
-            return true;
-        
-        if (_jumpCount < 2)
-            return true;
+        _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, _jumpForce);
 
-        return false;
+        _jumpBufferCounter = 0;
+        _coyoteTimeCounter = 0;
+
+        _jumpCount++;
     }
-
     private void HandleMove()
     {
         if (_moveLockType == MoveLockType.FullLock || _isKnocked)

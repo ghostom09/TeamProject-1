@@ -73,10 +73,13 @@ public class Gun1 : SkillBase
         {
             if (col.TryGetComponent<IDamageable>(out var target))
             {
-                
+                Vector2 knockDir =
+                    (col.transform.position - (Vector3)hit.point).normalized;
+
                 target.TakeDamage(data.Damage * 2.5f);
-                target.ApplyKnockback(dir, 6f, 0.15f);
+                target.ApplyKnockback(knockDir, 6f, 0.15f);
                 target.ApplySlow(SlowPercent, SlowDuration);
+
                 player.AddGauge(1);
             }
         }

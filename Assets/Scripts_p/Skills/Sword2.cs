@@ -41,6 +41,8 @@ public class Sword2 : SkillBase
                 if (hit.TryGetComponent(out IDamageable target))
                 {
                     target.TakeDamage(data.Damage * 1.8f);
+                    target.ApplyKnockback(dir, 8f, 0.15f);
+                    player.AddGauge(1);
                 }
             }
         }

@@ -30,7 +30,8 @@ public class SwordUlt : SkillBase
         player.isInvincible = true;
         player.isUsingUltimate = true;
         playerMove.SetMoveLock(MoveLockType.FullLock);
-    
+
+        
         for (int i = 0; i < hitCount; i++)
         {
             DoSlash(user);
@@ -63,6 +64,10 @@ public class SwordUlt : SkillBase
             {
                 enemy.TakeDamage(damage);
                 enemy.ApplySlow(99, 0.1f);
+
+                // 넉백 방향 계산
+                Vector2 knockDir = (hit.transform.position - user.transform.position).normalized;
+                enemy.ApplyKnockback(knockDir, 1f, 0.15f);
             }
         }
     }

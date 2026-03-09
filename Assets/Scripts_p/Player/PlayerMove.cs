@@ -166,7 +166,7 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
 
     private void HandleMove()
     {
-        if (moveLockType != MoveLockType.None || isKnocked)
+        if (moveLockType == MoveLockType.FullLock || isKnocked)
             return;
 
         float baseSpeed = isDashing ? dashSpeed : moveSpeed;
@@ -175,15 +175,21 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
         float targetSpeed = movement.x * maxSpeed;
         float currentSpeed = rb.linearVelocity.x;
 
-        float accelRate = Mathf.Abs(targetSpeed) > 0.01f
-            ? (Mathf.Approximately(Mathf.Sign(targetSpeed), Mathf.Sign(currentSpeed)) ? acceleration : turnDeceleration)
-            : deceleration;
+        float accelRate;
 
-        float newSpeed = Mathf.MoveTowards(
-            currentSpeed,
-            targetSpeed,
-            accelRate * Time.fixedDeltaTime
-        );
+        if (moveLockType == MoveLockType.HorizontalOnly)
+        {
+            targetSpeed = 0;
+            accelRate = deceleration;
+        }
+        else
+        {
+            accelRate = Mathf.Abs(targetSpeed) > 0.01f
+                ? (Mathf.Approximately(Mathf.Sign(targetSpeed), Mathf.Sign(currentSpeed)) ? acceleration : turnDeceleration)
+                : deceleration;
+        }
+
+        float newSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, accelRate * Time.fixedDeltaTime);
 
         rb.linearVelocity = new Vector2(newSpeed, rb.linearVelocity.y);
     }

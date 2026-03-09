@@ -31,4 +31,6 @@ public class GoldenBullet : MonoBehaviour, IBulletBehavior
         Instantiate(Boom, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
+    
+    
 }

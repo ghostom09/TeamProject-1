@@ -32,6 +32,53 @@ public class PlayerSword : MonoBehaviour
         new Vector2(3.7f, -1),
         new Vector2(-2.5f, 2.85f),
     };
+    // private List<SwordIllusionsAttack> _illusions 
+    //     = new List<SwordIllusionsAttack>();
+    // private Transform _pivot; //asd
+    // public void SpawnIllusions(float damage)
+    // {
+    //     ClearIllusions();
+    //
+    //     int count = 3;
+    //     float radius = 0.7f;
+    //     float totalAngle = 80f;
+    //
+    //     _pivot = new GameObject("IllusionPivot").transform;
+    //     _pivot.position = transform.position;
+    //     for (int i = 0; i < count; i++)
+    //     {
+    //         float angle = i * (360f / count);
+    //         float radian = angle * Mathf.Deg2Rad;
+    //
+    //         Vector3 offset = new Vector3(
+    //             Mathf.Cos(radian),
+    //             Mathf.Sin(radian),
+    //             0f
+    //         ) * radius;
+    //
+    //         Vector3 spawnPos = transform.position + offset;
+    //
+    //         GameObject obj = Instantiate(
+    //             illusionPrefab,
+    //             spawnPos,
+    //             Quaternion.Euler(0, 0, angle - 90f)
+    //         );
+    //
+    //         var illusion = obj.GetComponent<SwordIllusionsAttack>();
+    //         illusion.Init(damage);
+    //         obj.transform.SetParent(_pivot);
+    //
+    //         _illusions.Add(illusion);
+    //     }
+    // }
+    //
+    // void Update()
+    // {
+    //     if (_pivot != null)
+    //     {
+    //         _pivot.Rotate(0, 0, 30f * Time.deltaTime);
+    //     }
+    // }
 
     
     public void Ultimate()

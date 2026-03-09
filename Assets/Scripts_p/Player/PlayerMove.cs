@@ -1,164 +1,183 @@
-using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 public class PlayerMove : MonoBehaviour, IPlayerMover
 {
+    [Header("Ground")]
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform groundCheck;
-    [SerializeField] private int _maxJumpCount = 2;
-    
-    public bool isGrounded;
-    
-    private Rigidbody2D _rb;
-    private Vector2 _movement;
-    private Coroutine _knockRoutine;
-    private Coroutine _slowRoutine;
-    private MoveLockType _moveLockType = MoveLockType.None;
+    [SerializeField] private Vector2 groundBoxSize = new(0.5f, 0.1f);
 
-    private float _originGravity;
-    private float _acceleration = 25f;
-    private float _deceleration = 35f;
-    private float _turnDeceleration = 60f;
-    private float _moveSpeed;
-    private float _dashSpeed;
-    private float _coyoteTime = 0.1f;
-    private float _jumpBufferTime = 0.1f;
-    private float _groundRadius = 0.2f;
-    private float _jumpForce;
-    private float _coyoteTimeCounter;
-    private float _jumpBufferCounter;
-    private float _slowMultiplier = 1f;
-    private float _defaultGravity;  
-    private bool _isDashing;
-    private bool _isKnocked;
-    private bool _isMoveLocked;
-    private bool _hasJumpedFromGround;
-    private int _jumpCount;
-    
-    
+    [Header("Jump")]
+    [SerializeField] private int maxJumpCount = 2;
+    [SerializeField] private float coyoteTime = 0.1f;
+    [SerializeField] private float jumpBufferTime = 0.1f;
+    [SerializeField] private float jumpCutMultiplier = 0.5f;
 
+    [Header("Movement")]
+    [SerializeField] private float acceleration = 25f;
+    [SerializeField] private float deceleration = 35f;
+    [SerializeField] private float turnDeceleration = 60f;
+
+    [Header("Physics")]
+    [SerializeField] private float maxFallSpeed = 25f;
+
+    public bool IsGrounded { get; private set; }
+
+    private Rigidbody2D rb;
+    private Vector2 movement;
+
+    private Coroutine knockRoutine;
+    private Coroutine slowRoutine;
+
+    private MoveLockType moveLockType = MoveLockType.None;
+
+    private float moveSpeed;
+    private float dashSpeed;
+    private float jumpForce;
+
+    private float coyoteCounter;
+    private float jumpBufferCounter;
+
+    private float slowMultiplier = 1f;
+    private float defaultGravity;
+
+    private bool isDashing;
+    private bool isKnocked;
+    private bool jumpHeld;
+
+    private int jumpCount;
 
     private void Awake()
     {
-        _rb = GetComponent<Rigidbody2D>();
-        _defaultGravity = _rb.gravityScale;
+        rb = GetComponent<Rigidbody2D>();
+        defaultGravity = rb.gravityScale;
     }
 
     public void Init(float moveSpeed, float jumpForce)
     {
-        this._moveSpeed = moveSpeed;
-        this._jumpForce = jumpForce;
-        this._dashSpeed = moveSpeed * 1.3f;
+        this.moveSpeed = moveSpeed;
+        this.jumpForce = jumpForce;
+        dashSpeed = moveSpeed * 1.3f;
     }
-    
+
     public void SetMove(Vector2 move)
     {
-        this._movement = move;
+        movement = move;
     }
 
     public void SetJumpPressed()
     {
-        _jumpBufferCounter = _jumpBufferTime;
+        jumpBufferCounter = jumpBufferTime;
     }
 
-    public void SetDashPressed(bool isDashing)
+    public void SetDashPressed(bool dash)
     {
-        _isDashing = isDashing;
+        isDashing = dash;
     }
+
     private void Update()
     {
-        CheckGround();
-
-        if (isGrounded && _rb.linearVelocity.y <= 0)
-        {
-            _coyoteTimeCounter = _coyoteTime;
-            _jumpCount = 0;
-        }
-        else
-        {
-            _coyoteTimeCounter -= Time.deltaTime;
-        }
-
-        if (_jumpBufferCounter > 0)
-            _jumpBufferCounter -= Time.deltaTime;
+        UpdateTimers();
     }
+
     private void FixedUpdate()
     {
+        UpdateGround();
+        ApplyFallLimit();
         HandleMove();
         HandleJump();
+        HandleJumpCut();
     }
 
-    private void CheckGround()
+    private void UpdateGround()
     {
-        isGrounded = Physics2D.OverlapCircle(
+        IsGrounded = Physics2D.OverlapBox(
             groundCheck.position,
-            _groundRadius,
+            groundBoxSize,
+            0,
             groundLayer
         );
-    }
-    private void HandleJump()
-    {
-        if (_isMoveLocked)
-            return;
 
-        if (_jumpBufferCounter <= 0)
-            return;
-
-        // 첫 점프
-        if (_jumpCount == 0)
+        if (IsGrounded && rb.linearVelocity.y <= 0)
         {
-            Jump();
-
-            // 땅에서 점프했는지 기록 
-            _hasJumpedFromGround = isGrounded;
-
-            return;
-        }
-
-        // 두번째 점프 (땅에서 시작했을 때만)
-        if (_hasJumpedFromGround && _jumpCount == 1)
-        {
-            Jump();
-        }
-    }
-    private void Jump()
-    {
-        _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, _jumpForce);
-
-        _jumpBufferCounter = 0;
-        _coyoteTimeCounter = 0;
-
-        _jumpCount++;
-    }
-    private void HandleMove()
-    {
-        if (_moveLockType == MoveLockType.FullLock || _isKnocked)
-            return;
-
-        if (_moveLockType == MoveLockType.HorizontalOnly)
-            return;
-        
-        float baseSpeed = _isDashing ? _dashSpeed : _moveSpeed;
-        float maxSpeed = baseSpeed * _slowMultiplier;
-        
-        float targetSpeed = _movement.x * maxSpeed;
-        float currentSpeed = _rb.linearVelocity.x;
-
-        float accelRate;
-
-        if (Mathf.Abs(targetSpeed) > 0.01f)
-        {
-            if (Mathf.Sign(targetSpeed) == Mathf.Sign(currentSpeed))
-                accelRate = _acceleration;
-            else
-                accelRate = _turnDeceleration;
+            coyoteCounter = coyoteTime;
+            jumpCount = 0;
         }
         else
         {
-            accelRate = _deceleration;
+            coyoteCounter -= Time.deltaTime;
+            
+            if (!IsGrounded && jumpCount == 0 && rb.linearVelocity.y < 0)
+            {
+                jumpCount = 1;
+            }
         }
+    }
+
+    private void UpdateTimers()
+    {
+        if (jumpBufferCounter > 0)
+            jumpBufferCounter -= Time.deltaTime;
+    }
+
+    private void HandleJump()
+    {
+        if (moveLockType == MoveLockType.FullLock || isKnocked)
+            return;
+
+        if (jumpBufferCounter <= 0)
+            return;
+
+        bool canGroundJump = coyoteCounter > 0;
+        bool canAirJump = jumpCount < maxJumpCount;
+
+        if (canGroundJump || canAirJump)
+        {
+            Jump();
+        }
+    }
+    private void HandleJumpCut()
+    {
+        if (jumpHeld)
+            return;
+
+        if (rb.linearVelocity.y > 0)
+        {
+            rb.linearVelocity = new Vector2(
+                rb.linearVelocity.x,
+                rb.linearVelocity.y * jumpCutMultiplier
+            );
+        }
+    }
+    public void SetJumpHeld(bool held)
+    {
+        jumpHeld = held;
+    }
+
+    private void Jump()
+    {
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+
+        jumpBufferCounter = 0;
+        coyoteCounter = 0;
+        jumpCount++;
+    }
+
+    private void HandleMove()
+    {
+        if (moveLockType != MoveLockType.None || isKnocked)
+            return;
+
+        float baseSpeed = isDashing ? dashSpeed : moveSpeed;
+        float maxSpeed = baseSpeed * slowMultiplier;
+
+        float targetSpeed = movement.x * maxSpeed;
+        float currentSpeed = rb.linearVelocity.x;
+
+        float accelRate = Mathf.Abs(targetSpeed) > 0.01f
+            ? (Mathf.Approximately(Mathf.Sign(targetSpeed), Mathf.Sign(currentSpeed)) ? acceleration : turnDeceleration)
+            : deceleration;
 
         float newSpeed = Mathf.MoveTowards(
             currentSpeed,
@@ -166,65 +185,75 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
             accelRate * Time.fixedDeltaTime
         );
 
-        _rb.linearVelocity = new Vector2(newSpeed, _rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(newSpeed, rb.linearVelocity.y);
     }
-    
+
+    private void ApplyFallLimit()
+    {
+        if (rb.linearVelocity.y < -maxFallSpeed)
+        {
+            rb.linearVelocity = new Vector2(
+                rb.linearVelocity.x,
+                -maxFallSpeed
+            );
+        }
+    }
+
     public void SetMoveLock(MoveLockType type)
     {
-        _moveLockType = type;
+        moveLockType = type;
 
         if (type == MoveLockType.FullLock)
         {
-            _rb.linearVelocity = Vector2.zero;
-            _rb.gravityScale = 0f;
+            rb.linearVelocity = Vector2.zero;
+            rb.gravityScale = 0;
         }
         else
         {
-            _rb.gravityScale = _defaultGravity;
+            rb.gravityScale = defaultGravity;
         }
     }
-    public void KnockBack(Vector2 dir, float force, float duration)
-    {
-        if (_knockRoutine != null)
-            StopCoroutine(_knockRoutine);
 
-        _knockRoutine = StartCoroutine(KnockBackCor(dir, force, duration));
+    public void KnockBack(Vector2 dir, float power, float duration)
+    {
+        if (knockRoutine != null)
+            StopCoroutine(knockRoutine);
+
+        knockRoutine = StartCoroutine(KnockBackCor(dir, power, duration));
     }
 
-    public void Slow(float slowPercent, float slowDuration)
+    public void Slow(float percent, float duration)
     {
-        if (_slowRoutine != null)
-            StopCoroutine(_slowRoutine);
+        if (slowRoutine != null)
+            StopCoroutine(slowRoutine);
 
-        _slowRoutine = StartCoroutine(ApplySlow(slowPercent, slowDuration));
+        slowRoutine = StartCoroutine(SlowCor(percent, duration));
     }
 
-    private IEnumerator ApplySlow(float percent, float duration)
+    private IEnumerator SlowCor(float percent, float duration)
     {
-        _slowMultiplier = 1f - (percent / 100f);
+        slowMultiplier = 1f - percent / 100f;
 
         yield return new WaitForSeconds(duration);
 
-        _slowMultiplier = 1f;
-        _slowRoutine = null;
+        slowMultiplier = 1f;
+        slowRoutine = null;
     }
-    
+
     private IEnumerator KnockBackCor(Vector2 dir, float power, float duration)
     {
-        _isKnocked = true;
+        isKnocked = true;
 
         float timer = 0f;
 
         while (timer < duration)
         {
-            _rb.linearVelocity = dir * power;
+            rb.linearVelocity = dir * power;
             timer += Time.deltaTime;
             yield return null;
         }
 
-        _isKnocked = false;
-        _knockRoutine = null;
+        isKnocked = false;
+        knockRoutine = null;
     }
-    
-    
 }

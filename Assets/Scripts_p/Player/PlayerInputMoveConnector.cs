@@ -10,6 +10,7 @@ public class PlayerInputMoveConnector : MonoBehaviour
         playerInput.onMove += playerMove.SetMove;
         playerInput.onJump += playerMove.SetJumpPressed;
         playerInput.onDash += playerMove.SetDashPressed;
+        playerInput.setJumpHeld += playerMove.SetJumpHeld;
     }
 
     //테스트

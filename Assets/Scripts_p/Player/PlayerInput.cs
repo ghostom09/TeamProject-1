@@ -6,6 +6,7 @@ public class PlayerInput : MonoBehaviour
 {
     public event Action<Vector2> onMove;
     public event Action onJump;
+    public event Action<bool> setJumpHeld;
     public event Action<bool> onDash;
     public event Action onAttack;
     public event Action<int> onSkills;
@@ -20,7 +21,16 @@ public class PlayerInput : MonoBehaviour
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (context.performed) onJump?.Invoke();
+        if (context.performed)
+        {
+            onJump?.Invoke();
+            setJumpHeld?.Invoke(true);
+        }
+        else if (context.canceled)
+        {
+            setJumpHeld?.Invoke(false);
+        }
+        
     }
 
     public void OnDash(InputAction.CallbackContext context)

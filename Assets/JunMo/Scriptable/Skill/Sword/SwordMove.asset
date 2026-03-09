@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9abad1e31d4f6a8468642f1214131b54, type: 3}
+  m_Name: SwordMove
+  m_EditorClassIdentifier: Assembly-CSharp::SkillArgumentData
+  itemName: sword
+  description: asdsadaasd
+  icon: {fileID: -1316839025742549532, guid: 5ccbf8878d49c5d45a8fed53dc69fdc4, type: 3}
+  skillKind: 0
+  jobType: 1
+  maxLevel: 3
+  level: 1
+  levelValues:
+  - 5
+  - 10
+  - 15

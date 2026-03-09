@@ -2,105 +2,155 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Playables;
-// using DG.Tweening;
 
 public class PlayerSword : MonoBehaviour
 {
     [SerializeField] private CameraMove cam;
-    [SerializeField] private GameObject Illusions;
+    [SerializeField] private GameObject swordIllusions;
+    [SerializeField] private GameObject swordIllusions2;
+    [SerializeField] private GameObject bigSwordIllusions;
+    [SerializeField] private GameObject playerIllusions;
     [SerializeField] private SpriteRenderer me;
     [SerializeField] private TrailRenderer trail;
-
-    // public void SpawnIllusions(float damage)
-    // {
-    //     ClearIllusions();
-    //
-    //     int count = 3;
-    //     float radius = 1.5f;
-    //     float totalAngle = 80f;
-    //
-    //     for (int i = 0; i < count; i++)
-    //     {
-    //         float angle = (i - (count - 1) / 2f) * (totalAngle / (count - 1));
-    //         
-    //         float radian = (angle + 90f) * Mathf.Deg2Rad;
-    //         Vector3 offset = new Vector3(Mathf.Cos(radian), Mathf.Sin(radian), 0) * radius;
-    //         
-    //         Vector3 spawnPos = transform.position + offset;
-    //         
-    //         Quaternion spawnRot = Quaternion.Euler(0, 0, angle);
-    //
-    //         GameObject obj = Instantiate(illusionPrefab, spawnPos, spawnRot);
-    //
-    //         var illusion = obj.GetComponent<SwordIllusionProjectile>();
-    //         illusion.Init(damage); 
-    //
-    //         _illusions.Add(illusion);
-    //     }
-    // }
+    [SerializeField] private RectTransform background;
     
-    // public PlayableDirector timeline;          // Timeline 컴포넌트
-    public ParticleSystem auraParticle;         // 오라
-    public ParticleSystem sparkPrefab;          // 히트 스파크 프리팹
-    public GameObject bigSwordPrefab;           // 큰 검 프리팹
-    public float ultDamage = 570f;              // 마지막 데미지
-    // public LayerMask enemyLayer;
-
-    private Animator animator;
-    private bool isUlting = false;
-
-    void Start()
+    private List<SwordUltraAttack> swordUltraAttacks = new();
+    private List<GameObject> ultraObject = new();
+    
+    public float radius = 5f;
+    
+    Vector2[] posOffsets = new Vector2[]
     {
-        animator = GetComponent<Animator>();
+        new Vector2(2, 3),
+        new Vector2(-3.25f, 2.2f),
+        new Vector2(0.9f, 3.8f),
+    };
+
+    Vector2[] dirOffsets = new Vector2[]
+    {
+        new Vector2(-3.8f, -0.95f),
+        new Vector2(3.7f, -1),
+        new Vector2(-2.5f, 2.85f),
+    };
+
+    
+    public void Ultimate()
+    {
+        StopAllCoroutines();
+        StartCoroutine(UltimateRoutine());
     }
 
-    public void TriggerUltimate()  // 게이지 80 달성 시 호출
+    private IEnumerator UltimateRoutine()
     {
-        if (isUlting) return;
-        isUlting = true;
-
-        auraParticle.Play();
+        StartCoroutine(Background());
+        yield return new WaitForSeconds(0.1f);
+        me.enabled = false;
+        trail.enabled = false;
+        StartCoroutine(StartAttack());
+        yield return new WaitForSeconds(0.6f);
+        me.enabled = true;
+        trail.enabled = true;
+        StartCoroutine(Attacking());
+        yield return new WaitForSeconds(0.6f);
+        StartCoroutine(EndOfAttack());
     }
 
-    // Timeline Signal Receiver 예시 (중간 슬래시)
-    public void SpawnSlashParticles(int count = 10)
+    private IEnumerator Background()
     {
-        for (int i = 0; i < count; i++)
+        float time = 0f;
+        float duration = 1f;
+
+        background.anchorMin = new Vector2(0, 0);
+        background.anchorMax = new Vector2(0, 1);
+
+        while (time < duration)
         {
-            float angle = -60f + i * 12f;  // 120도 팬
-            Vector3 dir = Quaternion.Euler(0, 0, angle) * Vector3.right;
-            var spark = Instantiate(sparkPrefab, transform.position + dir * 1.5f, Quaternion.identity);
-            spark.Play();
+            time += Time.time;
+            float progress = Mathf.Clamp01(time / duration);
 
-            // DOVirtual.DelayedCall(i * 0.13f, () => { /* 사운드 */ });
+            background.anchorMax = new Vector2(progress, 1);
+
+            yield return null;
+        }
+
+        background.anchorMax = new Vector2(1, 1);
+    }
+
+    private IEnumerator StartAttack()
+    {
+        for (int i = 0; i < posOffsets.Length; i++)
+        {
+            Vector2 pos = (Vector2)transform.position + posOffsets[i];
+            Vector3 dir = (Vector2)transform.position + dirOffsets[i] - pos;
+
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+            GameObject obj = Instantiate(swordIllusions, pos, Quaternion.Euler(0, 0, angle - 90f));
+            SwordUltraAttack swordUltra = obj.GetComponent<SwordUltraAttack>();
+
+            swordUltra.Initialize(dir, 50);
+            ultraObject.Add(obj);
+
+            ultraObject.Add(Instantiate(playerIllusions, pos, Quaternion.identity));
+            
+            Vector2 randomStart = (Vector2)transform.position + Random.insideUnitCircle * 5.5f;
+            Vector2 randomTarget = (Vector2)transform.position + Random.insideUnitCircle * 5.5f;
+
+            GameObject obj2 = Instantiate(swordIllusions2, randomStart, Quaternion.identity);
+            SwordUltraAttack sword = obj2.GetComponent<SwordUltraAttack>();
+            ultraObject.Add(obj2);
+            sword.Initialize(randomTarget, 50);
+            
+            yield return new WaitForSeconds(0.1f);
         }
     }
 
-    // 마지막 휘두르기 Signal
-    public void BigSwordStrike()
+    private IEnumerator Attacking()
     {
-        GameObject sword = Instantiate(bigSwordPrefab, transform.position + Vector3.up * 3f, Quaternion.identity);
-        // sword.transform.DOMove(transform.position + Vector3.right * 5f, 0.4f).SetEase(Ease.InOutSine);
+        for (int i = 0; i < posOffsets.Length; i++)
+        {
+            float angle1 = Random.Range(0f, 360f) * Mathf.Deg2Rad;
+            float angle2 = Random.Range(0f, 360f) * Mathf.Deg2Rad;
 
-        // 쉐이크 + 플래시
-        // Camera.main.GetComponent<CinemachineImpulseSource>().GenerateImpulse();
+            Vector2 point1 = (Vector2)transform.position + new Vector2(Mathf.Cos(angle1), Mathf.Sin(angle1)) * radius;
+            Vector2 point2 = (Vector2)transform.position + new Vector2(Mathf.Cos(angle2), Mathf.Sin(angle2)) * radius;
+            
+            Vector2 pos = (Vector2)transform.position + point1;
+            Vector3 dir = (Vector2)transform.position + point2;
+
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+            GameObject obj = Instantiate(swordIllusions, pos, Quaternion.Euler(0, 0, angle - 90f));
+            SwordUltraAttack swordUltra = obj.GetComponent<SwordUltraAttack>();
+
+            swordUltra.Initialize(dir, 50);
+            ultraObject.Add(obj);
+
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        yield return new WaitForSeconds(0.4f);
+        foreach (var sword in ultraObject)
+        {
+            Destroy(sword);
+        }
     }
 
-    // Timeline 끝 이벤트
-    public void EndUltimate()
+    private IEnumerator EndOfAttack()
     {
-        isUlting = false;
-        auraParticle.Stop();
-        // 무적 OFF
-        animator.Play("Idle");
+        GameObject swords = Instantiate(bigSwordIllusions, transform.position, Quaternion.identity);
+
+        yield return new WaitForSeconds(0.5f);
+        Destroy(swords);
+
+        yield return null;
     }
     
     void Update()
     {
         if (Keyboard.current.rKey.wasPressedThisFrame)
         {
-            // ActivateUltimate();
+            Ultimate();
         }
     }
 }

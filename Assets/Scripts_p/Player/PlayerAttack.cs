@@ -17,8 +17,8 @@ public class PlayerAttack : MonoBehaviour
     private int _illusionCount;
     private float _illusionDamage;
     
-    private List<SwordIllusionsAttack> _illusions 
-        = new List<SwordIllusionsAttack>(); //asddassad
+    private List<SwordIllusionProjectile> _illusions 
+        = new List<SwordIllusionProjectile>();
 
     public void Init(CharacterData data)
     {
@@ -69,76 +69,31 @@ public class PlayerAttack : MonoBehaviour
         return _normal;
     }
     
-    private Transform _pivot; //asd
     public void SpawnIllusions(float damage)
     {
         ClearIllusions();
-
+    
         int count = 3;
-        float radius = 0.7f;
+        float radius = 1.5f;
         float totalAngle = 80f;
-
-        _pivot = new GameObject("IllusionPivot").transform;
-        _pivot.position = transform.position;
+    
         for (int i = 0; i < count; i++)
         {
-            float angle = i * (360f / count);
-            float radian = angle * Mathf.Deg2Rad;
-
-            Vector3 offset = new Vector3(
-                Mathf.Cos(radian),
-                Mathf.Sin(radian),
-                0f
-            ) * radius;
-
+            float angle = (i - (count - 1) / 2f) * (totalAngle / (count - 1));
+            
+            float radian = (angle + 90f) * Mathf.Deg2Rad;
+            Vector3 offset = new Vector3(Mathf.Cos(radian), Mathf.Sin(radian), 0) * radius;
+            
             Vector3 spawnPos = transform.position + offset;
-
-            GameObject obj = Instantiate(
-                illusionPrefab,
-                spawnPos,
-                Quaternion.Euler(0, 0, angle - 90f)
-            );
-
-            var illusion = obj.GetComponent<SwordIllusionsAttack>();
-            illusion.Init(damage);
-            obj.transform.SetParent(_pivot);
-
+            
+            Quaternion spawnRot = Quaternion.Euler(0, 0, angle);
+    
+            GameObject obj = Instantiate(illusionPrefab, spawnPos, spawnRot);
+    
+            var illusion = obj.GetComponent<SwordIllusionProjectile>();
+            illusion.Init(damage); 
+    
             _illusions.Add(illusion);
-        }
-    }
-    // public void SpawnIllusions(float damage)
-    // {
-    //     ClearIllusions();
-    //
-    //     int count = 3;
-    //     float radius = 1.5f;
-    //     float totalAngle = 80f;
-    //
-    //     for (int i = 0; i < count; i++)
-    //     {
-    //         float angle = (i - (count - 1) / 2f) * (totalAngle / (count - 1));
-    //         
-    //         float radian = (angle + 90f) * Mathf.Deg2Rad;
-    //         Vector3 offset = new Vector3(Mathf.Cos(radian), Mathf.Sin(radian), 0) * radius;
-    //         
-    //         Vector3 spawnPos = transform.position + offset;
-    //         
-    //         Quaternion spawnRot = Quaternion.Euler(0, 0, angle);
-    //
-    //         GameObject obj = Instantiate(illusionPrefab, spawnPos, spawnRot);
-    //
-    //         var illusion = obj.GetComponent<SwordIllusionProjectile>();
-    //         illusion.Init(damage); 
-    //
-    //         _illusions.Add(illusion);
-    //     }
-    // }
-
-    void Update()
-    {
-        if (_pivot != null)
-        {
-            _pivot.Rotate(0, 0, 30f * Time.deltaTime);
         }
     }
     

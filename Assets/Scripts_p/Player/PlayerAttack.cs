@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 
 public class PlayerAttack : MonoBehaviour
 {
-    [SerializeField] private GameObject hitBox;
     [SerializeField] private GameObject illusionPrefab;
     
     public float attackTime;
@@ -30,7 +29,6 @@ public class PlayerAttack : MonoBehaviour
         };
         _normal?.Init(data);
         _player = GetComponent<Player>();
-        hitBox?.SetActive(false);
     }
 
     public void Attack()
@@ -39,31 +37,9 @@ public class PlayerAttack : MonoBehaviour
         Vector2 mouseWorld = Camera.main.ScreenToWorldPoint(mouseScreen);
 
         Vector2 dir = (mouseWorld - (Vector2)transform.position).normalized;
-
-        if (_normal.TryAttack(gameObject, dir, hitBox))
-        {
-            if (_currentAttackCoroutine != null) 
-                StopCoroutine(_currentAttackCoroutine);
-            
-            _currentAttackCoroutine = StartCoroutine(AttackCoroutine(dir));
-        }
+        
+        _normal.TryAttack(gameObject, dir);
     }
-    public void CancelNormalAttack()
-    {
-        if (_currentAttackCoroutine != null)
-        {
-            StopCoroutine(_currentAttackCoroutine);
-            _currentAttackCoroutine = null;
-            
-            _normal.EndAttack(gameObject, hitBox); 
-        }
-    }
-    private IEnumerator AttackCoroutine(Vector2 dir)
-    {
-        yield return new WaitForSeconds(attackTime);
-        _normal.EndAttack(gameObject, hitBox);
-    }
-    
     public INormalAttack GetNormalAttack()
     {
         return _normal;
@@ -127,4 +103,5 @@ public class PlayerAttack : MonoBehaviour
 
         _illusions.Clear();
     }
+
 }

@@ -18,7 +18,7 @@ public class GunNormalAttack : INormalAttack
         Debug.Log("변함");
     }
 
-    public bool TryAttack(GameObject user, Vector2 dir, GameObject hitBox)
+    public bool TryAttack(GameObject user, Vector2 dir)
     {
         float attackInterval = 1f / data.AttackSpeed;
 
@@ -30,12 +30,7 @@ public class GunNormalAttack : INormalAttack
         Shoot(user, dir);
         return true;
     }
-
-    public void EndAttack(GameObject user, GameObject hitBox)
-    {
-        // 총은 히트박스 안 쓰니까 비워둬도 됨
-    }
-
+    
     private void Shoot(GameObject user, Vector2 dir)
     {
         float damage = enhanced ? data.Damage * 2.2f : data.Damage;

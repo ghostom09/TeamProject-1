@@ -2,7 +2,6 @@ using UnityEngine;
 
 public interface INormalAttack
 {
-    bool TryAttack(GameObject user, Vector2 dir, GameObject hitBox);
-    void EndAttack(GameObject user, GameObject hitBox);
+    bool TryAttack(GameObject user, Vector2 dir);
     void Init(CharacterData data);
 }

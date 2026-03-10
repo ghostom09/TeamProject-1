@@ -86,6 +86,9 @@ public class SwordUlt : SkillBase
             if (hit.TryGetComponent(out IDamageable enemy))
             {
                 enemy.TakeDamage(finalDamage);
+                
+                Vector2 knockDir = (hit.transform.position - user.transform.position).normalized;
+                enemy.ApplyKnockback(knockDir, 10f, 0.15f);
             }
         }
     }

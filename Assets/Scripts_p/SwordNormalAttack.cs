@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 
@@ -6,16 +7,14 @@ public class SwordNormalAttack : INormalAttack
     private int comboIndex = 0;
     private float lastAttackTime;
     private float comboResetTime = 1.5f;
-    
-    
-    private PlayerAttack attacker;
+
     private CharacterData data;
-    
 
     public void Init(CharacterData data)
     {
         this.data = data;
     }
+
     private float GetComboRangeMultiplier()
     {
         return comboIndex switch
@@ -26,6 +25,7 @@ public class SwordNormalAttack : INormalAttack
             _ => 1f
         };
     }
+
     private float GetComboDamageMultiplier()
     {
         return comboIndex switch
@@ -36,7 +36,8 @@ public class SwordNormalAttack : INormalAttack
             _ => 1f
         };
     }
-    public bool TryAttack(GameObject user, Vector2 dir, GameObject hitBox)
+
+    public bool TryAttack(GameObject user, Vector2 dir)
     {
         if (Time.time > lastAttackTime + comboResetTime)
             comboIndex = 0;
@@ -50,36 +51,45 @@ public class SwordNormalAttack : INormalAttack
         }
 
         lastAttackTime = Time.time;
-        
-        DoComboAttack(user, dir, hitBox);
+
+        DoComboAttack(user, dir);
+
         return true;
     }
-
-    public void EndAttack(GameObject user, GameObject hitBox)
+    private void DoComboAttack(GameObject user, Vector2 dir)
     {
-        hitBox.SetActive(false);
-    }
-
-    private void DoComboAttack(GameObject user, Vector2 dir, GameObject hitBox)
-    {
-        hitBox.SetActive(true);
-        
-        float range = data.Range * 2 * GetComboRangeMultiplier();
+        float range = data.Range * GetComboRangeMultiplier();
         float damage = data.Damage * GetComboDamageMultiplier();
 
-        HitBox(user, dir, range, hitBox);
-        
-        var hb = hitBox.GetComponent<HitBox>();
-        hb.SetDamage(damage);
-        
-        comboIndex = (comboIndex + 1) % 3;
-    }
+        Vector2 center =
+            (Vector2)user.transform.position +
+            dir * range * 0.5f;
 
-    private void HitBox(GameObject user, Vector2 dir, float range, GameObject hitBox)
-    {
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        hitBox.transform.rotation = Quaternion.Euler(0, 0, angle);
-        hitBox.transform.localScale = new Vector3(range, range, 1);
-        hitBox.transform.localPosition = dir.normalized * range/2;
+        Collider2D[] hits =
+            Physics2D.OverlapCircleAll(center, range * 0.5f, LayerMask.GetMask("Enemy"));
+
+        HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
+
+        foreach (var hit in hits)
+        {
+            if (hit.TryGetComponent<IDamageable>(out var target))
+            {
+                if (hitTargets.Contains(target))
+                    continue;
+
+                Vector2 toTarget =
+                    (hit.transform.position - user.transform.position).normalized;
+
+                if (Vector2.Dot(dir, toTarget) < 0.3f)
+                    continue;
+
+                target.TakeDamage(damage);
+                target.ApplyKnockback(toTarget, 3f, 0.15f);
+
+                hitTargets.Add(target);
+            }
+        }
+
+        comboIndex = (comboIndex + 1) % 3;
     }
 }

@@ -23,7 +23,6 @@ public class Player : MonoBehaviour, IDamageable
     
     private void Start()
     {
-        
         Init(character);
         UnLockedUlt();
     }

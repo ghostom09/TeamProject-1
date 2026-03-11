@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9989d626cc7007b40b978055d0b506c0, type: 3}
+  m_Name: magician boss
+  m_EditorClassIdentifier: Assembly-CSharp::BossStats
+  bossType: 2
+  health: 160
+  speed: 1.8
+  jumpForce: 15
+  exp: 30
+  skillInterval: 1.5
+  skills:
+  - {fileID: 11400000, guid: 03dd1d6102fca464fa3c79d51409861c, type: 2}
+  - {fileID: 11400000, guid: 27f7b11cabd27e94d803bf7b2b9140ed, type: 2}
+  - {fileID: 11400000, guid: ca147e4eca52f1c4ca30d695f8c3bb58, type: 2}
+  - {fileID: 11400000, guid: cff9f28a68d768f46a63f9317cfdff97, type: 2}

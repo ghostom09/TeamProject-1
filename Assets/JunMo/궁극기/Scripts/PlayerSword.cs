@@ -191,6 +191,10 @@ public class PlayerSword : MonoBehaviour
         {
             Destroy(sword);
         }
+        foreach (var sword in fastBroken)
+        {
+            Destroy(sword);
+        }
         GameObject bigSword = Instantiate(bigSwordIllusions, transform.position, Quaternion.identity);
 
         yield return new WaitForSeconds(0.5f);

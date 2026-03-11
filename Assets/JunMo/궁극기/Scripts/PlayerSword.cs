@@ -9,7 +9,6 @@ public class PlayerSword : MonoBehaviour
     [SerializeField] private GameObject swordIllusions;
     [SerializeField] private GameObject swordIllusions2;
     [SerializeField] private GameObject attackIllusions;
-    [SerializeField] private GameObject attackAfterImage;
     [SerializeField] private GameObject bigSwordIllusions;
     [SerializeField] private GameObject playerIllusions;
     [SerializeField] private SpriteRenderer me;
@@ -17,11 +16,10 @@ public class PlayerSword : MonoBehaviour
     [SerializeField] private RectTransform background;
     
     private List<GameObject> Illusions = new();
-    private List<GameObject> swords = new();
     private List<GameObject> fastBroken = new();
     private int illusionsCnt = 5;
     
-    public float radius = 4f;
+    public float radius = 6f;
     
     Vector2[] posOffsets = new Vector2[]
     {
@@ -97,15 +95,20 @@ public class PlayerSword : MonoBehaviour
     private IEnumerator UltimateRoutine()
     {
         StartCoroutine(Background());
-        yield return new WaitForSeconds(0.15f);
+        yield return new WaitForSeconds(0.1f);
+        
         me.enabled = false;
         trail.enabled = false;
+        
         StartCoroutine(StartAttack());
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(0.5f);
+        
         me.enabled = true;
         trail.enabled = true;
+        
         StartCoroutine(Attacking());
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(1.4f);
+        yield return new WaitForSeconds(0.8f);
         StartCoroutine(EndOfAttack());
         yield return new WaitForSeconds(0.56f);
         Reset();
@@ -148,35 +151,28 @@ public class PlayerSword : MonoBehaviour
                 Destroy(obj);
             }
             obj = Instantiate(swordIllusions, pos, Quaternion.Euler(0, 0, angle - 90f));
-
+            
             if (obj.TryGetComponent(out SwordUltraAttack swordUltra))
             {
                 swordUltra.Initialize(dir, 100);
             }
-            
-            GameObject obj2 = Instantiate(attackAfterImage, pos, Quaternion.Euler(0, 0, angle - 90f));
-            if (obj2.TryGetComponent(out SwordUltraAttack sword))
-            {
-                sword.Initialize(dir, 100);
-            }
-            swords.Add(obj2);
 
             Illusions.Add(Instantiate(playerIllusions, pos, Quaternion.identity));
             
-            SpawnAttackRandom();
-            yield return new WaitForSeconds(0.17f);
+            // SpawnAttackRandom();
+            yield return new WaitForSeconds(0.12f);
         }
         Destroy(obj);
     }
 
     private IEnumerator Attacking()
     {
-        SpawnAttackRandom();
+        // SpawnAttackRandom();
         GameObject obj = null;
-        for (int i = 0; i < posOffsets.Length * 2; i++)
+        for (int i = 0; i < posOffsets.Length * 10; i++)
         {
             obj = SpawnSwordRandom();
-            yield return new WaitForSeconds(0.07f);
+            yield return new WaitForSeconds(0.015f);
         }
         Destroy(obj);
     }
@@ -184,10 +180,6 @@ public class PlayerSword : MonoBehaviour
     private IEnumerator EndOfAttack()
     {
         foreach (var sword in Illusions)
-        {
-            Destroy(sword);
-        }
-        foreach (var sword in swords)
         {
             Destroy(sword);
         }
@@ -233,10 +225,10 @@ public class PlayerSword : MonoBehaviour
 
         Vector2 pos = (Vector2)transform.position + 
                       new Vector2(Mathf.Cos(angle3), Mathf.Sin(angle3)) * radius + 
-                      new Vector2(Random.Range(-0.2f, 0.2f), Random.Range(-0.2f, 0.2f));
+                      new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
         Vector2 dir = (Vector2)transform.position + 
                       new Vector2(Mathf.Cos(angle2), Mathf.Sin(angle2)) * radius + 
-                      new Vector2(Random.Range(-0.2f, 0.2f), Random.Range(-0.2f, 0.2f));
+                      new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
 
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 

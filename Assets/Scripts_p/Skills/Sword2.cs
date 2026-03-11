@@ -4,6 +4,9 @@ public class Sword2 : SkillBase
 {
     private LayerMask enemyLayer;
 
+    private const float AngleRange = 125f;
+    private const float HitRadius = 3.5f;
+
     public Sword2()
     {
         enemyLayer = LayerMask.GetMask("Enemy");
@@ -12,45 +15,48 @@ public class Sword2 : SkillBase
     protected override void Execute(GameObject user, Vector2 dir)
     {
         Player player = user.GetComponent<Player>();
-        
+
         if (player.isUsingUltimate)
             return;
-        
-        PlayerAttack playerAttack = user.GetComponent<PlayerAttack>();
+
+        PlayerAttack playerAttack = player.GetComponent<PlayerAttack>();
 
         dir = dir.normalized;
 
-        float angleRange = 125f;
-
-        Vector2 origin = user.transform.position;
+        Vector2 origin = player.transform.position;
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(
             origin,
-            3.5f,
-            LayerMask.GetMask("Enemy")
+            HitRadius,
+            enemyLayer
         );
+
+        float halfAngle = AngleRange * 0.5f;
 
         foreach (var hit in hits)
         {
-            Vector2 toTarget = (hit.transform.position - user.transform.position).normalized;
+            Vector2 toTarget =
+                ((Vector2)hit.transform.position - origin).normalized;
 
             float angle = Vector2.Angle(dir, toTarget);
-            
-            if (angle <= angleRange * 0.5f)
+
+            if (angle > halfAngle)
+                continue;
+
+            if (hit.TryGetComponent(out IDamageable target))
             {
-                if (hit.TryGetComponent(out IDamageable target))
-                {
-                    target.TakeDamage(data.Damage * 1.8f);
-                    target.ApplyKnockback(dir, 8f, 0.15f);
-                    player.AddGauge(1);
-                }
+                float finalDamage = player.Stats.Damage * 1.8f;
+
+                target.TakeDamage(finalDamage);
+                target.ApplyKnockback(dir, 8f, 0.15f);
+
+                player.AddGauge(1);
             }
         }
 
         // 환영 생성
-        playerAttack.SpawnIllusions(data.Damage * 0.35f);
+        playerAttack.SpawnIllusions(player.Stats.Damage * 0.35f);
 
         lastUsedTime = Time.time;
-
     }
 }

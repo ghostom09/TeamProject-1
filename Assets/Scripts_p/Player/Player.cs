@@ -5,12 +5,15 @@ using UnityEngine.TextCore.Text;
 
 public class Player : MonoBehaviour, IDamageable
 {
+    
     [SerializeField] private PlayerSkillExecutor playerSkillExecutor;
     [SerializeField] private CharacterData character;
     [SerializeField] private PlayerAttack attacker;
     [SerializeField] private PlayerMove move;
     
     private Coroutine invincibleCoroutine;
+
+    public PlayerStats Stats { get; private set; } = new PlayerStats();
     
     public float invincibilityDuration;
     public float currentGauge;
@@ -26,8 +29,9 @@ public class Player : MonoBehaviour, IDamageable
     }
     public void Init(CharacterData data)
     {
+        Stats.Init(data);
         playerSkillExecutor.Init(data.Skills, data);
-        move.Init(data.MoveSpeed, 13);
+        move.Init(this, 13);
         attacker.Init(data);
     }
 

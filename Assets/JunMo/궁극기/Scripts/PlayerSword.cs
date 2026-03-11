@@ -91,7 +91,6 @@ public class PlayerSword : MonoBehaviour
     
     public void Ultimate()
     {
-        StopAllCoroutines();
         StartCoroutine(UltimateRoutine());
     }
 
@@ -108,6 +107,9 @@ public class PlayerSword : MonoBehaviour
         StartCoroutine(Attacking());
         yield return new WaitForSeconds(1.2f);
         StartCoroutine(EndOfAttack());
+        yield return new WaitForSeconds(0.56f);
+        Reset();
+        
     }
 
     private IEnumerator Background()
@@ -120,7 +122,7 @@ public class PlayerSword : MonoBehaviour
 
         while (time < duration)
         {
-            time += Time.deltaTime * 5;
+            time += Time.deltaTime * 7;
             float progress = Mathf.Clamp01(time / duration);
 
             background.anchorMax = new Vector2(progress, 1);
@@ -149,13 +151,13 @@ public class PlayerSword : MonoBehaviour
 
             if (obj.TryGetComponent(out SwordUltraAttack swordUltra))
             {
-                swordUltra.Initialize(dir, 50);
+                swordUltra.Initialize(dir, 100);
             }
             
             GameObject obj2 = Instantiate(attackAfterImage, pos, Quaternion.Euler(0, 0, angle - 90f));
             if (obj2.TryGetComponent(out SwordUltraAttack sword))
             {
-                sword.Initialize(dir, 50);
+                sword.Initialize(dir, 100);
             }
             swords.Add(obj2);
 
@@ -164,19 +166,19 @@ public class PlayerSword : MonoBehaviour
             SpawnAttackRandom();
             yield return new WaitForSeconds(0.17f);
         }
-        if (obj != null)
-        {
-            Destroy(obj);
-        }
+        Destroy(obj);
     }
 
     private IEnumerator Attacking()
     {
+        SpawnAttackRandom();
+        GameObject obj = null;
         for (int i = 0; i < posOffsets.Length * 2; i++)
         {
-            SpawnSwordRandom();
+            obj = SpawnSwordRandom();
             yield return new WaitForSeconds(0.07f);
         }
+        Destroy(obj);
     }
 
     private IEnumerator EndOfAttack()
@@ -197,6 +199,11 @@ public class PlayerSword : MonoBehaviour
         yield return null;
     }
 
+    private IEnumerator Timer(float time)
+    {
+        yield return new WaitForSeconds(time);
+    }
+
     private void SpawnAttackRandom()
     {
         Vector2 randomStart = (Vector2)transform.position + Random.insideUnitCircle * 5.5f;
@@ -205,12 +212,12 @@ public class PlayerSword : MonoBehaviour
         GameObject obj = Instantiate(attackIllusions, randomStart, Quaternion.identity);
         if (obj.TryGetComponent(out SwordUltraAttack sword))
         {
-            sword.Initialize(randomTarget, 50);
+            sword.Initialize(randomTarget, 100);
         }
         fastBroken.Add(obj);
     }
 
-    private void SpawnSwordRandom()
+    private GameObject SpawnSwordRandom()
     {
         float angle1 = Random.Range(0f, 360f);
         float offset = Random.Range(140f, 220f);
@@ -229,21 +236,22 @@ public class PlayerSword : MonoBehaviour
 
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
-        GameObject obj;
-        bool random = Random.Range(0f, 1f) < 0.5f;
-        if (random)
-        {
-            obj = Instantiate(swordIllusions, pos, Quaternion.Euler(0, 0, angle - 90f));
-        }
-        else
-        {
-            obj = Instantiate(swordIllusions2, pos, Quaternion.Euler(0, 0, angle - 90f));
-        }
+        GameObject obj = Instantiate(swordIllusions2, pos, Quaternion.Euler(0, 0, angle - 90f));
+        
         if (obj.TryGetComponent(out SwordUltraAttack swordUltra))
         {
-            swordUltra.Initialize(dir, 50);
+            swordUltra.Initialize(dir, 100);
         }
-        swords.Add(obj);
+        
+        Destroy(obj, 0.5f);
+        return obj;
+    }
+
+    private void Reset()
+    {
+        StopAllCoroutines();
+        background.anchorMin = new Vector2(0, 0);
+        background.anchorMax = new Vector2(0, 1);
     }
     
     void Update()

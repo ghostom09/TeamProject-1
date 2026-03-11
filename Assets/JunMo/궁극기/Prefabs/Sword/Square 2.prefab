@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 5399030414042311396}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.88376, y: 0.2108, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -157,8 +157,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5811ecbf6e60b44a8151c6baf619d05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SwordUltraAttack
-  trail1: {fileID: 7099946996712030226}
-  trail2: {fileID: 2160217612869504207}
 --- !u!50 &510334868255137275
 Rigidbody2D:
   serializedVersion: 5
@@ -270,7 +268,7 @@ TrailRenderer:
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.2
+    widthMultiplier: 0.17
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -288,8 +286,8 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.17740393, g: 0, b: 1, a: 1}
-      key1: {r: 0.14719057, g: 0, b: 1, a: 1}
+      key0: {r: 0, g: 0.7279744, b: 1, a: 1}
+      key1: {r: 0, g: 0.7285204, b: 1, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}

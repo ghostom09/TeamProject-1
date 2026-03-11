@@ -1,18 +1,20 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 public class SwordNormalAttack : INormalAttack
 {
     private int comboIndex = 0;
     private float lastAttackTime;
-    private float comboResetTime = 1.5f;
+    private const float ComboResetTime = 1.5f;
 
     private CharacterData data;
+
+    private LayerMask enemyLayer;
 
     public void Init(CharacterData data)
     {
         this.data = data;
+        enemyLayer = LayerMask.GetMask("Enemy");
     }
 
     private float GetComboRangeMultiplier()
@@ -39,55 +41,58 @@ public class SwordNormalAttack : INormalAttack
 
     public bool TryAttack(GameObject user, Vector2 dir)
     {
-        if (Time.time > lastAttackTime + comboResetTime)
+        Player player = user.GetComponent<Player>();
+
+        if (Time.time > lastAttackTime + ComboResetTime)
             comboIndex = 0;
 
-        float attackInterval = 1f / data.AttackSpeed;
+        float attackInterval = 1f / player.Stats.AttackSpeed;
 
         if (Time.time < lastAttackTime + attackInterval)
-        {
-            Debug.Log("공격 쿨타임!!!");
             return false;
-        }
 
         lastAttackTime = Time.time;
 
-        DoComboAttack(user, dir);
+        DoComboAttack(player, user, dir);
 
         return true;
     }
-    private void DoComboAttack(GameObject user, Vector2 dir)
+
+    private void DoComboAttack(Player player, GameObject user, Vector2 dir)
     {
+        Vector2 origin = user.transform.position;
+
         float range = data.Range * GetComboRangeMultiplier();
-        float damage = data.Damage * GetComboDamageMultiplier();
+        float damage = player.Stats.Damage * GetComboDamageMultiplier();
 
-        Vector2 center =
-            (Vector2)user.transform.position +
-            dir * range * 0.5f;
+        Vector2 center = origin + dir * range * 0.5f;
 
-        Collider2D[] hits =
-            Physics2D.OverlapCircleAll(center, range * 0.5f, LayerMask.GetMask("Enemy"));
+        Collider2D[] hits = Physics2D.OverlapCircleAll(
+            center,
+            range * 0.5f,
+            enemyLayer
+        );
 
         HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
 
         foreach (var hit in hits)
         {
-            if (hit.TryGetComponent<IDamageable>(out var target))
-            {
-                if (hitTargets.Contains(target))
-                    continue;
+            if (!hit.TryGetComponent(out IDamageable target))
+                continue;
 
-                Vector2 toTarget =
-                    (hit.transform.position - user.transform.position).normalized;
+            if (hitTargets.Contains(target))
+                continue;
 
-                if (Vector2.Dot(dir, toTarget) < 0.3f)
-                    continue;
+            Vector2 toTarget =
+                ((Vector2)hit.transform.position - origin).normalized;
 
-                target.TakeDamage(damage);
-                target.ApplyKnockback(toTarget, 3f, 0.15f);
+            if (Vector2.Dot(dir, toTarget) < 0.3f)
+                continue;
 
-                hitTargets.Add(target);
-            }
+            target.TakeDamage(damage);
+            target.ApplyKnockback(toTarget, 3f, 0.15f);
+
+            hitTargets.Add(target);
         }
 
         comboIndex = (comboIndex + 1) % 3;

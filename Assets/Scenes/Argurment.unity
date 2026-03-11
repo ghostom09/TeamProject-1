@@ -1363,8 +1363,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ArgumentManager
   upgradeManager: {fileID: 1706721074}
-  argument: {fileID: 0}
-  argumentPanel: {fileID: 0}
+  argument: {fileID: 8570596616840126029, guid: 54307197f203e87409a195c8cb51cd9f, type: 3}
+  argumentPanel: {fileID: 6057273295143903499, guid: 54307197f203e87409a195c8cb51cd9f, type: 3}
 --- !u!114 &1706721074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1377,10 +1377,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97563105e22af23429e58f591e4c081a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeManager
-  argumentManager: {fileID: 0}
+  argumentManager: {fileID: 1706721073}
   allSkills: []
   allStats: []
-  player: {fileID: 0}
 --- !u!4 &1706721075
 Transform:
   m_ObjectHideFlags: 0

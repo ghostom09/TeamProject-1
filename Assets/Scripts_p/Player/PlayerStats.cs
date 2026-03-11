@@ -13,43 +13,57 @@ public class PlayerStats
     private float rangeModifier = 1f;
     private float attackSpeedModifier = 1f;
 
+    // Flat Add
+    private float bonusHp = 0f;
+
     // Current
     public float currentHp;
 
-    public float MoveSpeed => baseMoveSpeed * moveSpeedModifier;
-    public float Damage => baseDamage * damageModifier;
-    public float Range => baseRange * rangeModifier;
-    public float AttackSpeed => baseAttackSpeed * attackSpeedModifier;
+    public float MoveSpeed    => baseMoveSpeed    * moveSpeedModifier;
+    public float Damage       => baseDamage       * damageModifier;
+    public float Range        => baseRange        * rangeModifier;
+    public float AttackSpeed  => baseAttackSpeed  * attackSpeedModifier;
+    public float MaxHp        => baseHp + bonusHp;
 
     public void Init(CharacterData data)
     {
         baseMoveSpeed = data.MoveSpeed;
-        baseDamage = data.Damage;
-        baseHp = data.Hp;
-        baseRange = data.Range;
+        baseDamage    = data.Damage;
+        baseHp        = data.Hp;
+        baseRange     = data.Range;
         baseAttackSpeed = data.AttackSpeed;
 
-        currentHp = baseHp;
+        currentHp = MaxHp;
     }
 
     // Modifier 추가
-    public void AddMoveSpeed(float percent)
-    {
-        moveSpeedModifier += percent;
-    }
+    public void AddMoveSpeed(float percent)    { moveSpeedModifier   += percent; }
+    public void AddDamage(float percent)       { damageModifier      += percent; }
+    public void AddAttackSpeed(float percent)  { attackSpeedModifier += percent; }
+    public void AddRange(float percent)        { rangeModifier       += percent; }
 
-    public void AddDamage(float percent)
+    // Flat HP 증가 (Health 스탯)
+    public void AddMaxHp(float flat)
     {
-        damageModifier += percent;
+        bonusHp   += flat;
+        currentHp += flat;
     }
-
-    public void AddAttackSpeed(float percent)
+    public void Heal(float amount)
     {
-        attackSpeedModifier += percent;
+        currentHp = UnityEngine.Mathf.Min(currentHp + amount, MaxHp);
     }
-
-    public void AddRange(float percent)
+    public void ApplyStat(StatArgumentData stat)
     {
-        rangeModifier += percent;
+        if (stat == null) return;
+
+        switch (stat.statType)
+        {
+            case StatType.Health:      AddMaxHp(stat.value);        break;
+            case StatType.Attack:      AddDamage(stat.value);       break;
+            case StatType.AttackSpeed: AddAttackSpeed(stat.value);  break;
+            case StatType.Speed:       AddMoveSpeed(stat.value);    break;
+            case StatType.Range:       AddRange(stat.value);        break;
+            case StatType.Heal:        Heal(stat.value);            break;
+        }
     }
 }

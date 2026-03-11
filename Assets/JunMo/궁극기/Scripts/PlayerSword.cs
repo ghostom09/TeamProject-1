@@ -8,29 +8,35 @@ public class PlayerSword : MonoBehaviour
     [SerializeField] private CameraMove cam;
     [SerializeField] private GameObject swordIllusions;
     [SerializeField] private GameObject swordIllusions2;
+    [SerializeField] private GameObject attackIllusions;
     [SerializeField] private GameObject bigSwordIllusions;
     [SerializeField] private GameObject playerIllusions;
     [SerializeField] private SpriteRenderer me;
     [SerializeField] private TrailRenderer trail;
     [SerializeField] private RectTransform background;
     
-    private List<SwordUltraAttack> swordUltraAttacks = new();
-    private List<GameObject> ultraObject = new();
+    private List<GameObject> Illusions = new();
+    private List<GameObject> fastBroken = new();
+    private int illusionsCnt = 5;
     
-    public float radius = 5f;
+    public float radius = 6f;
     
     Vector2[] posOffsets = new Vector2[]
     {
-        new Vector2(2, 3),
-        new Vector2(-3.25f, 2.2f),
-        new Vector2(0.9f, 3.8f),
+        new Vector2(1.83f, -3.28f),
+        new Vector2(-3.48f, 1.90f),
+        new Vector2(3.82f, 1.06f),
+        new Vector2(-3.04f, -2.36f),
+        new Vector2(0.22f, 3.89f)
     };
 
     Vector2[] dirOffsets = new Vector2[]
     {
-        new Vector2(-3.8f, -0.95f),
-        new Vector2(3.7f, -1),
-        new Vector2(-2.5f, 2.85f),
+        new Vector2(-3.48f, 1.90f),
+        new Vector2(3.82f, 1.06f),
+        new Vector2(-3.04f, -2.36f),
+        new Vector2(0.22f, 3.89f),
+        new Vector2(1.83f, -3.28f),
     };
     // private List<SwordIllusionsAttack> _illusions 
     //     = new List<SwordIllusionsAttack>();
@@ -83,7 +89,6 @@ public class PlayerSword : MonoBehaviour
     
     public void Ultimate()
     {
-        StopAllCoroutines();
         StartCoroutine(UltimateRoutine());
     }
 
@@ -91,15 +96,23 @@ public class PlayerSword : MonoBehaviour
     {
         StartCoroutine(Background());
         yield return new WaitForSeconds(0.1f);
+        
         me.enabled = false;
         trail.enabled = false;
+        
         StartCoroutine(StartAttack());
-        yield return new WaitForSeconds(0.6f);
+        yield return new WaitForSeconds(0.5f);
+        
         me.enabled = true;
         trail.enabled = true;
+        
         StartCoroutine(Attacking());
-        yield return new WaitForSeconds(0.6f);
+        yield return new WaitForSeconds(1.4f);
+        yield return new WaitForSeconds(0.8f);
         StartCoroutine(EndOfAttack());
+        yield return new WaitForSeconds(0.56f);
+        Reset();
+        
     }
 
     private IEnumerator Background()
@@ -112,7 +125,7 @@ public class PlayerSword : MonoBehaviour
 
         while (time < duration)
         {
-            time += Time.time;
+            time += Time.deltaTime * 7;
             float progress = Mathf.Clamp01(time / duration);
 
             background.anchorMax = new Vector2(progress, 1);
@@ -125,72 +138,116 @@ public class PlayerSword : MonoBehaviour
 
     private IEnumerator StartAttack()
     {
+        GameObject obj = null;
         for (int i = 0; i < posOffsets.Length; i++)
         {
             Vector2 pos = (Vector2)transform.position + posOffsets[i];
-            Vector3 dir = (Vector2)transform.position + dirOffsets[i] - pos;
+            Vector2 dir = (Vector2)transform.position + dirOffsets[i];
 
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
-            GameObject obj = Instantiate(swordIllusions, pos, Quaternion.Euler(0, 0, angle - 90f));
-            SwordUltraAttack swordUltra = obj.GetComponent<SwordUltraAttack>();
-
-            swordUltra.Initialize(dir, 50);
-            ultraObject.Add(obj);
-
-            ultraObject.Add(Instantiate(playerIllusions, pos, Quaternion.identity));
+            if (obj != null)
+            {
+                Destroy(obj);
+            }
+            obj = Instantiate(swordIllusions, pos, Quaternion.Euler(0, 0, angle - 90f));
             
-            Vector2 randomStart = (Vector2)transform.position + Random.insideUnitCircle * 5.5f;
-            Vector2 randomTarget = (Vector2)transform.position + Random.insideUnitCircle * 5.5f;
+            if (obj.TryGetComponent(out SwordUltraAttack swordUltra))
+            {
+                swordUltra.Initialize(dir, 100);
+            }
 
-            GameObject obj2 = Instantiate(swordIllusions2, randomStart, Quaternion.identity);
-            SwordUltraAttack sword = obj2.GetComponent<SwordUltraAttack>();
-            ultraObject.Add(obj2);
-            sword.Initialize(randomTarget, 50);
+            Illusions.Add(Instantiate(playerIllusions, pos, Quaternion.identity));
             
-            yield return new WaitForSeconds(0.1f);
+            // SpawnAttackRandom();
+            yield return new WaitForSeconds(0.12f);
         }
+        Destroy(obj);
     }
 
     private IEnumerator Attacking()
     {
-        for (int i = 0; i < posOffsets.Length; i++)
+        // SpawnAttackRandom();
+        GameObject obj = null;
+        for (int i = 0; i < posOffsets.Length * 10; i++)
         {
-            float angle1 = Random.Range(0f, 360f) * Mathf.Deg2Rad;
-            float angle2 = Random.Range(0f, 360f) * Mathf.Deg2Rad;
-
-            Vector2 point1 = (Vector2)transform.position + new Vector2(Mathf.Cos(angle1), Mathf.Sin(angle1)) * radius;
-            Vector2 point2 = (Vector2)transform.position + new Vector2(Mathf.Cos(angle2), Mathf.Sin(angle2)) * radius;
-            
-            Vector2 pos = (Vector2)transform.position + point1;
-            Vector3 dir = (Vector2)transform.position + point2;
-
-            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-
-            GameObject obj = Instantiate(swordIllusions, pos, Quaternion.Euler(0, 0, angle - 90f));
-            SwordUltraAttack swordUltra = obj.GetComponent<SwordUltraAttack>();
-
-            swordUltra.Initialize(dir, 50);
-            ultraObject.Add(obj);
-
-            yield return new WaitForSeconds(0.1f);
+            obj = SpawnSwordRandom();
+            yield return new WaitForSeconds(0.015f);
         }
-
-        yield return new WaitForSeconds(0.4f);
-        foreach (var sword in ultraObject)
-        {
-            Destroy(sword);
-        }
+        Destroy(obj);
     }
 
     private IEnumerator EndOfAttack()
     {
-        GameObject swords = Instantiate(bigSwordIllusions, transform.position, Quaternion.identity);
+        foreach (var sword in Illusions)
+        {
+            Destroy(sword);
+        }
+        foreach (var sword in fastBroken)
+        {
+            Destroy(sword);
+        }
+        GameObject bigSword = Instantiate(bigSwordIllusions, transform.position, Quaternion.identity);
 
         yield return new WaitForSeconds(0.5f);
-        Destroy(swords);
+        Destroy(bigSword);
 
         yield return null;
+    }
+
+    private IEnumerator Timer(float time)
+    {
+        yield return new WaitForSeconds(time);
+    }
+
+    private void SpawnAttackRandom()
+    {
+        Vector2 randomStart = (Vector2)transform.position + Random.insideUnitCircle * 5.5f;
+        Vector2 randomTarget = (Vector2)transform.position + Random.insideUnitCircle * 5.5f;
+
+        GameObject obj = Instantiate(attackIllusions, randomStart, Quaternion.identity);
+        if (obj.TryGetComponent(out SwordUltraAttack sword))
+        {
+            sword.Initialize(randomTarget, 100);
+        }
+        fastBroken.Add(obj);
+    }
+
+    private GameObject SpawnSwordRandom()
+    {
+        float angle1 = Random.Range(0f, 360f);
+        float offset = Random.Range(140f, 220f);
+
+        float rad = Mathf.Deg2Rad;
+
+        float angle3 = angle1 * rad;
+        float angle2 = (angle1 + offset) * rad;
+
+        Vector2 pos = (Vector2)transform.position + 
+                      new Vector2(Mathf.Cos(angle3), Mathf.Sin(angle3)) * radius + 
+                      new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+        Vector2 dir = (Vector2)transform.position + 
+                      new Vector2(Mathf.Cos(angle2), Mathf.Sin(angle2)) * radius + 
+                      new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+        GameObject obj = Instantiate(swordIllusions2, pos, Quaternion.Euler(0, 0, angle - 90f));
+        
+        if (obj.TryGetComponent(out SwordUltraAttack swordUltra))
+        {
+            swordUltra.Initialize(dir, 100);
+        }
+        
+        Destroy(obj, 0.5f);
+        return obj;
+    }
+
+    private void Reset()
+    {
+        StopAllCoroutines();
+        background.anchorMin = new Vector2(0, 0);
+        background.anchorMax = new Vector2(0, 1);
     }
     
     void Update()

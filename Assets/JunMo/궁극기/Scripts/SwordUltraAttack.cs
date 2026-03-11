@@ -2,9 +2,6 @@ using UnityEngine;
 
 public class SwordUltraAttack : MonoBehaviour
 {
-    [SerializeField] private TrailRenderer trail1;
-    [SerializeField] private TrailRenderer trail2;
-
     Vector2 target;
     float speed;
 

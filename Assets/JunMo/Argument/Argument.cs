@@ -86,7 +86,8 @@ public class Argument : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     
     public void FadeOut(float duration)
     {
-        StopCoroutine(FadeCoroutine(duration));
+        StopAllCoroutines();
+        StartCoroutine(FadeCoroutine(duration));
         StartCoroutine(FadeCoroutine(duration));
     }
     private IEnumerator FadeCoroutine(float duration)

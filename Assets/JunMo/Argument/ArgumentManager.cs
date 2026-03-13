@@ -59,8 +59,8 @@ public class ArgumentManager : MonoBehaviour
 
             if (data is SkillArgumentData skill)
             {
-                int level = upgradeManager.GetSkillLevel(skill) + 1;
-                argument.SetSkill(skill, level);
+                int level = upgradeManager.GetSkillLevel(skill);
+                argument.SetSkill(skill, level + 1);
             }
             else if (data is StatArgumentData stat)
                 argument.SetStat(stat);

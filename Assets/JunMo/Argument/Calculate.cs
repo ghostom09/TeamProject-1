@@ -13,8 +13,11 @@ public class OwnedSkill
     }
     
     public bool CanUpgrade() => currentLevel < data.maxLevel;
-    public void Upgrade() 
-    { 
-        if (CanUpgrade()) currentLevel++; 
+    public void Upgrade()
+    {
+        if (currentLevel >= data.maxLevel)
+            return;
+
+        currentLevel++;
     }
 }

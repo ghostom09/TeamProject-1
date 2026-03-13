@@ -15,10 +15,10 @@ MonoBehaviour:
   itemName: gun
   description: sdafsafas
   icon: {fileID: -1856773366626861424, guid: 915a5f54a26e5c943a35419e58b17270, type: 3}
-  skillKind: 0
-  jobType: 0
-  maxLevel: 3
+  weight: 10
+  allowedJobs: 01000000
   level: 1
+  skillType: 3
   levelValues:
   - 15
   - 20

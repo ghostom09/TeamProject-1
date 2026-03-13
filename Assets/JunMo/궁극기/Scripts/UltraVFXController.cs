@@ -9,11 +9,11 @@ public class UltraVFXController : MonoBehaviour
 
     public static bool usingUltra = false;
     
-    private JobType jobType = JobType.Gun;
+    private jobType jobType = jobType.Gun;
     
     [SerializeField]private
 
-    void Job(JobType jobType)
+    void Job(jobType jobType)
     {
         this.jobType = jobType;
     }
@@ -46,7 +46,7 @@ public class UltraVFXController : MonoBehaviour
 
     private void UseUltra()
     {
-        if (jobType == JobType.Gun)
+        if (jobType == jobType.Gun)
         {
             paradoxController.SetVolumeActive(true);
         }

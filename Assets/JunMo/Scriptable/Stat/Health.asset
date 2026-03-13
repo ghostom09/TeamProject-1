@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec22eef79916f4f4fb2596b03b31aaa3, type: 3}
   m_Name: Health
   m_EditorClassIdentifier: Assembly-CSharp::StatArgumentData
-  itemName: asdqwe
+  itemName: health
   description: asfsa
-  icon: {fileID: 0}
-  statType: 0
-  modifierType: 0
+  icon: {fileID: -3098477767324431825, guid: e619c7a740eff644493598123e4800a8, type: 3}
+  weight: 10
+  allowedJobs: 
   value: 10
+  statType: 0

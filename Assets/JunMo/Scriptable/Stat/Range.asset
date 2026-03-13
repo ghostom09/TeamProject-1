@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec22eef79916f4f4fb2596b03b31aaa3, type: 3}
   m_Name: Range
   m_EditorClassIdentifier: Assembly-CSharp::StatArgumentData
-  itemName: asdqwe
+  itemName: range
   description: asfsa
-  icon: {fileID: 0}
-  statType: 0
-  modifierType: 0
+  icon: {fileID: 4394833389499334647, guid: ea076d04ad2b4534491acec397dae5b4, type: 3}
+  weight: 10
+  allowedJobs: 
   value: 10
+  statType: 4

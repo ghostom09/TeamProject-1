@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class EnemyTest : MonoBehaviour
+public class EnemyTest : MonoBehaviour, IDamageable
 {
     [SerializeField] private ParticleSystem mainParticle;
     [SerializeField] private ParticleSystem sparkParticle;
@@ -21,20 +21,31 @@ public class EnemyTest : MonoBehaviour
         ultraSparkParticle.Stop();
     }
 
-    void Update()
+    public void TakeDamage(float damage)
     {
-        if (Keyboard.current.spaceKey.wasPressedThisFrame) //충돌시 호출할것
+        if (UltraVFXController.usingUltra)
         {
-            if (UltraVFXController.usingUltra)
-            {
-                UltraAttacked();
-            }
-            else
-            {
-                Attacked();
-            }
+            UltraAttacked();
+        }
+        else
+        {
+            Attacked();
         }
     }
+
+    public void ApplySlow(float percent, float duration)
+    {
+        if (UltraVFXController.usingUltra)
+        {
+            // 궁에 슬로우?
+        }
+        else
+        {
+            // 평타에 슬로우?
+        }
+    }
+    
+    public void ApplyKnockback(Vector2 dir, float power, float duration){ }
 
     void UltraAttacked()
     {
@@ -53,7 +64,7 @@ public class EnemyTest : MonoBehaviour
         enemy.color = new Color(1f, 0f, 0f, 1f);
     }
 
-    public void SpawnHitEffect(Transform attacker, Transform target)
+    void SpawnHitEffect(Transform attacker, Transform target)
     {
         Vector3 hitDirection = (target.position - attacker.position).normalized;
         Vector3 effectDirection = hitDirection;
@@ -88,13 +99,6 @@ public class EnemyTest : MonoBehaviour
 
     public void UseUltra(bool enable)
     {
-        if (enable)
-        {
-            enemy.color = new Color(1f, 0f, 0f, 1f);
-        }
-        else
-        {
-            enemy.color = new Color(1f, 1f, 1f, 1f);
-        }
+        enemy.color = enable ? new Color(1f, 0f, 0f, 1f) : new Color(1f, 1f, 1f, 1f);
     }
 }

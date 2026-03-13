@@ -1,21 +1,19 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Gun1 : SkillBase
 {
     public bool ignoreMoveLock = false;
-    
+
     private const float StopTime = 0.5f;
     private const float SlowPercent = 25f;
     private const float SlowDuration = 2.5f;
 
     private LayerMask hitLayer;
-    
 
     public Gun1()
     {
-        hitLayer = LayerMask.GetMask("Enemy","Wall");
+        hitLayer = LayerMask.GetMask("Enemy", "Wall");
     }
 
     protected override void Execute(GameObject user, Vector2 dir)
@@ -24,16 +22,15 @@ public class Gun1 : SkillBase
 
         if (player.isUsingUltimate)
             return;
-        
+
         lastUsedTime = Time.time;
-        user.GetComponent<MonoBehaviour>()
-            .StartCoroutine(GoldenShotRoutine(user, dir));
+
+        player.StartCoroutine(GoldenShotRoutine(player, dir));
     }
 
-    private IEnumerator GoldenShotRoutine(GameObject user, Vector2 dir)
+    private IEnumerator GoldenShotRoutine(Player player, Vector2 dir)
     {
-        var mover = user.GetComponent<IPlayerMover>();
-        Player player = user.GetComponent<Player>();
+        IPlayerMover mover = player.GetComponent<IPlayerMover>();
 
         float waitTime = ignoreMoveLock ? 0f : StopTime;
 
@@ -45,12 +42,12 @@ public class Gun1 : SkillBase
 
         mover?.SetMoveLock(MoveLockType.None);
 
-        FireHitScan(user, dir, player);
+        FireHitScan(player, dir);
     }
 
-    private void FireHitScan(GameObject user, Vector2 dir, Player player)
+    private void FireHitScan(Player player, Vector2 dir)
     {
-        Vector2 origin = user.transform.position;
+        Vector2 origin = player.transform.position;
 
         RaycastHit2D hit = Physics2D.Raycast(
             origin,
@@ -62,7 +59,7 @@ public class Gun1 : SkillBase
         Debug.DrawRay(origin, dir.normalized * (data.Range * 2), Color.yellow, 1f);
 
         if (!hit) return;
-        
+
         Collider2D[] explosion = Physics2D.OverlapCircleAll(
             hit.point,
             data.Range / 4,
@@ -73,13 +70,17 @@ public class Gun1 : SkillBase
         {
             if (col.TryGetComponent<IDamageable>(out var target))
             {
-                
-                target.TakeDamage(data.Damage * 2.5f);
-                target.ApplyKnockback(dir, 6f, 0.15f);
+                Vector2 knockDir =
+                    (col.transform.position - (Vector3)hit.point).normalized;
+
+                float finalDamage = player.Stats.Damage * 2.5f;
+
+                target.TakeDamage(finalDamage);
+                target.ApplyKnockback(knockDir, 6f, 0.15f);
                 target.ApplySlow(SlowPercent, SlowDuration);
+
                 player.AddGauge(1);
             }
         }
-        
     }
 }

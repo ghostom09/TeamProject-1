@@ -1,28 +1,38 @@
-using System.Collections;
+using UnityEngine.InputSystem;
 using UnityEngine;
 using System.Collections.Generic;
 
 public class ArgumentManager : MonoBehaviour
 {
-    [SerializeField]private UpgradeManager upgradeManager;
-    [SerializeField]private Argument argument;
     [SerializeField]private GameObject argumentPanel;
+    [SerializeField]private Canvas canvas;
+    
+    private ArgumentDataManager upgradeManager;
     private List<Argument> arguments = new ();
-    // levelup event
 
-    private float maxWidth = 1000f;
-    private int spawnCount = 3;
+    private float maxWidth = 450f;
     private int argumentCount = 0;
+
+    public int spawnCount = 3;
+    void Awake()
+    {
+        upgradeManager = GetComponent<ArgumentDataManager>();
+    }
     
     void Start()
     {
         Spawn(spawnCount);
     }
+    
     void Spawn(int count)
     {
         arguments.Clear();
+
+        List<ArgumentData> datas = upgradeManager.GetRandomArguments(count);
+
         float spacing = (count == 1) ? 0 : maxWidth / (count - 1);
-        for (int i = 0; i < count; i++)
+
+        for (int i = 0; i < datas.Count; i++)
         {
             float x;
             bool centerAlign = (count % 2 == 1);
@@ -37,28 +47,56 @@ public class ArgumentManager : MonoBehaviour
 
             Argument argument = obj.GetComponent<Argument>();
             argument.on_Click += OnArgumentClicked;
+
             arguments.Add(argument);
+            argument.SetID(i);
+
             rt.anchoredPosition = new Vector2(x, 0);
             rt.localScale = Vector3.one;
             rt.sizeDelta = ((RectTransform)argumentPanel.transform).sizeDelta;
-            argument.SetID(argumentCount++);
-            if (upgradeManager.RandomType())
-                argument.SetStat(upgradeManager.RandomStat());
-            else
-                argument.SetSkill(upgradeManager.RandomSkill());
+
+            ArgumentData data = datas[i];
+
+            if (data is SkillArgumentData skill)
+            {
+                int level = upgradeManager.GetSkillLevel(skill);
+                argument.SetSkill(skill, level + 1);
+            }
+            else if (data is StatArgumentData stat)
+                argument.SetStat(stat);
         }
     }
 
     
     void OnArgumentClicked(int argumentID)
     {
+        ArgumentData data = upgradeManager.MakeArgument(argumentID);
+
         foreach (Argument clickedArgument in arguments)
         {
             if (clickedArgument == arguments[argumentID])
             {
                 arguments[argumentID].FadeOut(1f);
+
+                if (data is SkillArgumentData skill)
+                {
+                    upgradeManager.ApplySkillResult(skill);
+                }
+
+                upgradeManager.ConvertToResult(data);
             }
-            else clickedArgument.FadeOut(0.3f);
+            else
+            {
+                clickedArgument.FadeOut(0.3f);
+            }
+        }
+    }
+    
+    void Update()
+    {
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            Spawn(spawnCount);
         }
     }
 }

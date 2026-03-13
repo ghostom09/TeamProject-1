@@ -32,8 +32,7 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
 
     private MoveLockType moveLockType = MoveLockType.None;
 
-    private float moveSpeed;
-    private float dashSpeed;
+    private Player player; // ⭐ Player 참조
     private float jumpForce;
 
     private float coyoteCounter;
@@ -54,11 +53,10 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
         defaultGravity = rb.gravityScale;
     }
 
-    public void Init(float moveSpeed, float jumpForce)
+    public void Init(Player player, float jumpForce)
     {
-        this.moveSpeed = moveSpeed;
+        this.player = player;
         this.jumpForce = jumpForce;
-        dashSpeed = moveSpeed * 1.3f;
     }
 
     public void SetMove(Vector2 move)
@@ -107,7 +105,7 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
         else
         {
             coyoteCounter -= Time.deltaTime;
-            
+
             if (!IsGrounded && jumpCount == 0 && rb.linearVelocity.y < 0)
             {
                 jumpCount = 1;
@@ -137,6 +135,7 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
             Jump();
         }
     }
+
     private void HandleJumpCut()
     {
         if (jumpHeld)
@@ -150,6 +149,7 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
             );
         }
     }
+
     public void SetJumpHeld(bool held)
     {
         jumpHeld = held;
@@ -166,18 +166,35 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
 
     private void HandleMove()
     {
-        if (moveLockType != MoveLockType.None || isKnocked)
+        if (moveLockType == MoveLockType.FullLock || isKnocked)
             return;
 
-        float baseSpeed = isDashing ? dashSpeed : moveSpeed;
+        // ⭐ Stats에서 이동속도 가져오기
+        float baseSpeed = player.Stats.MoveSpeed;
+
+        if (isDashing)
+            baseSpeed *= 1.3f;
+
         float maxSpeed = baseSpeed * slowMultiplier;
 
         float targetSpeed = movement.x * maxSpeed;
         float currentSpeed = rb.linearVelocity.x;
 
-        float accelRate = Mathf.Abs(targetSpeed) > 0.01f
-            ? (Mathf.Approximately(Mathf.Sign(targetSpeed), Mathf.Sign(currentSpeed)) ? acceleration : turnDeceleration)
-            : deceleration;
+        float accelRate;
+
+        if (moveLockType == MoveLockType.HorizontalOnly)
+        {
+            targetSpeed = 0;
+            accelRate = deceleration;
+        }
+        else
+        {
+            accelRate = Mathf.Abs(targetSpeed) > 0.01f
+                ? (Mathf.Approximately(Mathf.Sign(targetSpeed), Mathf.Sign(currentSpeed))
+                    ? acceleration
+                    : turnDeceleration)
+                : deceleration;
+        }
 
         float newSpeed = Mathf.MoveTowards(
             currentSpeed,

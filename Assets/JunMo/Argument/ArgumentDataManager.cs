@@ -15,7 +15,7 @@ public class ArgumentDataManager : MonoBehaviour
     private List<ArgumentData> arguments = new();
     private List<ArgumentData> nowArguments = new();
 
-    private Dictionary<SkillArgumentData, OwnedSkill> ownedSkills = new();
+    private Dictionary<SkillType, OwnedSkill> ownedSkills = new();
 
     void Awake()
     {
@@ -137,7 +137,7 @@ public class ArgumentDataManager : MonoBehaviour
 
     public void ApplySkillResult(SkillArgumentData skillData)
     {
-        if (ownedSkills.TryGetValue(skillData, out var owned))
+        if (ownedSkills.TryGetValue(skillData.skillType, out var owned))
         {
             owned.Upgrade();
         }
@@ -146,16 +146,17 @@ public class ArgumentDataManager : MonoBehaviour
             OwnedSkill newSkill = new OwnedSkill
             {
                 data = skillData,
-                currentLevel = skillData.level,
+                currentLevel = 0
             };
 
-            ownedSkills.Add(skillData, newSkill);
+            newSkill.Upgrade();
+            ownedSkills.Add(skillData.skillType, newSkill);
         }
     }
 
     private bool CanSkillAppear(SkillArgumentData skillData)
     {
-        if (ownedSkills.TryGetValue(skillData, out var owned))
+        if (ownedSkills.TryGetValue(skillData.skillType, out var owned))
         {
             return owned.CanUpgrade();
         }
@@ -165,7 +166,7 @@ public class ArgumentDataManager : MonoBehaviour
     
     public int GetSkillLevel(SkillArgumentData data)
     {
-        if (ownedSkills.TryGetValue(data, out var owned))
+        if (ownedSkills.TryGetValue(data.skillType, out var owned))
             return owned.currentLevel;
 
         return 0;

@@ -2,39 +2,43 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Pool;
 
-public enum objectName{
+public enum ObjectName
+{
     Argument,
-    
 }
+
 public class ObjectPoolManager : MonoBehaviour
 {
     public static ObjectPoolManager Instance { get; private set; }
-    
+
     [System.Serializable]
     public class PoolData
     {
-        public objectName key;
+        public ObjectName key;
         public GameObject prefab;
-        public int defaultCapacity = 1;
+        public int defaultCapacity = 10;
         public int maxSize = 100;
+        public bool prewarm = true;
     }
 
     [SerializeField] private List<PoolData> poolDataList = new();
 
-    private Dictionary<objectName, ObjectPool<GameObject>> _pools = new();
-    private Dictionary<objectName, GameObject> _prefabMap = new();
-    private Dictionary<objectName, Transform> _parentMap = new();
+    private Dictionary<ObjectName, ObjectPool<GameObject>> pools = new();
+    private Dictionary<ObjectName, GameObject> prefabMap = new();
+    private Dictionary<ObjectName, Transform> parentMap = new();
 
-    void Awake()
+    private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(this);
+            DontDestroyOnLoad(gameObject);
+            InitPools();
         }
-        else Destroy(gameObject);
-
-        InitPools();
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void InitPools()
@@ -47,48 +51,87 @@ public class ObjectPoolManager : MonoBehaviour
 
     public void RegisterPool(PoolData data)
     {
-        if (_pools.ContainsKey(data.key)) return;
-        _prefabMap[data.key] = data.prefab;
+        if (pools.ContainsKey(data.key))
+            return;
 
-        var parent = new GameObject($"Pool_{data.key}").transform;
+        prefabMap[data.key] = data.prefab;
+
+        Transform parent = new GameObject($"Pool_{data.key}").transform;
         parent.SetParent(transform);
-        _parentMap[data.key] = parent;
-        
-        var pool = new ObjectPool<GameObject>(
+        parentMap[data.key] = parent;
+
+        ObjectPool<GameObject> pool = new ObjectPool<GameObject>(
             createFunc: () =>
             {
-                var obj = Instantiate(_prefabMap[data.key], _parentMap[data.key]);
+                GameObject obj = Instantiate(prefabMap[data.key], parentMap[data.key]);
                 obj.GetComponent<PooledObject>()?.Init(data.key);
                 return obj;
             },
-            actionOnGet:     obj => obj.SetActive(true),
-            actionOnRelease: obj => obj.SetActive(false),
-            actionOnDestroy: obj => Destroy(obj),
+
+            actionOnGet: (obj) =>
+            {
+                obj.SetActive(true);
+            },
+
+            actionOnRelease: (obj) =>
+            {
+                obj.SetActive(false);
+                obj.transform.SetParent(parentMap[data.key]);
+            },
+
+            actionOnDestroy: (obj) =>
+            {
+                Destroy(obj);
+            },
+
             collectionCheck: Application.isEditor,
             defaultCapacity: data.defaultCapacity,
-            maxSize:         data.maxSize
+            maxSize: data.maxSize
         );
 
-        _pools[data.key] = pool;
+        pools[data.key] = pool;
+
+        if (data.prewarm)
+            Prewarm(data.key, data.defaultCapacity);
     }
-    
-    public GameObject Get(objectName key)
+
+    private void Prewarm(ObjectName key, int count)
     {
-        if (!_pools.TryGetValue(key, out var pool))
+        if (!pools.TryGetValue(key, out var pool))
+            return;
+
+        List<GameObject> temp = new();
+
+        for (int i = 0; i < count; i++)
+            temp.Add(pool.Get());
+
+        foreach (var obj in temp)
+            pool.Release(obj);
+    }
+
+    public GameObject Get(ObjectName key)
+    {
+        if (!pools.TryGetValue(key, out var pool))
         {
-            Debug.LogError($"[PoolManager] '{key}' 풀이 없습니다!");
+            Debug.LogError($"Pool '{key}' does not exist.");
             return null;
         }
+
         return pool.Get();
     }
 
-    public void Release(objectName key, GameObject obj)
+    public void Release(ObjectName key, GameObject obj)
     {
-        if (!_pools.TryGetValue(key, out var pool))
+        if (obj == null)
+            return;
+
+        if (!pools.TryGetValue(key, out var pool))
         {
+            Debug.LogWarning($"Pool '{key}' not found. Destroying object.");
             Destroy(obj);
             return;
         }
+
         pool.Release(obj);
     }
 }

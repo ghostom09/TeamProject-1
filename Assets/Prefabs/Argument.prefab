@@ -637,5 +637,6 @@ MonoBehaviour:
   level: {fileID: 5728416301956300790}
   icon: {fileID: 3819459135713283883}
   argumentPanel: {fileID: 7336542285521307625}
+  pooledObject: {fileID: 7351884510874842274}
   normalScale: {x: 1, y: 1, z: 1}
   kind: 0

@@ -1,28 +1,53 @@
 using UnityEngine;
+using System.Collections;
 
 public class PooledObject : MonoBehaviour
 {
-    private objectName _poolKey;
-    private float _autoReleaseTime = -1f; // -1이면 자동반환 안함
+    private ObjectName poolKey;
 
-    public void Init(objectName key) => _poolKey = key;
+    private Coroutine autoReleaseCoroutine;
+    private bool isReleased;
 
-    // 자동 반환 타이머 설정 (이펙트, 총알 등에 유용)
-    public void AutoRelease(float delay)
+    public void Init(ObjectName key)
     {
-        _autoReleaseTime = delay;
-        CancelInvoke(nameof(ReturnToPool));
-        Invoke(nameof(ReturnToPool), delay);
+        poolKey = key;
+        isReleased = false;
     }
 
-    // 비활성화 시 Invoke 취소 (중복 반환 방지)
-    void OnDisable()
+    public void AutoRelease(float delay)
     {
-        CancelInvoke(nameof(ReturnToPool));
+        if (delay <= 0f)
+            return;
+
+        if (autoReleaseCoroutine != null)
+            StopCoroutine(autoReleaseCoroutine);
+
+        autoReleaseCoroutine = StartCoroutine(AutoReleaseRoutine(delay));
+    }
+
+    private IEnumerator AutoReleaseRoutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        ReturnToPool();
     }
 
     public void ReturnToPool()
     {
-        ObjectPoolManager.Instance.Release(_poolKey, gameObject);
+        if (isReleased)
+            return;
+
+        isReleased = true;
+
+        if (ObjectPoolManager.Instance != null)
+            ObjectPoolManager.Instance.Release(poolKey, gameObject);
+    }
+
+    private void OnDisable()
+    {
+        if (autoReleaseCoroutine != null)
+        {
+            StopCoroutine(autoReleaseCoroutine);
+            autoReleaseCoroutine = null;
+        }
     }
 }

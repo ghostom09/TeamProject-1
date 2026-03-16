@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
 
 public class ArgumentDataManager : MonoBehaviour
 {
@@ -9,13 +11,13 @@ public class ArgumentDataManager : MonoBehaviour
     [SerializeField] private List<StatArgumentData> statArguments = new();
 
     private ArgumentManager argumentManager;
-
     private jobType nowJob;
 
     private List<ArgumentData> arguments = new();
     private List<ArgumentData> nowArguments = new();
-
     private Dictionary<SkillType, OwnedSkill> ownedSkills = new();
+
+    public static event Action<ArgumentResult> OnArgumentClicked;
 
     void Awake()
     {
@@ -81,6 +83,14 @@ public class ArgumentDataManager : MonoBehaviour
             {
                 if (!CanSkillAppear(skillData))
                     continue;
+
+                int playerLevel = argumentManager.playerLevel;
+
+                if (playerLevel < skillData.playerMinLevel)
+                    continue;
+
+                if (skillData.playerMinLevel > 0 && playerLevel > skillData.playerMinLevel)
+                    continue;
             }
 
             pool.Add(arg);
@@ -114,7 +124,7 @@ public class ArgumentDataManager : MonoBehaviour
         return nowArguments[id];
     }
 
-    public ArgumentResult ConvertToResult(ArgumentData data)
+    public void ConvertToResult(ArgumentData data)
     {
         ArgumentResult result = new ArgumentResult();
 
@@ -131,8 +141,7 @@ public class ArgumentDataManager : MonoBehaviour
             result.skillLevel = skill.level;
         }
 
-        Debug.Log(result);
-        return result;
+        OnArgumentClicked?.Invoke(result);
     }
 
     public void ApplySkillResult(SkillArgumentData skillData)

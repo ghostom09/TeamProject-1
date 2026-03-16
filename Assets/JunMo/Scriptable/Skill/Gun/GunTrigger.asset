@@ -17,7 +17,9 @@ MonoBehaviour:
   icon: {fileID: -1316839025742549532, guid: 5ccbf8878d49c5d45a8fed53dc69fdc4, type: 3}
   weight: 10
   allowedJobs: 01000000
+  maxLevel: 5
   level: 1
+  playerMinLevel: 6
   skillType: 4
   levelValues:
   - 5

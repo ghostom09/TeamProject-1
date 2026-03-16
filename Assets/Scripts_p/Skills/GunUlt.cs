@@ -6,7 +6,7 @@ public class GunUlt : SkillBase
     private const float GaugeDrainPerSecond = 6f;
     private const float MinGaugeToUse = 30f;
 
-    protected override void Execute(GameObject user, Vector2 dir)
+    protected override bool Execute(GameObject user, Vector2 dir)
     {
         Player player = user.GetComponent<Player>();
 
@@ -14,12 +14,12 @@ public class GunUlt : SkillBase
         if (player.isUsingUltimate)
         {
             player.StopUltimate();
-            return;
+            return false;
         }
 
         // 게이지 부족
         if (player.currentGauge < MinGaugeToUse)
-            return;
+            return false;
 
         PlayerMove playerMove = player.GetComponent<PlayerMove>();
         PlayerAttack attack = player.GetComponent<PlayerAttack>();
@@ -27,6 +27,8 @@ public class GunUlt : SkillBase
         GunNormalAttack gun = attack.GetNormalAttack() as GunNormalAttack;
 
         player.StartCoroutine(MindWorldRoutine(player, playerMove, gun));
+
+        return true;
     }
 
     private IEnumerator MindWorldRoutine(

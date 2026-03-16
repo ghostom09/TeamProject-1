@@ -10,12 +10,12 @@ public class Sword1 : SkillBase
         enemyLayer = LayerMask.GetMask("Enemy");
     }
 
-    protected override void Execute(GameObject user, Vector2 dir)
+    protected override bool Execute(GameObject user, Vector2 dir)
     {
         Player player = user.GetComponent<Player>();
 
         if (player.isUsingUltimate)
-            return;
+            return false;
 
         PlayerAttack playerAttack = player.GetComponent<PlayerAttack>();
         Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
@@ -83,7 +83,7 @@ public class Sword1 : SkillBase
             Debug.Log("신법: 적 없음 → 방향 텔포");
         }
 
-        lastUsedTime = Time.time;
+        return true;
     }
 
     private IEnumerator FastTeleport(

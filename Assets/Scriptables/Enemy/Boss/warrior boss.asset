@@ -13,13 +13,12 @@ MonoBehaviour:
   m_Name: warrior boss
   m_EditorClassIdentifier: Assembly-CSharp::BossStats
   bossType: 1
-  health: 500
-  speed: 4
+  health: 1000
+  speed: 2.5
   jumpForce: 13
-  exp: 30
+  exp: 35
   skillInterval: 1
   skills:
   - {fileID: 11400000, guid: d5421f8f0510d91459073cd5125461b3, type: 2}
   - {fileID: 11400000, guid: b0ad0dc6f91acd54ea0758c9d3a6c50d, type: 2}
-  - {fileID: 11400000, guid: a2e6cfe85d1b4de428413ccb815443da, type: 2}
   - {fileID: 11400000, guid: f485afb5b24c25d43b4e5a152232c7ef, type: 2}

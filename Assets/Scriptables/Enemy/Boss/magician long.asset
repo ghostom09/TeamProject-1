@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b3d7fa72ad7d3f4d9a1b5f4339ca190, type: 3}
   m_Name: magician long
   m_EditorClassIdentifier: Assembly-CSharp::BossSkills
-  skills: 2
+  skillType: 2
   cooldown: 0
   attackRange: 0
   damage: 0

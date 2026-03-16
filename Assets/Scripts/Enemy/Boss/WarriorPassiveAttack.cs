@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class WarriorShortAttack : IBossSkillStrategy
+public class WarriorPassiveAttack : IBossSkillStrategy
 {
     private float damage;
     private float attackRange;
@@ -28,17 +28,11 @@ public class WarriorShortAttack : IBossSkillStrategy
                    (target.transform.position.x - boss.transform.position.x)) +
                   ((target.transform.position.y - boss.transform.position.y) *
                    (target.transform.position.y - boss.transform.position.y));;
-        
 
         if (distSqr > attackRange * attackRange)
             yield break;
 
-        yield return new WaitForSeconds(2f);
-        
-        Vector2 dir = (target.transform.position - boss.transform.position).normalized;
-        target.GetComponent<IDamageable>()?.ApplyKnockback(dir, 8f, 0.25f);
-        target.GetComponent<IDamageable>()?.TakeDamage(damage);
-        Debug.Log("단거리 공격");
+        yield return new WaitForSeconds(4f);
         
         yield return null;
     }

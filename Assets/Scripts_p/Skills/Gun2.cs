@@ -6,19 +6,19 @@ public class Gun2 : SkillBase
     private const float AwakeningDuration = 8f;
     private const float CooldownReduction = 0.5f;
 
-    protected override void Execute(GameObject user, Vector2 dir)
+    protected override bool Execute(GameObject user, Vector2 dir)
     {
         Player player = user.GetComponent<Player>();
 
         if (player.isUsingUltimate)
-            return;
+            return false;
 
         PlayerSkillExecutor executor = player.GetComponent<PlayerSkillExecutor>();
 
         if (executor == null)
         {
             Debug.LogError("PlayerSkillExecutor 없음!");
-            return;
+            return false;
         }
 
         Gun1 golden = executor.GetSkill(SkillType.Gun1) as Gun1;
@@ -26,10 +26,11 @@ public class Gun2 : SkillBase
         if (golden == null)
         {
             Debug.LogError("Gun1 스킬을 찾을 수 없음");
-            return;
+            return false;
         }
 
         player.StartCoroutine(TriggerAwakening(golden));
+        return true;
     }
 
     private IEnumerator TriggerAwakening(Gun1 golden)
@@ -40,13 +41,12 @@ public class Gun2 : SkillBase
         bool originLock = golden.ignoreMoveLock;
 
         // 버프 적용
-        golden.AddCooldownBonus(-golden.Cooldown * CooldownReduction);
+        golden.cooldownReductionRate += 0.5f;
         golden.ignoreMoveLock = true;
 
         yield return new WaitForSeconds(AwakeningDuration);
-
-        // 원상복구
-        golden.ResetBonus();
+        
+        golden.cooldownReductionRate -= 0.5f;
         golden.ignoreMoveLock = originLock;
 
         Debug.Log("트리거 종료");

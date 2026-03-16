@@ -13,16 +13,18 @@ public class SwordUlt : SkillBase
         enemyLayer = LayerMask.GetMask("Enemy");
     }
 
-    protected override void Execute(GameObject user, Vector2 dir)
+    protected override bool Execute(GameObject user, Vector2 dir)
     {
         Player player = user.GetComponent<Player>();
 
         // 게이지 부족하면 실행 안 함
         if (!player.UseGauge(80))
-            return;
+            return false;
 
         user.GetComponent<MonoBehaviour>()
             .StartCoroutine(UltimateRoutine(user));
+
+        return true;
     }
 
     private IEnumerator UltimateRoutine(GameObject user)

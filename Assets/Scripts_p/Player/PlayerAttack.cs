@@ -75,17 +75,18 @@ public class PlayerAttack : MonoBehaviour
     
     public void FireIllusions(Transform target, GameObject user)
     {
-        StartCoroutine(FireSequential(target));
-        user.GetComponent<Player>().AddGauge(3);
+        Player player = user.GetComponent<Player>();
+        StartCoroutine(FireSequential(target, player));
     }
 
-    private IEnumerator FireSequential(Transform target)
+    private IEnumerator FireSequential(Transform target, Player player) // Player 매개변수 추가
     {
         foreach (var illusion in _illusions)
         {
             if (illusion != null)
             {
-                illusion.Fire(target);
+                // 환영을 발사할 때 player 정보도 같이 넘겨줍니다.
+                illusion.Fire(target, player); 
                 yield return new WaitForSeconds(0.1f);
             }
         }

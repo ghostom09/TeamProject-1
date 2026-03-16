@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class Bullet : MonoBehaviour, IBulletBehavior
 {
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private TrailRenderer trail;
@@ -8,14 +8,12 @@ public class Bullet : MonoBehaviour
     private Vector2 startPosition;
     private float maxDistance;
 
-    public void Initialize(Vector2 direction, float speed, float distance, bool ultra)
+    public void Initialize(Vector2 direction, float speed, float distance)
     {
         startPosition = transform.position;
         maxDistance = distance;
 
         rb.linearVelocity = direction * speed;
-
-        ApplyTrail(ultra);
     }
 
     void Update()
@@ -26,13 +24,16 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    void ApplyTrail(bool ultra)
+    public void BulletDestroy()
     {
-        trail.Clear();
-
-        if (ultra)
-            trail.time = 1f; //밋밋하다 싶으면 소닉붐 애니메이션 만들어면 괜찮을듯
-        else
-            trail.time = 0.04f;
+        Destroy(gameObject);
+    }
+    
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        {
+            Destroy(gameObject);
+        }
     }
 }

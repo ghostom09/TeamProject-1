@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class CameraMove : MonoBehaviour
 {
-    public float duration = 0.15f;
     public float magnitude = 0.2f;
 
     float timeLeft;
@@ -13,7 +12,7 @@ public class CameraMove : MonoBehaviour
         originalPos = transform.localPosition;
     }
 
-    public void Shake(float power)
+    public void Shake(float power, float duration)
     {
         magnitude = power;
         timeLeft = duration;

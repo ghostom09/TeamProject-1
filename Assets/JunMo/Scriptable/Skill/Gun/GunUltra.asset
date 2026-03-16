@@ -15,10 +15,12 @@ MonoBehaviour:
   itemName: gun
   description: sfasfasd
   icon: {fileID: -3098477767324431825, guid: e619c7a740eff644493598123e4800a8, type: 3}
-  skillKind: 0
-  jobType: 0
-  maxLevel: 3
+  weight: 10
+  allowedJobs: 01000000
+  maxLevel: 5
   level: 1
+  playerMinLevel: 10
+  skillType: 5
   levelValues:
   - 20
   - 25

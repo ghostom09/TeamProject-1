@@ -15,10 +15,12 @@ MonoBehaviour:
   itemName: sword
   description: sfasfasd
   icon: {fileID: -3098477767324431825, guid: e619c7a740eff644493598123e4800a8, type: 3}
-  skillKind: 0
-  jobType: 1
-  maxLevel: 3
+  weight: 10
+  allowedJobs: 00000000
+  maxLevel: 5
   level: 1
+  playerMinLevel: 10
+  skillType: 2
   levelValues:
   - 20
   - 25

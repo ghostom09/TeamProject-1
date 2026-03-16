@@ -17,7 +17,7 @@ public class UIManager : MonoBehaviour
     
     private bool isPaused = false;
     private int playerLevel;
-    private JobType jobType;
+    private jobType jobType;
 
     void Awake()
     {
@@ -97,7 +97,7 @@ public class UIManager : MonoBehaviour
 
     public void UpdateInGameUI()
     {
-        if (JobType.Sword == jobType)
+        if (jobType.Sword == jobType)
         {
             SwordUI();
         }

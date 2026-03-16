@@ -1,31 +1,24 @@
-
+// SkillBase.cs 개선안
 using UnityEngine;
 
 public abstract class SkillBase : ISkillAction
 {
-    protected float cooldown;
     protected CharacterData data;
     protected SkillData skillData;
     protected float lastUsedTime = -999f;
-    protected float baseCooldown;
-    protected float bonusCooldown;
 
-    public float Cooldown => Mathf.Max(0.1f, skillData.Cooldown + bonusCooldown);
+    // 합연산 대신 비율(%) 기반 쿨타임 감소를 사용 (예: 0.2f = 20% 쿨감)
+    public float cooldownReductionRate = 0f;
 
+    // 쿨타임 공식: 기본 쿨타임 * (1 - 쿨감률)
+    public float Cooldown => Mathf.Max(0.1f, skillData.Cooldown * (1f - cooldownReductionRate));
 
     public void Init(CharacterData data, SkillData skillData)
     {
-        this.skillData = skillData;
         this.data = data;
+        this.skillData = skillData;
     }
-    public void AddCooldownBonus(float value)
-    {
-        bonusCooldown += value;
-    }
-    public void ResetBonus()
-    {
-        bonusCooldown = 0;
-    }
+
     public bool CanUse()
     {
         return Time.time >= lastUsedTime + Cooldown;
@@ -35,11 +28,19 @@ public abstract class SkillBase : ISkillAction
     {
         if (!CanUse())
         {
-            float remain = Cooldown - (Time.time - lastUsedTime);
+            float remain = (lastUsedTime + Cooldown) - Time.time;
             Debug.Log($"남은 쿨타임: {remain:F2}");
             return;
         }
-        Execute(user, dir);
+        
+        // Execute가 성공적으로 실행되었을 때만 쿨타임을 돌림
+        bool success = Execute(user, dir);
+        if (success)
+        {
+            lastUsedTime = Time.time; // 여기서 한 번만 처리! 자식 클래스에서 신경 쓸 필요 없음.
+        }
     }
-    protected abstract void Execute(GameObject user, Vector2 dir);
+
+    // void 대신 bool을 반환하도록 변경
+    protected abstract bool Execute(GameObject user, Vector2 dir);
 }

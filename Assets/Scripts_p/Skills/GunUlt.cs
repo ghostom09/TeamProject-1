@@ -3,15 +3,10 @@ using UnityEngine;
 
 public class GunUlt : SkillBase
 {
-    private float gaugeDrainPerSecond = 6f;
-    private float minGaugeToUse = 30f;
+    private const float GaugeDrainPerSecond = 6f;
+    private const float MinGaugeToUse = 30f;
 
-    public GunUlt()
-    {
-
-    }
-    
-    protected override void Execute(GameObject user, Vector2 dir)
+    protected override bool Execute(GameObject user, Vector2 dir)
     {
         Player player = user.GetComponent<Player>();
 
@@ -19,47 +14,51 @@ public class GunUlt : SkillBase
         if (player.isUsingUltimate)
         {
             player.StopUltimate();
-            return;
+            return false;
         }
 
-        // 게이지 부족하면 실행 안 함
-        if (player.currentGauge < minGaugeToUse)
-            return;
+        // 게이지 부족
+        if (player.currentGauge < MinGaugeToUse)
+            return false;
 
-        user.GetComponent<MonoBehaviour>()
-            .StartCoroutine(MindWorldRoutine(user));
-    }
+        PlayerMove playerMove = player.GetComponent<PlayerMove>();
+        PlayerAttack attack = player.GetComponent<PlayerAttack>();
 
-    private IEnumerator MindWorldRoutine(GameObject user)
-    {
-        Player player = user.GetComponent<Player>();
-        PlayerMove playerMove = user.GetComponent<PlayerMove>();
-        PlayerAttack attack = user.GetComponent<PlayerAttack>();
         GunNormalAttack gun = attack.GetNormalAttack() as GunNormalAttack;
 
+        player.StartCoroutine(MindWorldRoutine(player, playerMove, gun));
+
+        return true;
+    }
+
+    private IEnumerator MindWorldRoutine(
+        Player player,
+        PlayerMove playerMove,
+        GunNormalAttack gun
+    )
+    {
         player.isUsingUltimate = true;
         player.isInvincible = true;
-        playerMove.SetMoveLock(true);
+
+        playerMove.SetMoveLock(MoveLockType.HorizontalOnly);
         gun.SetEnhancedMode(true);
 
-        // 강화 사격 모드 ON
-
-        while (player.UseGauge(gaugeDrainPerSecond))
+        while (true)
         {
-            
+            if (!player.UseGauge(GaugeDrainPerSecond))
+                break;
+
             yield return new WaitForSeconds(1f);
 
-            // 중간에 다시 누르면 종료
             if (!player.isUsingUltimate)
                 break;
         }
 
         // 종료 처리
         player.isInvincible = false;
-        playerMove.SetMoveLock(false);
+        playerMove.SetMoveLock(MoveLockType.None);
         player.isUsingUltimate = false;
 
- ;
         gun.SetEnhancedMode(false);
     }
 }

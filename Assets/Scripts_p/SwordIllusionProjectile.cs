@@ -5,12 +5,13 @@ public class SwordIllusionProjectile : MonoBehaviour
     private float _damage;
     private float _speed;
     private Transform _target;
+    private Player _player;
 
     private bool _isFired = false;
 
     private float _hoverTimer;
     private Transform _playerTransform;
-    private Vector3 _relativeOffset; // 생성 시 부여받은 상대적 위치
+    private Vector3 _relativeOffset; 
 
     private Vector3 _startPos;
     private float _randomOffset;
@@ -22,10 +23,10 @@ public class SwordIllusionProjectile : MonoBehaviour
         _startPos = transform.position;
         _randomOffset = Random.Range(0f, Mathf.PI * 2f);
     }
-
-    public void Fire(Transform target)
+    public void Fire(Transform target, Player player) 
     {
         _target = target;
+        _player = player;
         _isFired = true;
 
         Destroy(gameObject, 3f);
@@ -36,9 +37,7 @@ public class SwordIllusionProjectile : MonoBehaviour
         if (!_isFired)
         {
             float hoverY = Mathf.Sin(Time.time * 3f + _randomOffset) * 0.15f;
-            
             float shakeX = Mathf.Cos(Time.time * 20f + _randomOffset) * 0.02f;
-            
             float tilt = Mathf.Sin(Time.time * 2f + _randomOffset) * 5f;
 
             transform.position = _startPos + new Vector3(shakeX, hoverY, 0);
@@ -67,10 +66,15 @@ public class SwordIllusionProjectile : MonoBehaviour
         {
             if (other.TryGetComponent(out IDamageable target))
             {
-                target.TakeDamage(_damage);
+                target.TakeDamage(_damage); // 데미지 적용
+                
+                if (_player != null)
+                {
+                    _player.AddGauge(1);
+                }
             }
 
-            Destroy(gameObject);
+            Destroy(gameObject); // 파괴
         }
     }
 }

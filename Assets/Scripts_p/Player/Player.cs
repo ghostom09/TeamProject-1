@@ -5,12 +5,15 @@ using UnityEngine.TextCore.Text;
 
 public class Player : MonoBehaviour, IDamageable
 {
+    
     [SerializeField] private PlayerSkillExecutor playerSkillExecutor;
     [SerializeField] private CharacterData character;
     [SerializeField] private PlayerAttack attacker;
     [SerializeField] private PlayerMove move;
     
     private Coroutine invincibleCoroutine;
+
+    public PlayerStats Stats { get; private set; } = new PlayerStats();
     
     public float invincibilityDuration;
     public float currentGauge;
@@ -20,14 +23,24 @@ public class Player : MonoBehaviour, IDamageable
     
     private void Start()
     {
-        
         Init(character);
         UnLockedUlt();
     }
+
+    private void OnEnable()
+    {
+        ArgumentDataManager.OnArgumentClicked += GetArgument;
+    }
+
+    private void OnDisable()
+    {
+        ArgumentDataManager.OnArgumentClicked -= GetArgument;
+    }
     public void Init(CharacterData data)
     {
+        Stats.Init(data);
         playerSkillExecutor.Init(data.Skills, data);
-        move.Init(data.MoveSpeed, 13);
+        move.Init(this, 13);
         attacker.Init(data);
     }
 
@@ -35,25 +48,6 @@ public class Player : MonoBehaviour, IDamageable
     {
         StartCoroutine(GetGauge());
     }
-    private void Update()
-    {
-        Vector2 mouseScreen = Mouse.current.position.ReadValue();
-        Vector2 mouseWorld = Camera.main.ScreenToWorldPoint(mouseScreen);
-
-        Vector2 dir = (mouseWorld - (Vector2)transform.position).normalized;
-        
-        if (Keyboard.current.qKey.wasPressedThisFrame)
-        {
-            playerSkillExecutor.UseSkill(0,dir);
-        }else if (Keyboard.current.eKey.wasPressedThisFrame)
-        {
-            playerSkillExecutor.UseSkill(1,dir);
-        }else if (Keyboard.current.rKey.wasPressedThisFrame)
-        {
-            playerSkillExecutor.UseSkill(2,dir);
-        }
-    }
-
     private IEnumerator GetGauge()
     {
         while (true)
@@ -113,6 +107,19 @@ public class Player : MonoBehaviour, IDamageable
         invincibleCoroutine = StartCoroutine(Invincibility(duration));
     }
 
-    
+    private void GetArgument(ArgumentResult result)
+    {
+        switch (result.kind)
+        {
+            case ArgumentKind.Skill:
+                break;
+            case ArgumentKind.Stat:
+                Stats.ApplyStat(result);
+                break;
+            default:
+                Debug.Log("에러발생 : 증강데이터 타입 소실");
+                break;
+        }
+    }
     
 }

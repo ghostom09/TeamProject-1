@@ -2,80 +2,117 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class SettingsUI : MonoBehaviour
+public class SettingUI : MonoBehaviour
 {
-    public Slider masterVolumeSlider;
+    [Header("오디오")]
+    public Slider masterSlider;
+    public Slider bgmSlider;
+    public Slider sfxSlider;
 
+    [Header("그래픽")]
     public TMP_Dropdown resolutionDropdown;
-    public Toggle fullscreenToggle;
+    public Toggle fullScreenToggle;
     public TMP_Dropdown qualityDropdown;
 
-    GameSettings settings;
+    [Header("버튼")]
+    public Button applyButton;
+    public Button cancelButton;
+    public Button resetButton;
 
-    void Start()
+    GameSettings tempSettings;
+
+    void OnEnable()
     {
-        settings = SettingManager.Instance.currentSettings;
+        // 설정창 열릴 때 현재 설정값 복사해서 임시 저장
+        tempSettings = JsonUtility.FromJson<GameSettings>(
+            JsonUtility.ToJson(SettingManager.Instance.currentSettings)
+        );
 
-        InitResolutionDropdown();
-        LoadToUI();
+        InitUI();
     }
-    
 
-    void InitResolutionDropdown()
+    void InitUI()
     {
-        resolutionDropdown.ClearOptions();
-
+        RemoveListeners();
+        
+        var settings = tempSettings;
         var resolutions = SettingManager.Instance.GetResolutions();
 
-        System.Collections.Generic.List<string> options = new();
+        // 슬라이더
+        masterSlider.value = settings.masterVolume;
+        bgmSlider.value = settings.bgmVolume;
+        sfxSlider.value = settings.sfxVolume;
 
-        foreach (var res in resolutions)
-        {
-            options.Add(res.width + " x " + res.height);
-        }
+        // 전체화면
+        fullScreenToggle.isOn = settings.fullScreen;
+
+        // 해상도 드롭다운
+        resolutionDropdown.ClearOptions();
+        var options = new System.Collections.Generic.List<string>();
+
+        for (int i = 0; i < resolutions.Length; i++)
+            options.Add($"{resolutions[i].width} x {resolutions[i].height}");
 
         resolutionDropdown.AddOptions(options);
-    }
+        resolutionDropdown.value = Mathf.Clamp(settings.resolutionIndex, 0, resolutions.Length - 1);
+        resolutionDropdown.RefreshShownValue();
 
-    void LoadToUI()
-    {
-        masterVolumeSlider.value = settings.masterVolume;
-
-        resolutionDropdown.value = settings.resolutionIndex;
-        fullscreenToggle.isOn = settings.fullScreen;
+        // 품질 드롭다운 (Unity 기본 퀄리티 레벨 이름 사용)
+        qualityDropdown.ClearOptions();
+        qualityDropdown.AddOptions(new System.Collections.Generic.List<string>(QualitySettings.names));
         qualityDropdown.value = settings.qualityLevel;
+        qualityDropdown.RefreshShownValue();
+        
+        RegisterListeners();
+    }
+    
+    void RegisterListeners()
+    {
+        masterSlider.onValueChanged.AddListener(v => tempSettings.masterVolume = v);
+        bgmSlider.onValueChanged.AddListener(v => tempSettings.bgmVolume = v);
+        sfxSlider.onValueChanged.AddListener(v => tempSettings.sfxVolume = v);
+        fullScreenToggle.onValueChanged.AddListener(v => tempSettings.fullScreen = v);
+        resolutionDropdown.onValueChanged.AddListener(v => tempSettings.resolutionIndex = v);
+        qualityDropdown.onValueChanged.AddListener(v => tempSettings.qualityLevel = v);
+        applyButton.onClick.AddListener(OnApply);
+        cancelButton.onClick.AddListener(OnCancel);
+        resetButton.onClick.AddListener(OnReset);
     }
 
-    public void OnMasterVolumeChanged(float value)
+    void RemoveListeners()
     {
-        settings.masterVolume = value;
+        masterSlider.onValueChanged.RemoveAllListeners();
+        bgmSlider.onValueChanged.RemoveAllListeners();
+        sfxSlider.onValueChanged.RemoveAllListeners();
+        fullScreenToggle.onValueChanged.RemoveAllListeners();
+        resolutionDropdown.onValueChanged.RemoveAllListeners();
+        qualityDropdown.onValueChanged.RemoveAllListeners();
+        applyButton.onClick.RemoveAllListeners();
+        cancelButton.onClick.RemoveAllListeners();
+        resetButton.onClick.RemoveAllListeners();
     }
 
-    public void OnResolutionChanged(int index)
+    void OnApply()
     {
-        settings.resolutionIndex = index;
-    }
-
-    public void OnFullscreenChanged(bool value)
-    {
-        settings.fullScreen = value;
-    }
-
-    public void OnQualityChanged(int index)
-    {
-        settings.qualityLevel = index;
-    }
-
-    public void OnApply()
-    {
+        SettingManager.Instance.currentSettings = tempSettings;
         SettingManager.Instance.ApplySettings();
     }
 
-    public void OnResetDefault()
+    void OnCancel()
     {
-        SettingManager.Instance.currentSettings = new GameSettings();
-        settings = SettingManager.Instance.currentSettings;
+        gameObject.SetActive(false);
+    }
+    
+    // SettingUI.cs
+    void OnReset()
+    {
+        tempSettings = new GameSettings();
+        tempSettings.resolutionIndex = SettingManager.Instance.GetDefaultResolutionIndex();
+        InitUI();
+    }
 
-        LoadToUI();
+    void OnDisable()
+    {
+        RemoveListeners();
     }
 }

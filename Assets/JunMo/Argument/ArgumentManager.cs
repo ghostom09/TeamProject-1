@@ -12,16 +12,43 @@ public class ArgumentManager : MonoBehaviour
 
     private float maxWidth = 450f;
     private int argumentCount = 0;
-
-    public int spawnCount = 3;
+    private int spawnCount = 3;
+    private bool argumentSpawned = false;
+    private int levelUpCnt = 0;
+    
+    public int playerLevel = 1;
     void Awake()
     {
         upgradeManager = GetComponent<ArgumentDataManager>();
     }
-    
-    void Start()
+
+    void OnEnable()
     {
-        Spawn(spawnCount);
+        PlayerLevelManager.OnLevelUp += LevelUp;
+    }
+
+    void OnDisable()
+    {
+        PlayerLevelManager.OnLevelUp -= LevelUp;
+    }
+
+    private void LevelUp(int currentLevel)
+    {
+        levelUpCnt++;
+        playerLevel = currentLevel;
+        SpawnCalculate();
+    }
+
+    private void SpawnCalculate()
+    {
+        while (levelUpCnt > 0)
+        {
+            if (argumentSpawned)
+                return;
+            levelUpCnt--;
+            argumentSpawned = !argumentSpawned;
+            Spawn(spawnCount);
+        }
     }
     
     void Spawn(int count)
@@ -48,8 +75,8 @@ public class ArgumentManager : MonoBehaviour
             Argument argument = obj.GetComponent<Argument>();
             argument.on_Click += OnArgumentClicked;
 
-            arguments.Add(argument);
             argument.SetID(i);
+            arguments.Add(argument);
 
             rt.anchoredPosition = new Vector2(x, 0);
             rt.localScale = Vector3.one;
@@ -90,13 +117,6 @@ public class ArgumentManager : MonoBehaviour
                 clickedArgument.FadeOut(0.3f);
             }
         }
-    }
-    
-    void Update()
-    {
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            Spawn(spawnCount);
-        }
+        argumentSpawned = !argumentSpawned;
     }
 }

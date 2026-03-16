@@ -73,7 +73,7 @@ public class Argument : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         description.SetText(descStr ?? "");
         level.SetText(levelStr ?? "");
         icon.sprite = sprite;
-        icon.enabled = sprite != null;
+        icon.enabled = sprite;
     }
     
     private void Clear()

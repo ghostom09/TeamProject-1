@@ -52,18 +52,16 @@ public class PlayerStats
     {
         currentHp = UnityEngine.Mathf.Min(currentHp + amount, MaxHp);
     }
-    public void ApplyStat(StatArgumentData stat)
+    public void ApplyStat(ArgumentResult result)
     {
-        if (stat == null) return;
-
-        switch (stat.statType)
+        switch (result.statType)
         {
-            case StatType.Health:      AddMaxHp(stat.value);        break;
-            case StatType.Attack:      AddDamage(stat.value);       break;
-            case StatType.AttackSpeed: AddAttackSpeed(stat.value);  break;
-            case StatType.Speed:       AddMoveSpeed(stat.value);    break;
-            case StatType.Range:       AddRange(stat.value);        break;
-            case StatType.Heal:        Heal(stat.value);            break;
+            case StatType.Health:      AddMaxHp(result.statValue);        break;
+            case StatType.Attack:      AddDamage(result.statValue);       break;
+            case StatType.AttackSpeed: AddAttackSpeed(result.statValue);  break;
+            case StatType.Speed:       AddMoveSpeed(result.statValue);    break;
+            case StatType.Range:       AddRange(result.statValue);        break;
+            case StatType.Heal:        Heal(result.statValue);            break;
         }
     }
 }

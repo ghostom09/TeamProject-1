@@ -205,12 +205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9511e4806c0056649a205276eee2a6f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectPoolManager
-  poolDataList:
-  - key: 0
-    prefab: {fileID: 6057273295143903499, guid: 54307197f203e87409a195c8cb51cd9f, type: 3}
-    defaultCapacity: 3
-    maxSize: 5
-    prewarm: 1
+  poolDataList: []
 --- !u!4 &84673383
 Transform:
   m_ObjectHideFlags: 0
@@ -1515,8 +1510,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ArgumentManager
   argumentPanel: {fileID: 6813079851084413986, guid: 54307197f203e87409a195c8cb51cd9f, type: 3}
-  canvas: {fileID: 0}
-  spawnCount: 3
+  canvas: {fileID: 143575218}
+  playerLevel: 1
 --- !u!114 &1706721074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1529,8 +1524,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97563105e22af23429e58f591e4c081a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeManager
-  skillArguments: []
-  statArguments: []
+  skillArguments:
+  - {fileID: 11400000, guid: 0c6f66637b032bb4baca1b445fb67cc5, type: 2}
+  - {fileID: 11400000, guid: c5cae7860d63ff747ab609e761935297, type: 2}
+  - {fileID: 11400000, guid: be05b17604f48564c9e4b77ce8405faf, type: 2}
+  - {fileID: 11400000, guid: 7e05ca7ee855e71458fa931a09e7e83a, type: 2}
+  - {fileID: 11400000, guid: 0b31983466681ba4791c024b5ed06f22, type: 2}
+  - {fileID: 11400000, guid: defd5a4572fa042468a5ded304c50db5, type: 2}
+  statArguments:
+  - {fileID: 11400000, guid: 3d471b0e5dcfc4d419d91515c58fa168, type: 2}
+  - {fileID: 11400000, guid: aec4646c8bdcd3d4fa5050c93e7eebb6, type: 2}
+  - {fileID: 11400000, guid: a5dcee2a4a9f4294991a9e3bb31d05da, type: 2}
+  - {fileID: 11400000, guid: 7f2067aabd2a6e043877bb8a175a7c0b, type: 2}
+  - {fileID: 11400000, guid: 14ffc0310ae62ad42b41700d6e7d5750, type: 2}
+  - {fileID: 11400000, guid: da57280b4259917479855dcaf0e7edf8, type: 2}
 --- !u!4 &1706721075
 Transform:
   m_ObjectHideFlags: 0
@@ -1545,6 +1552,51 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 143575219}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1722635508
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1722635510}
+  - component: {fileID: 1722635509}
+  m_Layer: 0
+  m_Name: PlayerLevelManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1722635509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722635508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3240ebf12cf579447b27aecc16e8c8a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerLevelManager
+  expTable: {fileID: 11400000, guid: e730112940376fe439e79e4676223c08, type: 2}
+--- !u!4 &1722635510
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722635508}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.01109, y: -0.49363, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1986624825
 GameObject:
@@ -1930,3 +1982,4 @@ SceneRoots:
   - {fileID: 539635216}
   - {fileID: 84673383}
   - {fileID: 143575219}
+  - {fileID: 1722635510}

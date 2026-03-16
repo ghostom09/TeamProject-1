@@ -26,6 +26,16 @@ public class Player : MonoBehaviour, IDamageable
         Init(character);
         UnLockedUlt();
     }
+
+    private void OnEnable()
+    {
+        ArgumentDataManager.OnArgumentClicked += GetArgument;
+    }
+
+    private void OnDisable()
+    {
+        ArgumentDataManager.OnArgumentClicked -= GetArgument;
+    }
     public void Init(CharacterData data)
     {
         Stats.Init(data);
@@ -97,6 +107,19 @@ public class Player : MonoBehaviour, IDamageable
         invincibleCoroutine = StartCoroutine(Invincibility(duration));
     }
 
-    
+    private void GetArgument(ArgumentResult result)
+    {
+        switch (result.kind)
+        {
+            case ArgumentKind.Skill:
+                break;
+            case ArgumentKind.Stat:
+                Stats.ApplyStat(result);
+                break;
+            default:
+                Debug.Log("에러발생 : 증강데이터 타입 소실");
+                break;
+        }
+    }
     
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MagicianLongAttack : IBossSkillStrategy
+public class MagicianPassiveAttack : IBossSkillStrategy
 {
         
     public void Init(BossSkills data, BossAttack bossAttack, GameObject hitBox, GameObject hitArea)

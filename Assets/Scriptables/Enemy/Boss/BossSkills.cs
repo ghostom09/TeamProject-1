@@ -5,15 +5,16 @@ public enum BossSkillType
     None,
     Normal,
     longDistance,
-    middleDistance,
     shortDistance,
+    passive,
+    ultimate
 }
 
 [CreateAssetMenu(fileName = "BossSkills")]
 
 public class BossSkills : ScriptableObject
 {
-    public BossSkillType skills;
+    public BossSkillType skillType;
     public float cooldown;
     public float attackRange;
     public float damage;

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Sword2 : SkillBase
@@ -5,10 +6,11 @@ public class Sword2 : SkillBase
     private LayerMask enemyLayer;
 
     private const float AngleRange = 125f;
-    private const float HitRadius = 3.5f;
+    private float hitRadius;
 
     public Sword2()
     {
+        hitRadius = data.Range * 1.5f;
         enemyLayer = LayerMask.GetMask("Enemy");
     }
 
@@ -27,7 +29,7 @@ public class Sword2 : SkillBase
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(
             origin,
-            HitRadius,
+            hitRadius,
             enemyLayer
         );
 

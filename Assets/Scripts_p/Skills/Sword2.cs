@@ -12,12 +12,12 @@ public class Sword2 : SkillBase
         enemyLayer = LayerMask.GetMask("Enemy");
     }
 
-    protected override void Execute(GameObject user, Vector2 dir)
+    protected override bool Execute(GameObject user, Vector2 dir)
     {
         Player player = user.GetComponent<Player>();
 
         if (player.isUsingUltimate)
-            return;
+            return false;
 
         PlayerAttack playerAttack = player.GetComponent<PlayerAttack>();
 
@@ -57,6 +57,6 @@ public class Sword2 : SkillBase
         // 환영 생성
         playerAttack.SpawnIllusions(player.Stats.Damage * 0.35f);
 
-        lastUsedTime = Time.time;
+        return true;
     }
 }

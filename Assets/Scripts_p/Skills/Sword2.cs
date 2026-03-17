@@ -10,7 +10,6 @@ public class Sword2 : SkillBase
 
     public Sword2()
     {
-        hitRadius = data.Range * 1.5f;
         enemyLayer = LayerMask.GetMask("Enemy");
     }
 
@@ -20,7 +19,9 @@ public class Sword2 : SkillBase
 
         if (player.isUsingUltimate)
             return false;
-
+        
+        hitRadius = data.Range * 1.5f;
+        
         PlayerAttack playerAttack = player.GetComponent<PlayerAttack>();
 
         dir = dir.normalized;

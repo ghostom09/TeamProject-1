@@ -7,7 +7,7 @@ public class MainMenuUIManager : MonoBehaviour
     
     public void StartGame()
     {
-        SceneManager.Instance.ChangeScene(SceneName.PlayerTest);
+        SceneManager.Instance.ChangeScene(SceneName.PlayerChoice);
     }
 
     public void SettingOn()

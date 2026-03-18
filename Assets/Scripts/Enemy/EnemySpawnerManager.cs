@@ -170,9 +170,9 @@ public class EnemySpawnerManager : MonoBehaviour
         return _runTimeStats[normalIndex];
     }
 
-    public void SpawnFromPoint(Vector3 position)
+    public void SpawnFromPoint(Vector3 position, bool boss)
     {
-        if(ActiveEnemy>=activeEnemyLimit)
+        if(ActiveEnemy>=activeEnemyLimit && !boss)
             return;
         Enemy enemy;
 

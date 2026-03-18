@@ -15,7 +15,7 @@ public class EnemySpawner : MonoBehaviour
 
         if (manager.CanSpawn())
         {
-            manager.SpawnFromPoint(transform.position);
+            manager.SpawnFromPoint(transform.position, false);
         }
     }
 }

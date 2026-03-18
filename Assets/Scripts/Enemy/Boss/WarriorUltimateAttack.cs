@@ -10,7 +10,7 @@ public class WarriorUltimateAttack : IBossSkillStrategy
     
     private BossAttack bossAttack;
         
-    public void Init(BossSkills data, BossAttack bossAttack, GameObject hitBox, GameObject hitArea)
+    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject hitArea, GameObject target)
     {
         damage = data.damage;
         attackRange = data.attackRange;
@@ -37,7 +37,7 @@ public class WarriorUltimateAttack : IBossSkillStrategy
         yield return null;
     }
     
-    public void EndAttack(GameObject hitBox, GameObject hitArea, System.Action onComplete)
+    public void EndAttack(GameObject hitArea, System.Action onComplete)
     {
         onComplete?.Invoke();
     }

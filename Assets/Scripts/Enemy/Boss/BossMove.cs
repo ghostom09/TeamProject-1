@@ -22,7 +22,7 @@ public class BossMove : MonoBehaviour, IBossReset, IEnemyMover, IDamageable
     
     [SerializeField] private float groundRadius = 0.35f;
     [SerializeField] private float sideRadius = 0.1f;
-    private bool isGrounded;
+    public bool isGrounded;
     private bool isleftWall;
     private bool isrightWall;
 
@@ -42,6 +42,7 @@ public class BossMove : MonoBehaviour, IBossReset, IEnemyMover, IDamageable
     [SerializeField] private float distanceThreshold = 0.1f;
     
     private bool _isMoveLocked;
+    public float lookSide;
     
     private Coroutine knockRoutine;
 
@@ -72,6 +73,7 @@ public class BossMove : MonoBehaviour, IBossReset, IEnemyMover, IDamageable
         CheckGround();
         CheckWall();
         CheckSide();
+        lookSide = (movingTarget.transform.position.x > transform.position.x) ? 1f : -1f;
         
         if(_isMoveLocked)
             return;

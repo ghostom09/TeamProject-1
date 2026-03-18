@@ -3,7 +3,7 @@ using UnityEngine;
 public class MagicianUltimateAttack : IBossSkillStrategy
 {
         
-    public void Init(BossSkills data, BossAttack bossAttack, GameObject hitBox, GameObject hitArea)
+    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject hitArea, GameObject target)
     {
     }
 
@@ -11,7 +11,7 @@ public class MagicianUltimateAttack : IBossSkillStrategy
     {
     }
     
-    public void EndAttack(GameObject hitBox, GameObject hitArea, System.Action onComplete)
+    public void EndAttack(GameObject hitArea, System.Action onComplete)
     {
         onComplete?.Invoke();
     }

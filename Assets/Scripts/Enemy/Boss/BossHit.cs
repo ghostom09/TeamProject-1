@@ -9,6 +9,9 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
     private float maxHealth;
     private SpriteRenderer renderer;
     private Color color;
+    private int shield;
+    [SerializeField] private float reductionRate;
+    [SerializeField] private GameObject Shield;
     
     private BossMove _bossMove;
 
@@ -39,6 +42,13 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
 
     public void TakeDamage(float dmg)
     {
+        if (shield > 0)
+        {
+            shield--;
+            dmg *= 1-reductionRate;
+            if(shield <= 0)
+                Shield.SetActive(false);
+        }
         health -= dmg;
         StartCoroutine(Hit());
         
@@ -67,6 +77,12 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
             yield return null;
         }
         renderer.color = Color.white;
+    }
+    
+    public void MakeShield(int shieldStock)
+    {
+        Shield.SetActive(true);
+        shield = shieldStock;
     }
     
     public void ApplySlow(float slowPercent, float slowDuration) { }

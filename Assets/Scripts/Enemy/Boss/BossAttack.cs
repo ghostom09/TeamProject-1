@@ -5,23 +5,27 @@ using UnityEngine;
 public class BossAttack : MonoBehaviour, IBossReset
 {
     private GameObject target;
-
-    [SerializeField] private GameObject hitBox;
+    
     [SerializeField] private GameObject hitArea;
+    
+    private BossMove bossMove;
+    private BossHit bossHit;
     
     private bool isAttacking = false;
 
     private BossSkills normalAttack;
     private BossSkills shortSkill;
     private BossSkills longSkill;
+    private BossSkills passiveSkill;
+    private BossSkills ultimateSkill;
     
     private Dictionary<BossSkillType, IBossSkillStrategy> strategies = 
         new Dictionary<BossSkillType, IBossSkillStrategy>();
 
     private float normalCooldown;
     private float shortCooldown;
-    private float passiveCooldown;
     private float longCooldown;
+    private float passiveCooldown;
     
     private float shortRange;
     private float longRange;
@@ -31,7 +35,13 @@ public class BossAttack : MonoBehaviour, IBossReset
     
     private Vector2 dir;
     private float distance;
-    
+
+    private void Awake()
+    {
+        bossMove = GetComponent<BossMove>();
+        bossHit = GetComponent<BossHit>();
+    }
+
     public void Init(BossStats stats, GameObject target, EnemySpawnerManager m)
     {
         this.target = target;
@@ -69,7 +79,7 @@ public class BossAttack : MonoBehaviour, IBossReset
                     normalAttack = skill;
                     normalCooldown = skill.cooldown;
                     strategies[BossSkillType.Normal]?.
-                        Init(skill, this, hitBox, hitArea);
+                        Init(gameObject, skill, this, hitArea, target);
                     break;
                 
                 case BossSkillType.shortDistance:
@@ -77,7 +87,7 @@ public class BossAttack : MonoBehaviour, IBossReset
                     shortCooldown = skill.cooldown;
                     shortRange = skill.attackRange;
                     strategies[BossSkillType.shortDistance]?.
-                        Init(skill, this, hitBox, hitArea);
+                        Init(gameObject, skill, this, hitArea, target);
                     break;
 
                 case BossSkillType.longDistance:
@@ -85,20 +95,20 @@ public class BossAttack : MonoBehaviour, IBossReset
                     longCooldown = skill.cooldown;
                     longRange = skill.attackRange;
                     strategies[BossSkillType.longDistance]?.
-                        Init(skill, this, hitBox, hitArea);
+                        Init(gameObject, skill, this, hitArea, target);
                     break;
                 
                 case BossSkillType.passive:
-                    shortSkill = skill;
+                    passiveSkill = skill;
                     passiveCooldown = skill.cooldown;
-                    strategies[BossSkillType.shortDistance]?.
-                        Init(skill, this, hitBox, hitArea);
+                    strategies[BossSkillType.passive]?.
+                        Init(gameObject, skill, this, hitArea, target);
                     break;
                 
                 case BossSkillType.ultimate:
-                    shortSkill = skill;
-                    strategies[BossSkillType.shortDistance]?.
-                        Init(skill, this, hitBox, hitArea);
+                    ultimateSkill = skill;
+                    strategies[BossSkillType.ultimate]?.
+                        Init(gameObject, skill, this, hitArea, target);
                     break;
             }
         }
@@ -130,54 +140,105 @@ public class BossAttack : MonoBehaviour, IBossReset
 
         if (Time.time >= nextSkillTime)
         {
-            if (distance <= shortSkill.attackRange * shortSkill.attackRange && Time.time >= shortCooldown)
+            if (distance <= shortSkill.attackRange * shortSkill.attackRange &&
+                bossMove.isGrounded &&
+                Time.time >= shortCooldown)
             {
                 TryShortSkill();
                 return;
             }
-            else if (distance <= longSkill.attackRange * longSkill.attackRange && Time.time >= longCooldown)
+            if (shortSkill.attackRange * shortSkill.attackRange < distance && 
+                distance <= longSkill.attackRange * longSkill.attackRange &&
+                target.transform.position.y >= transform.position.y - 1 &&
+                Time.time >= longCooldown)
             {
                 TryLongSkill();
                 return;
             }
         }
-
-        if (Time.time >= normalCooldown)
+        
+        if (Time.time >= passiveCooldown)
+        {
+            TryPassiveSkill();
+        }
+        
+        if (distance <= normalAttack.attackRange * normalAttack.attackRange && Time.time >= normalCooldown)
         {
             TryNormalAttack();
         }
     }
+
+    private void StartAttacking()
+    {
+        isAttacking = true;
+        bossMove.SetMoveLock(true);
+        
+    }
+
+    private void StopAttacking()
+    {
+        isAttacking = false;
+        bossMove.SetMoveLock(false);
+    }
     
     private void TryNormalAttack()
     {
-        isAttacking = true;
+        StartAttacking();
         
         strategies[BossSkillType.Normal]?.TryAttack(gameObject, target, dir, () => 
         {
             normalCooldown = Time.time + normalAttack.cooldown;
-            isAttacking = false;
+            nextSkillTime = Time.time + skillInterval;
+            StopAttacking();
         });
     }
     
     private void TryShortSkill()
     {
-        isAttacking = true;
+        StartAttacking();
+        
         strategies[BossSkillType.shortDistance]?.TryAttack(gameObject, target, dir, () => 
         {
             shortCooldown = Time.time + shortSkill.cooldown;
             nextSkillTime = Time.time + skillInterval;
-            isAttacking = false;
+            StopAttacking();
         });
     }
 
     private void TryLongSkill()
     {
-        isAttacking = true;
-        strategies[BossSkillType.longDistance]?.TryAttack(gameObject, target, dir, () => 
+        StartAttacking();
+        
+        Vector2 adaptiveDir = new Vector2(0.707f * bossMove.lookSide, 0.707f).normalized;; //45도
+        
+        strategies[BossSkillType.longDistance]?.TryAttack(gameObject, target, adaptiveDir, () => 
         {
             longCooldown = Time.time + longSkill.cooldown;
             nextSkillTime = Time.time + skillInterval;
-            isAttacking = false;
+            StopAttacking();
         });
     }
+
+    private void TryPassiveSkill()
+    {
+        StartAttacking();
+        
+        strategies[BossSkillType.passive]?.TryAttack(gameObject, target, dir, () => 
+        {
+            passiveCooldown = Time.time + passiveSkill.cooldown;
+            nextSkillTime = Time.time + skillInterval;
+            StopAttacking();
+        });
+    }
+
+    public void Shield(int shieldStock)
+    {
+        bossHit.MakeShield(shieldStock);
+    }
+    
+    public void TryUltimateSkill()
+    {
+        
+    }
 }
+

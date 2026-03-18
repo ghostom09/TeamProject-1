@@ -23,6 +23,7 @@ public class Player : MonoBehaviour, IDamageable
     
     private void Start()
     {
+        character = CharDataManager.data;
         Init(character);
         UnLockedUlt();
     }

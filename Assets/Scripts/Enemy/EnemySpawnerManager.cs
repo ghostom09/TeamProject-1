@@ -190,6 +190,8 @@ public class EnemySpawnerManager : MonoBehaviour
         enemy.gameObject.SetActive(true);
         
         EnemyStats stats = GetRandomEnemy();
+        if (boss)
+            stats = _runTimeStats[normalIndex];
 
         enemy.Init(stats, target, this);
 

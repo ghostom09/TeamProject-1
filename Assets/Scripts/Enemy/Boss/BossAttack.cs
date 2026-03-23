@@ -5,6 +5,7 @@ using UnityEngine;
 public class BossAttack : MonoBehaviour, IBossReset
 {
     private GameObject target;
+    private BossStats bossStats;
     
     [SerializeField] private GameObject hitArea;
     
@@ -35,6 +36,15 @@ public class BossAttack : MonoBehaviour, IBossReset
     
     private Vector2 dir;
     private float distance;
+    
+    private BossSkillExtraCondition conditioner = new BossSkillExtraCondition();
+    
+    [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private GameObject trakingProjectilePrefab;
+    [SerializeField] private GameObject ultimateProjectilePrefab;
+    
+    public bool isUltimate;
+    private bool usedUltimate;
 
     private void Awake()
     {
@@ -45,6 +55,9 @@ public class BossAttack : MonoBehaviour, IBossReset
     public void Init(BossStats stats, GameObject target, EnemySpawnerManager m)
     {
         this.target = target;
+        bossStats = stats;
+        isUltimate = false;
+        usedUltimate = false;
         
         strategies.Clear();
 
@@ -136,20 +149,22 @@ public class BossAttack : MonoBehaviour, IBossReset
     {
         if (isAttacking) return;
         
+        if (isUltimate && !usedUltimate)
+            TryUltimateSkill();
+        
         bool used = false;
 
         if (Time.time >= nextSkillTime)
         {
             if (distance <= shortSkill.attackRange * shortSkill.attackRange &&
-                bossMove.isGrounded &&
+                conditioner.CanUse(bossStats.bossType, BossSkillType.shortDistance, gameObject, target) &&
                 Time.time >= shortCooldown)
             {
                 TryShortSkill();
                 return;
             }
-            if (shortSkill.attackRange * shortSkill.attackRange < distance && 
-                distance <= longSkill.attackRange * longSkill.attackRange &&
-                target.transform.position.y >= transform.position.y - 1 &&
+            if (distance <= longSkill.attackRange * longSkill.attackRange &&
+                conditioner.CanUse(bossStats.bossType, BossSkillType.longDistance, gameObject, target) &&
                 Time.time >= longCooldown)
             {
                 TryLongSkill();
@@ -209,9 +224,7 @@ public class BossAttack : MonoBehaviour, IBossReset
     {
         StartAttacking();
         
-        Vector2 adaptiveDir = new Vector2(0.707f * bossMove.lookSide, 0.707f).normalized;; //45도
-        
-        strategies[BossSkillType.longDistance]?.TryAttack(gameObject, target, adaptiveDir, () => 
+        strategies[BossSkillType.longDistance]?.TryAttack(gameObject, target, dir, () => 
         {
             longCooldown = Time.time + longSkill.cooldown;
             nextSkillTime = Time.time + skillInterval;
@@ -235,10 +248,41 @@ public class BossAttack : MonoBehaviour, IBossReset
     {
         bossHit.MakeShield(shieldStock);
     }
+
+    public void ShootProjectile(Vector2 dir, float dmg, float range)
+    {
+        GameObject obj = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+        BossProjectile projectile = obj.GetComponent<BossProjectile>();
+        
+        projectile.Init(dmg, range, dir, target, BossType.magician);
+    }
+    
+    public void ShootTrakingProjectile(Vector2 dir, float dmg, float range, Vector2 starting)
+    {
+        GameObject obj = Instantiate(trakingProjectilePrefab, transform.position, Quaternion.identity);
+        TrackingProjectile projectile = obj.GetComponent<TrackingProjectile>();
+        
+        projectile.Init( dmg, range, target, starting);
+    }
+    
+    public void ShootUltimateProjectile(Vector2 dir, float dmg, float range)
+    {
+        GameObject obj = Instantiate(ultimateProjectilePrefab, transform.position, Quaternion.identity);
+        BossProjectile projectile = obj.GetComponent<BossProjectile>();
+        
+        projectile.Init(dmg, range, dir, target, BossType.warrior);
+    }
     
     public void TryUltimateSkill()
     {
+        StartAttacking();
         
+        strategies[BossSkillType.ultimate]?.TryAttack(gameObject, target, dir, () => 
+        {
+            nextSkillTime = Time.time + skillInterval;
+            usedUltimate = true;
+            StopAttacking();
+        });
     }
 }
 

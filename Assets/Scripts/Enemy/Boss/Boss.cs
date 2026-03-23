@@ -6,7 +6,7 @@ public class Boss : MonoBehaviour, IBossReset
     private BossAttack attack;
     private BossHit hit;
     [SerializeField] private GameObject targetObj;
-    [SerializeField] private EnemySpawnerManager manager;
+    public EnemySpawnerManager manager;
 
     [SerializeField] private BossStats bossStats;
     
@@ -22,6 +22,7 @@ public class Boss : MonoBehaviour, IBossReset
     public void Init(BossStats stats, GameObject target, EnemySpawnerManager m)
     {
         bossStats = stats;
+        manager = m;
         
         move.Init(bossStats, target, m);
         attack.Init(bossStats, target, m);

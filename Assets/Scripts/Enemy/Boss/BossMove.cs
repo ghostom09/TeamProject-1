@@ -31,7 +31,7 @@ public class BossMove : MonoBehaviour, IBossReset, IEnemyMover, IDamageable
     private bool isSide;
     private bool isJumping = false;
     
-    private float interval;
+    [SerializeField] private float interval;
     [SerializeField] private float jumpPersent = 0.02f;
     [SerializeField] private float reverseDeceleration;
 
@@ -41,7 +41,7 @@ public class BossMove : MonoBehaviour, IBossReset, IEnemyMover, IDamageable
     [SerializeField] private float stopThreshold = 0.05f;
     [SerializeField] private float distanceThreshold = 0.1f;
     
-    private bool _isMoveLocked;
+    [SerializeField] private bool _isMoveLocked;
     public float lookSide;
     
     private Coroutine knockRoutine;
@@ -59,7 +59,11 @@ public class BossMove : MonoBehaviour, IBossReset, IEnemyMover, IDamageable
         speed = stats.speed;
         jumpForce = stats.jumpForce;
         bossType = stats.bossType;
-        interval = attackRange * 0.8f;
+        foreach (var skill in stats.skills)
+        {
+            if(skill.skillType == BossSkillType.Normal)
+                interval = skill.attackRange * 0.8f;
+        }
         
         movingTarget = target;
         SetMoveLock(false);
@@ -187,6 +191,8 @@ public class BossMove : MonoBehaviour, IBossReset, IEnemyMover, IDamageable
     
     public void ApplyKnockback(Vector2 dir, float power, float duration)
     {
+        if(_isMoveLocked)
+            return;
         if(!gameObject.activeInHierarchy)
             return;
         if (knockRoutine != null)

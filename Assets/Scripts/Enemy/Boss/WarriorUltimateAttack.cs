@@ -8,6 +8,7 @@ public class WarriorUltimateAttack : IBossSkillStrategy
     
     private float distSqr;
     
+    private Vector2 dir;
     private BossAttack bossAttack;
         
     public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject hitArea, GameObject target)
@@ -20,21 +21,19 @@ public class WarriorUltimateAttack : IBossSkillStrategy
     public void TryAttack(GameObject boss, GameObject target, Vector2 direction, System.Action onComplete)
     {
         boss.GetComponent<MonoBehaviour>().
-            StartCoroutine(Attack(boss,  target));
+            StartCoroutine(Attack(boss,  target, onComplete));
     }
-    private IEnumerator Attack(GameObject boss, GameObject target)
+    private IEnumerator Attack(GameObject boss, GameObject target, System.Action onComplete)
     {
-        distSqr = ((target.transform.position.x - boss.transform.position.x) *
-                   (target.transform.position.x - boss.transform.position.x)) +
-                  ((target.transform.position.y - boss.transform.position.y) *
-                   (target.transform.position.y - boss.transform.position.y));;
-
-        if (distSqr > attackRange * attackRange)
-            yield break;
-
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(3f);
         
-        yield return null;
+        dir = (target.transform.position - boss.transform.position).normalized;
+        
+        yield return new WaitForSeconds(0.5f);
+        
+        bossAttack.ShootUltimateProjectile(dir, damage, attackRange);
+
+        EndAttack(null, onComplete);
     }
     
     public void EndAttack(GameObject hitArea, System.Action onComplete)

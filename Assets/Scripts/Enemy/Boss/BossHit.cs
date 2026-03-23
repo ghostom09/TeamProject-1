@@ -14,6 +14,7 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
     [SerializeField] private GameObject Shield;
     
     private BossMove _bossMove;
+    private BossAttack _bossAttack;
 
     private int exp;
 
@@ -25,6 +26,7 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
     private void Awake()
     {
         _bossMove = GetComponent<BossMove>();
+        _bossAttack = GetComponent<BossAttack>();
         renderer = GetComponent<SpriteRenderer>();
         maxHealthBar = healthBar.sizeDelta.x;
     }
@@ -53,7 +55,10 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
         StartCoroutine(Hit());
         
         healthBar.sizeDelta = new Vector2(health / maxHealth * maxHealthBar, healthBar.sizeDelta.y);
-
+        
+        if(health <= maxHealth/* * 0.33f*/)
+            _bossAttack.isUltimate = true;
+        
         if (health <= 0)
         {
             Die();

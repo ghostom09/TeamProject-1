@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossSkills
   skillType: 5
   cooldown: 0
-  attackRange: 0
+  attackRange: 50
   damage: 0

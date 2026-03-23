@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: magician long
   m_EditorClassIdentifier: Assembly-CSharp::BossSkills
   skillType: 2
-  cooldown: 0
-  attackRange: 0
+  cooldown: 5
+  attackRange: 10
   damage: 0

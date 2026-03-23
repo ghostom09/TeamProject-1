@@ -10,7 +10,7 @@ public class WarriorNormalAttack : IBossSkillStrategy
     private float distSqr;
     private LayerMask targetLayer;
     
-    private const float ConeThreshold = 0.3f;
+    private const float ConeThreshold = 0.5f;
     
     private BossAttack bossAttack;
     

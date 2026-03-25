@@ -1,28 +1,24 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MagicianLongAttack : IBossSkillStrategy
 {
     private float damage;
     private float attackRange;
-
     private BossAttack bossAttack;
-
     private LineRenderer lineRenderer;
     private LayerMask targetLayer;
 
-    private Vector2 endPoint;
-    private float timer;
+    private float lastDamageTime;
 
-    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject hitArea, GameObject target)
+    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject target)
     {
         damage = data.damage;
         attackRange = data.attackRange;
         this.bossAttack = bossAttack;
-
         lineRenderer = boss.GetComponent<LineRenderer>();
-
-        targetLayer = 1<<target.layer;
+        targetLayer = 1 << target.layer;
     }
 
     public void TryAttack(GameObject boss, GameObject target, Vector2 direction, System.Action onComplete)
@@ -33,29 +29,32 @@ public class MagicianLongAttack : IBossSkillStrategy
 
     private IEnumerator AttackRoutine(GameObject boss, GameObject target, System.Action onComplete)
     {
-        Debug.Log("장거리 공격");
-
         yield return new WaitForSeconds(0.5f);
         
         Vector2 dir = (target.transform.position - boss.transform.position).normalized;
-
         lineRenderer.enabled = true;
         lineRenderer.positionCount = 2;
 
-        timer = 2f;
+        float timer = 2f;
+        lastDamageTime = -99f;
+
         while (timer > 0)
         {
-            UpdateLaser(boss, dir, damage * Time.deltaTime);
+            bool canApplyDamage = (Time.time >= lastDamageTime);
+            
+            UpdateLaser(boss, dir, canApplyDamage);
+
+            if (canApplyDamage) lastDamageTime = Time.time;
+
             timer -= Time.deltaTime;
             yield return null;
         }
 
         lineRenderer.enabled = false;
-
-        EndAttack(null, onComplete);
+        onComplete?.Invoke();
     }
 
-    private void UpdateLaser(GameObject boss, Vector2 dir, float appliedDamage)
+    private void UpdateLaser(GameObject boss, Vector2 dir, bool shouldApplyDamage)
     {
         RaycastHit2D hit = Physics2D.BoxCast(
             (Vector2)boss.transform.position + dir * (attackRange / 2f),
@@ -72,13 +71,15 @@ public class MagicianLongAttack : IBossSkillStrategy
         {
             float distance = Vector2.Distance(hit.point, boss.transform.position);;
             endPoint = (Vector2)boss.transform.position + dir * distance;
-            
 
-            if (appliedDamage > 0f)
+            if (shouldApplyDamage)
             {
                 var d = hit.collider.GetComponent<IDamageable>();
-                d?.TakeDamage(appliedDamage);
-                d?.ApplyKnockback(dir, 2f, 0.1f);
+                if (d != null)
+                {
+                    d.TakeDamage(damage); 
+                    d.ApplyKnockback(dir, 2f, 0.1f);
+                }
             }
         }
 

@@ -81,6 +81,8 @@ public class Player : MonoBehaviour, IDamageable
     public void TakeDamage(float amount)
     {
         if (isInvincible) return;  
+        Stats.currentHp -= amount;
+        Debug.Log(Stats.currentHp);
         StartInvincibility(invincibilityDuration);
     }
 

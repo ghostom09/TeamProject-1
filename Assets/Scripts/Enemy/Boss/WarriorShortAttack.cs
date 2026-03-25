@@ -17,7 +17,7 @@ public class WarriorShortAttack : IBossSkillStrategy
     
     private Vector2 dir;
 
-    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject hitArea, GameObject target)
+    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject target)
     {
         damage = data.damage;
         attackRange = data.attackRange;
@@ -44,10 +44,6 @@ public class WarriorShortAttack : IBossSkillStrategy
         
         HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
         
-        hitArea.transform.position = boxCenter;
-        hitArea.transform.localScale = boxSize;
-        hitArea.SetActive(true);
-        
         yield return new WaitForSeconds(1.5f);
         
         Collider2D[] hits = 
@@ -73,13 +69,12 @@ public class WarriorShortAttack : IBossSkillStrategy
             hitTargets.Add(targetComponent);
         }
 
-        EndAttack(hitArea, onComplete);
+        EndAttack(null, onComplete);
         yield return null;
     }
 
     public void EndAttack(GameObject hitArea, System.Action onComplete)
     {
         onComplete?.Invoke();
-        hitArea.SetActive(false);
     }
 }

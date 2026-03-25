@@ -15,4 +15,4 @@ MonoBehaviour:
   skillType: 3
   cooldown: 4
   attackRange: 3.5
-  damage: 0
+  damage: 20

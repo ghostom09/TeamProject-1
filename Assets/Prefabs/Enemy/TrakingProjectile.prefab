@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7020609590341729002}
   - component: {fileID: 9196743280898657974}
   - component: {fileID: 877065023323409720}
-  m_Layer: 0
+  m_Layer: 29
   m_Name: TrakingProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}

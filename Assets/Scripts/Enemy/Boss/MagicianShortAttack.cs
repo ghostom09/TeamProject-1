@@ -10,7 +10,7 @@ public class MagicianShortAttack : IBossSkillStrategy
     private BossAttack bossAttack;
     
     private Vector2 bulletOffset;
-    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject hitArea, GameObject target)
+    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject target)
     {
         damage = data.damage;
         attackRange = data.attackRange;
@@ -25,7 +25,6 @@ public class MagicianShortAttack : IBossSkillStrategy
     
     private IEnumerator AttackRoutine(GameObject boss, GameObject target, System.Action onComplete)
     {
-        Debug.Log("단거리 공격");
         yield return new WaitForSeconds(0.2f);
     
         Vector2 baseDir = (target.transform.position - boss.transform.position).normalized;

@@ -10,7 +10,7 @@ public class MagicianUltimateAttack : IBossSkillStrategy
     
     private InputFilter inputFilter;
         
-    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject hitArea, GameObject target)
+    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject target)
     {
         inputFilter = target.GetComponent<InputFilter>();
     }

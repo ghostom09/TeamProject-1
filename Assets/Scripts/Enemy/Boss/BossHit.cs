@@ -20,6 +20,8 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
 
     private PlayerLevelManager levelManager;
     
+    private EnemySpawnerManager spawnerManager;
+    
     [SerializeField] private RectTransform healthBar;
     private float maxHealthBar;
 
@@ -29,14 +31,16 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
         _bossAttack = GetComponent<BossAttack>();
         renderer = GetComponent<SpriteRenderer>();
         maxHealthBar = healthBar.sizeDelta.x;
+        color = renderer.color;
     }
 
     public void Init(BossStats stats, GameObject target, EnemySpawnerManager m)
     {
+        renderer.color = color;
         health = stats.health;
         maxHealth = stats.health;
         exp = stats.exp;
-        color = renderer.color;
+        spawnerManager = m;
         healthBar.sizeDelta = new Vector2(maxHealthBar, healthBar.sizeDelta.y);
 
         levelManager = target.GetComponent<PlayerLevelManager>();
@@ -56,7 +60,7 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
         
         healthBar.sizeDelta = new Vector2(health / maxHealth * maxHealthBar, healthBar.sizeDelta.y);
         
-        if(health <= maxHealth/* * 0.33f*/)
+        if(health <= maxHealth * 0.33f)
             _bossAttack.isUltimate = true;
         
         if (health <= 0)
@@ -69,7 +73,7 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
     {
         levelManager.AddExp(exp);
 
-        gameObject.SetActive(false);
+        spawnerManager.BossDie();
     }
     
     private IEnumerator Hit()

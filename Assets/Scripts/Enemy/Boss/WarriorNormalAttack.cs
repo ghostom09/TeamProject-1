@@ -18,7 +18,7 @@ public class WarriorNormalAttack : IBossSkillStrategy
     
     private Vector2 dir;
         
-    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject hitArea, GameObject target)
+    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject target)
     {
         damage = data.damage;
         attackRange = data.attackRange;

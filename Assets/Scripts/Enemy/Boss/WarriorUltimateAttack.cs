@@ -11,7 +11,7 @@ public class WarriorUltimateAttack : IBossSkillStrategy
     private Vector2 dir;
     private BossAttack bossAttack;
         
-    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject hitArea, GameObject target)
+    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject target)
     {
         damage = data.damage;
         attackRange = data.attackRange;

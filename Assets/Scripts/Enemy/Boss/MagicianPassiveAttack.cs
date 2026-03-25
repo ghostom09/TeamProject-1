@@ -7,7 +7,7 @@ public class MagicianPassiveAttack : IBossSkillStrategy
     private BossAttack bossAttack;
     private EnemySpawnerManager spawnerManager;
     private Vector2 spawnoffset;
-    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject hitArea, GameObject target)
+    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject target)
     {
         this.bossAttack = bossAttack;
         spawnerManager = boss.GetComponent<Boss>().manager;

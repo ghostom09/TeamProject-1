@@ -7,8 +7,6 @@ public class BossAttack : MonoBehaviour, IBossReset
     private GameObject target;
     private BossStats bossStats;
     
-    [SerializeField] private GameObject hitArea;
-    
     private BossMove bossMove;
     private BossHit bossHit;
     
@@ -36,6 +34,7 @@ public class BossAttack : MonoBehaviour, IBossReset
     
     private Vector2 dir;
     private float distance;
+    private float timer;
     
     private BossSkillExtraCondition conditioner = new BossSkillExtraCondition();
     
@@ -58,6 +57,8 @@ public class BossAttack : MonoBehaviour, IBossReset
         bossStats = stats;
         isUltimate = false;
         usedUltimate = false;
+        isAttacking = false;
+        timer = 0;
         
         strategies.Clear();
 
@@ -92,7 +93,7 @@ public class BossAttack : MonoBehaviour, IBossReset
                     normalAttack = skill;
                     normalCooldown = skill.cooldown;
                     strategies[BossSkillType.Normal]?.
-                        Init(gameObject, skill, this, hitArea, target);
+                        Init(gameObject, skill, this, target);
                     break;
                 
                 case BossSkillType.shortDistance:
@@ -100,7 +101,7 @@ public class BossAttack : MonoBehaviour, IBossReset
                     shortCooldown = skill.cooldown;
                     shortRange = skill.attackRange;
                     strategies[BossSkillType.shortDistance]?.
-                        Init(gameObject, skill, this, hitArea, target);
+                        Init(gameObject, skill, this, target);
                     break;
 
                 case BossSkillType.longDistance:
@@ -108,20 +109,20 @@ public class BossAttack : MonoBehaviour, IBossReset
                     longCooldown = skill.cooldown;
                     longRange = skill.attackRange;
                     strategies[BossSkillType.longDistance]?.
-                        Init(gameObject, skill, this, hitArea, target);
+                        Init(gameObject, skill, this, target);
                     break;
                 
                 case BossSkillType.passive:
                     passiveSkill = skill;
                     passiveCooldown = skill.cooldown;
                     strategies[BossSkillType.passive]?.
-                        Init(gameObject, skill, this, hitArea, target);
+                        Init(gameObject, skill, this, target);
                     break;
                 
                 case BossSkillType.ultimate:
                     ultimateSkill = skill;
                     strategies[BossSkillType.ultimate]?.
-                        Init(gameObject, skill, this, hitArea, target);
+                        Init(gameObject, skill, this, target);
                     break;
             }
         }
@@ -132,6 +133,7 @@ public class BossAttack : MonoBehaviour, IBossReset
     
     private void Update()
     {
+        timer += Time.deltaTime;
         if (target == null)
             return;
         
@@ -154,30 +156,30 @@ public class BossAttack : MonoBehaviour, IBossReset
         
         bool used = false;
 
-        if (Time.time >= nextSkillTime)
+        if (timer >= nextSkillTime)
         {
             if (distance <= shortSkill.attackRange * shortSkill.attackRange &&
                 conditioner.CanUse(bossStats.bossType, BossSkillType.shortDistance, gameObject, target) &&
-                Time.time >= shortCooldown)
+                timer >= shortCooldown)
             {
                 TryShortSkill();
                 return;
             }
             if (distance <= longSkill.attackRange * longSkill.attackRange &&
                 conditioner.CanUse(bossStats.bossType, BossSkillType.longDistance, gameObject, target) &&
-                Time.time >= longCooldown)
+                timer >= longCooldown)
             {
                 TryLongSkill();
                 return;
             }
         }
         
-        if (Time.time >= passiveCooldown)
+        if (timer >= passiveCooldown)
         {
             TryPassiveSkill();
         }
         
-        if (distance <= normalAttack.attackRange * normalAttack.attackRange && Time.time >= normalCooldown)
+        if (distance <= normalAttack.attackRange * normalAttack.attackRange && timer >= normalCooldown)
         {
             TryNormalAttack();
         }
@@ -202,8 +204,8 @@ public class BossAttack : MonoBehaviour, IBossReset
         
         strategies[BossSkillType.Normal]?.TryAttack(gameObject, target, dir, () => 
         {
-            normalCooldown = Time.time + normalAttack.cooldown;
-            nextSkillTime = Time.time + skillInterval;
+            normalCooldown = timer + normalAttack.cooldown;
+            nextSkillTime = timer + skillInterval;
             StopAttacking();
         });
     }
@@ -214,8 +216,8 @@ public class BossAttack : MonoBehaviour, IBossReset
         
         strategies[BossSkillType.shortDistance]?.TryAttack(gameObject, target, dir, () => 
         {
-            shortCooldown = Time.time + shortSkill.cooldown;
-            nextSkillTime = Time.time + skillInterval;
+            shortCooldown = timer + shortSkill.cooldown;
+            nextSkillTime = timer + skillInterval;
             StopAttacking();
         });
     }
@@ -226,8 +228,8 @@ public class BossAttack : MonoBehaviour, IBossReset
         
         strategies[BossSkillType.longDistance]?.TryAttack(gameObject, target, dir, () => 
         {
-            longCooldown = Time.time + longSkill.cooldown;
-            nextSkillTime = Time.time + skillInterval;
+            longCooldown = timer + longSkill.cooldown;
+            nextSkillTime = timer + skillInterval;
             StopAttacking();
         });
     }
@@ -238,8 +240,8 @@ public class BossAttack : MonoBehaviour, IBossReset
         
         strategies[BossSkillType.passive]?.TryAttack(gameObject, target, dir, () => 
         {
-            passiveCooldown = Time.time + passiveSkill.cooldown;
-            nextSkillTime = Time.time + skillInterval;
+            passiveCooldown = timer + passiveSkill.cooldown;
+            nextSkillTime = timer + skillInterval;
             StopAttacking();
         });
     }
@@ -279,7 +281,7 @@ public class BossAttack : MonoBehaviour, IBossReset
         
         strategies[BossSkillType.ultimate]?.TryAttack(gameObject, target, dir, () => 
         {
-            nextSkillTime = Time.time + skillInterval;
+            nextSkillTime = timer + skillInterval;
             usedUltimate = true;
             StopAttacking();
         });

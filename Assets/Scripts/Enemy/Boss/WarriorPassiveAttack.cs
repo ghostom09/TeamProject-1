@@ -5,7 +5,7 @@ public class WarriorPassiveAttack : IBossSkillStrategy
 {
     private BossAttack bossAttack;
         
-    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject hitArea, GameObject target)
+    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack , GameObject target)
     {
         this.bossAttack = bossAttack;
     }

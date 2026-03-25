@@ -5,27 +5,26 @@ public class Boss : MonoBehaviour, IBossReset
     private BossMove move;
     private BossAttack attack;
     private BossHit hit;
-    [SerializeField] private GameObject targetObj;
+    private GameObject targetObj;
     public EnemySpawnerManager manager;
 
-    [SerializeField] private BossStats bossStats;
+    private BossStats bossStats;
     
-    private void Start()
+    private void Awake()
     {
         move = GetComponent<BossMove>();
         attack = GetComponent<BossAttack>();
         hit = GetComponent<BossHit>();
-        
-        Init(bossStats, targetObj, manager);
     }
 
     public void Init(BossStats stats, GameObject target, EnemySpawnerManager m)
     {
         bossStats = stats;
         manager = m;
+        targetObj = target;
         
-        move.Init(bossStats, target, m);
-        attack.Init(bossStats, target, m);
-        hit.Init(bossStats, target, m);
+        move.Init(bossStats, targetObj, manager);
+        attack.Init(bossStats, targetObj, manager);
+        hit.Init(bossStats, targetObj, manager);
     }
 }

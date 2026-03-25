@@ -1,4 +1,4 @@
-using UnityEngine;
+using UnityEngine;using System;
 
 public class DifficultyLevelManager : MonoBehaviour
 {
@@ -8,7 +8,8 @@ public class DifficultyLevelManager : MonoBehaviour
     [SerializeField] private EnemySpawnerManager spawnManager;
 
     private float timer;
-
+    
+    
     private void Start()
     {
         timer = 0f;
@@ -35,10 +36,11 @@ public class DifficultyLevelManager : MonoBehaviour
         difficultyLevel++;
 
         if (spawnManager != null)
-        {
             spawnManager.ApplyDifficulty(difficultyLevel);
-        }
-
+        
+        if (difficultyLevel % 10 == 0)
+            spawnManager.SetBossPending();
+        
         Debug.Log($"Difficulty Level Up → {difficultyLevel}");
     }
 }

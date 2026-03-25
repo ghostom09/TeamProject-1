@@ -9,7 +9,7 @@ public class MagicianNormalAttack : IBossSkillStrategy
     private Vector2 dir;
     private BossAttack bossAttack;
     
-    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject hitArea, GameObject target)
+    public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject target)
     {
         damage = data.damage;
         attackRange = data.attackRange;
@@ -24,7 +24,6 @@ public class MagicianNormalAttack : IBossSkillStrategy
 
     private IEnumerator AttackRoutine(GameObject boss, GameObject target , System.Action onComplete)
     {
-        Debug.Log("일반 공격");
         yield return new WaitForSeconds(0.3f);
         
         dir = (target.transform.position - boss.transform.position).normalized;

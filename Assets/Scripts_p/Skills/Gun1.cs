@@ -16,16 +16,16 @@ public class Gun1 : SkillBase
         hitLayer = LayerMask.GetMask("Enemy", "Wall");
     }
 
-    protected override void Execute(GameObject user, Vector2 dir)
+    protected override bool Execute(GameObject user, Vector2 dir)
     {
         Player player = user.GetComponent<Player>();
 
         if (player.isUsingUltimate)
-            return;
-
-        lastUsedTime = Time.time;
+            return false;
 
         player.StartCoroutine(GoldenShotRoutine(player, dir));
+        
+        return true;
     }
 
     private IEnumerator GoldenShotRoutine(Player player, Vector2 dir)

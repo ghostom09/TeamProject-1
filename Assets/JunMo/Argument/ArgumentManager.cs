@@ -1,28 +1,65 @@
-using System.Collections;
+using UnityEngine.InputSystem;
 using UnityEngine;
 using System.Collections.Generic;
 
 public class ArgumentManager : MonoBehaviour
 {
-    [SerializeField]private UpgradeManager upgradeManager;
-    [SerializeField]private Argument argument;
     [SerializeField]private GameObject argumentPanel;
-    private List<Argument> arguments = new ();
-    // levelup event
-
-    private float maxWidth = 1000f;
-    private int spawnCount = 3;
-    private int argumentCount = 0;
+    [SerializeField]private Canvas canvas;
     
-    void Start()
+    private ArgumentDataManager upgradeManager;
+    private List<Argument> arguments = new ();
+
+    private float maxWidth = 450f;
+    private int argumentCount = 0;
+    private int spawnCount = 3;
+    private bool argumentSpawned = false;
+    private int levelUpCnt = 0;
+    
+    public int playerLevel = 1;
+    void Awake()
     {
-        Spawn(spawnCount);
+        upgradeManager = GetComponent<ArgumentDataManager>();
     }
+
+    void OnEnable()
+    {
+        PlayerLevelManager.OnLevelUp += LevelUp;
+    }
+
+    void OnDisable()
+    {
+        PlayerLevelManager.OnLevelUp -= LevelUp;
+    }
+
+    private void LevelUp(int currentLevel)
+    {
+        levelUpCnt++;
+        playerLevel = currentLevel;
+        SpawnCalculate();
+    }
+
+    private void SpawnCalculate()
+    {
+        while (levelUpCnt > 0)
+        {
+            if (argumentSpawned)
+                return;
+            levelUpCnt--;
+            argumentSpawned = !argumentSpawned;
+            Spawn(spawnCount);
+        }
+    }
+    
     void Spawn(int count)
     {
         arguments.Clear();
+
+        List<ArgumentData> datas = upgradeManager.GetRandomArguments(count);
+
         float spacing = (count == 1) ? 0 : maxWidth / (count - 1);
-        for (int i = 0; i < count; i++)
+
+        for (int i = 0; i < datas.Count; i++)
         {
             float x;
             bool centerAlign = (count % 2 == 1);
@@ -37,28 +74,49 @@ public class ArgumentManager : MonoBehaviour
 
             Argument argument = obj.GetComponent<Argument>();
             argument.on_Click += OnArgumentClicked;
+
+            argument.SetID(i);
             arguments.Add(argument);
+
             rt.anchoredPosition = new Vector2(x, 0);
             rt.localScale = Vector3.one;
             rt.sizeDelta = ((RectTransform)argumentPanel.transform).sizeDelta;
-            argument.SetID(argumentCount++);
-            if (upgradeManager.RandomType())
-                argument.SetStat(upgradeManager.RandomStat());
-            else
-                argument.SetSkill(upgradeManager.RandomSkill());
+
+            ArgumentData data = datas[i];
+
+            if (data is SkillArgumentData skill)
+            {
+                int level = upgradeManager.GetSkillLevel(skill);
+                argument.SetSkill(skill, level + 1);
+            }
+            else if (data is StatArgumentData stat)
+                argument.SetStat(stat);
         }
     }
 
     
     void OnArgumentClicked(int argumentID)
     {
+        ArgumentData data = upgradeManager.MakeArgument(argumentID);
+
         foreach (Argument clickedArgument in arguments)
         {
             if (clickedArgument == arguments[argumentID])
             {
                 arguments[argumentID].FadeOut(1f);
+
+                if (data is SkillArgumentData skill)
+                {
+                    upgradeManager.ApplySkillResult(skill);
+                }
+
+                upgradeManager.ConvertToResult(data);
             }
-            else clickedArgument.FadeOut(0.3f);
+            else
+            {
+                clickedArgument.FadeOut(0.3f);
+            }
         }
+        argumentSpawned = !argumentSpawned;
     }
 }

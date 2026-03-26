@@ -2177,9 +2177,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharUI
   startBtn: {fileID: 1307943516}
+  characterButtons:
+  - {fileID: 8633730216663604319}
+  - {fileID: 1348012903}
   charactersPanel: {fileID: 1797335425}
   grid: {fileID: 171509136}
   viewport: {fileID: 1797335425}
+  characters:
+  - {fileID: 11400000, guid: 6c9cdfd605f355340ac2b3041233929a, type: 2}
+  - {fileID: 11400000, guid: 4906926dc1371e24da7fc7f1e6cd86a4, type: 2}
   itemCount: 3
 --- !u!4 &1584872301
 Transform:
@@ -2748,6 +2754,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa7b2e5bab996974cb959193624563ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharDataManager
+  data: {fileID: 0}
 --- !u!4 &1942851336
 Transform:
   m_ObjectHideFlags: 0

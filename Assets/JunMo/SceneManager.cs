@@ -22,7 +22,7 @@ public class SceneManager : MonoBehaviour
 
     public void ChangeScene(SceneName sceneName)
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName.ToString());   
+        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName.ToString());
     }
 
     public void QuitGame()

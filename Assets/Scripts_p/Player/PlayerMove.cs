@@ -169,7 +169,6 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
         if (moveLockType == MoveLockType.FullLock || isKnocked)
             return;
 
-        // ⭐ Stats에서 이동속도 가져오기
         float baseSpeed = player.Stats.MoveSpeed;
 
         if (isDashing)

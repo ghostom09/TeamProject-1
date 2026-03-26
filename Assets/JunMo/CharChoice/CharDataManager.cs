@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CharDataManager : MonoBehaviour
 {
-    public static CharacterData data;
+    public CharacterData data;
     public static CharDataManager Instance;
 
     void Awake()

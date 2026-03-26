@@ -6,9 +6,11 @@ using Button = UnityEngine.UI.Button;
 public class CharUI : MonoBehaviour
 {
     [SerializeField] private Button startBtn;
+    [SerializeField] private Button[] characterButtons;
     [SerializeField] private RectTransform charactersPanel;
     [SerializeField] private GridLayoutGroup grid;
     [SerializeField] private RectTransform viewport;
+    [SerializeField] private CharacterData[] characters;
     
     private CharacterData characterData;
 
@@ -23,6 +25,15 @@ public class CharUI : MonoBehaviour
     private void SetButton()
     {
         startBtn.onClick.AddListener(OnStartGame);
+        for (int i = 0; i < characterButtons.Length; i++)
+        {
+            int index = i;
+            characterButtons[i].onClick.AddListener(() => OnClickButton(index));
+        }
+    }
+    void OnClickButton(int index)
+    {
+        characterData = characters[index];
     }
 
     private void Resize()

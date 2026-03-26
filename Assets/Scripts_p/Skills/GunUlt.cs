@@ -9,8 +9,7 @@ public class GunUlt : SkillBase
     protected override bool Execute(GameObject user, Vector2 dir)
     {
         Player player = user.GetComponent<Player>();
-
-        // 이미 사용 중이면 해제
+        
         if (player.isUsingUltimate)
         {
             player.StopUltimate();

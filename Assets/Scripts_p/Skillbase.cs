@@ -7,10 +7,8 @@ public abstract class SkillBase : ISkillAction
     protected SkillData skillData;
     protected float lastUsedTime = -999f;
 
-    // 합연산 대신 비율(%) 기반 쿨타임 감소를 사용 (예: 0.2f = 20% 쿨감)
     public float cooldownReductionRate = 0f;
-
-    // 쿨타임 공식: 기본 쿨타임 * (1 - 쿨감률)
+    
     public float Cooldown => Mathf.Max(0.1f, skillData.Cooldown * (1f - cooldownReductionRate));
 
     public void Init(CharacterData data, SkillData skillData)

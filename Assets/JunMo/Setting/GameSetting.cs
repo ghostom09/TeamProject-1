@@ -7,7 +7,7 @@ public class GameSettings
     public float bgmVolume = 1f;
     public float sfxVolume = 1f;
 
-    public int resolutionIndex = 0;
+    public int resolutionIndex = -1;
     public bool fullScreen = true;
     public int qualityLevel = 2;
 }

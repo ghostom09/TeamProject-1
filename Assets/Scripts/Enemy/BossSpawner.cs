@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemySpawner : MonoBehaviour
+public class BossSpawner : MonoBehaviour
 {
     private EnemySpawnerManager manager;
 
@@ -13,9 +13,9 @@ public class EnemySpawner : MonoBehaviour
     {
         if (manager == null) return;
 
-        if (manager.CanSpawn())
+        if (manager.CanSpawnBoss())
         {
-            manager.SpawnFromPoint(transform.position, false);
+            manager.BossSpawnFromPoint(transform.position);
         }
     }
 }

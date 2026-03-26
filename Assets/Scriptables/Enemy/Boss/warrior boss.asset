@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9989d626cc7007b40b978055d0b506c0, type: 3}
+  m_Name: warrior boss
+  m_EditorClassIdentifier: Assembly-CSharp::BossStats
+  bossType: 1
+  health: 100
+  speed: 2.5
+  jumpForce: 13
+  exp: 35
+  skillInterval: 5
+  skills:
+  - {fileID: 11400000, guid: d5421f8f0510d91459073cd5125461b3, type: 2}
+  - {fileID: 11400000, guid: b0ad0dc6f91acd54ea0758c9d3a6c50d, type: 2}
+  - {fileID: 11400000, guid: f485afb5b24c25d43b4e5a152232c7ef, type: 2}
+  - {fileID: 11400000, guid: 746dc4bac36c7624688a4c4e739be2bb, type: 2}
+  - {fileID: 11400000, guid: b0eacdb2816da6e4e9a01b1a51e93495, type: 2}

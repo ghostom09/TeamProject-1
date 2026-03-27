@@ -8,12 +8,11 @@ public class UltraVFXController : MonoBehaviour
     [SerializeField]private ParadoxController paradoxController;
 
     public static bool usingUltra = false;
-    
-    private jobType jobType = jobType.Gun;
-    
-    [SerializeField]private
 
-    void Job(jobType jobType)
+    private jobType jobType;
+    
+
+    public void Job(jobType jobType)
     {
         this.jobType = jobType;
     }
@@ -21,14 +20,6 @@ public class UltraVFXController : MonoBehaviour
     void Start()
     {
         paradoxController.ResetUltra();
-    }
-
-    private void Update()
-    {
-        if (Keyboard.current.rKey.wasPressedThisFrame)
-        {
-            PressUltra();
-        }
     }
 
     void PressUltra()

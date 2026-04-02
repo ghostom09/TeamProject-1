@@ -44,8 +44,6 @@ public class GunNormalAttack : INormalAttack
         float damage = enhanced ? player.Stats.Damage * 2.2f : player.Stats.Damage;
         float range = data.Range;
 
-        Debug.DrawRay(origin, dir * range, Color.cyan, 0.2f);
-
         if (enhanced)
             DoPiercingHitscan(origin, dir, damage, range);
         else
@@ -60,6 +58,8 @@ public class GunNormalAttack : INormalAttack
             range,
             hitLayer
         );
+        
+        Debug.DrawRay(origin, dir * range, Color.cyan, 0.2f);
 
         if (hit.collider == null)
             return;
@@ -79,6 +79,7 @@ public class GunNormalAttack : INormalAttack
             range * 2,
             hitLayer
         );
+        Debug.DrawRay(origin, dir * range * 2, Color.cyan, 0.2f);
 
         foreach (var hit in hits)
         {

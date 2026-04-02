@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Bullet : MonoBehaviour, IBulletBehavior
+public class Bullet : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private TrailRenderer trail;
@@ -23,16 +23,13 @@ public class Bullet : MonoBehaviour, IBulletBehavior
             Destroy(gameObject);
         }
     }
-
-    public void BulletDestroy()
-    {
-        Destroy(gameObject);
-    }
     
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        Debug.Log(other.gameObject.name);
+        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") || other.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
+            Debug.Log(other.gameObject.name);
             Destroy(gameObject);
         }
     }

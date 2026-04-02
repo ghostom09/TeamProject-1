@@ -830,7 +830,7 @@ MonoBehaviour:
   m_IsGlobal: 1
   priority: 1
   blendDistance: 0
-  weight: 1
+  weight: 0
   sharedProfile: {fileID: 11400000, guid: 65c9b9371ae5dc44ca172408d28264fa, type: 2}
 --- !u!4 &427421888
 Transform:
@@ -6108,7 +6108,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.05
+      scalar: 0.02
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -11097,6 +11097,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UltraVFXController
   paradoxController: {fileID: 1019246533}
+  playerGun: {fileID: 0}
+  playerSword: {fileID: 0}
+  charData: {fileID: 0}
+  usingUltra: 0
 --- !u!4 &1019246535
 Transform:
   m_ObjectHideFlags: 0
@@ -11218,7 +11222,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1138707710
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -11546,7 +11550,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 360ba4f8157c61742be518b802fd7240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
-  hitBox: {fileID: 159268568}
   illusionPrefab: {fileID: 0}
   attackTime: 0.2
 --- !u!114 &1349185871
@@ -11591,6 +11594,15 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   groundCheck: {fileID: 588565013}
+  groundBoxSize: {x: 0.5, y: 0.1}
+  maxJumpCount: 2
+  coyoteTime: 0.1
+  jumpBufferTime: 0.1
+  jumpCutMultiplier: 0.5
+  acceleration: 25
+  deceleration: 35
+  turnDeceleration: 60
+  maxFallSpeed: 25
 --- !u!114 &1349185874
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11787,6 +11799,18 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 2c4fd136-4459-4fdc-ad70-522a0ffee564
+    m_ActionName: 'Player/Skill_1[/Keyboard/q]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 4efb0e72-e794-4529-be37-7b1a5ceebaa8
+    m_ActionName: 'Player/Skill_2[/Keyboard/e]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 54467644-53ca-4b80-8bf9-4794b871fff7
+    m_ActionName: 'Player/Skill_3[/Keyboard/r]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: 
@@ -11938,7 +11962,6 @@ MonoBehaviour:
   ammoNormalPrefab: {fileID: 9022994086395464316, guid: d63f28696bb8d2243a5bb458487ee5bd, type: 3}
   ammoGoldenPrefab: {fileID: 2865926002424116187, guid: f819993d5c4fcfd4ba50a8f90ae860a1, type: 3}
   ammoUltraPrefab: {fileID: 3792183195250595278, guid: 565db26b300513f42ab11c5e1f158f50, type: 3}
-  playerInput: {fileID: 1349185874}
   speed: 50
   ghostPrefab: {fileID: 7021013449918932408, guid: 1b6811a00976b1a4b95c14378a7a57bd, type: 3}
 --- !u!1 &1461892096

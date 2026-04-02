@@ -23,27 +23,17 @@ public class EnemyTest : MonoBehaviour, IDamageable
 
     public void TakeDamage(float damage)
     {
-        if (UltraVFXController.usingUltra)
-        {
-            UltraAttacked();
-        }
-        else
-        {
-            Attacked();
-        }
+        // if (SkillController.usingUltra)
+        // {
+        //     UltraAttacked();
+        // }
+        // else
+        // {
+        //     Attacked();
+        // }
     }
 
-    public void ApplySlow(float percent, float duration)
-    {
-        if (UltraVFXController.usingUltra)
-        {
-            // 궁에 슬로우?
-        }
-        else
-        {
-            // 평타에 슬로우?
-        }
-    }
+    public void ApplySlow(float percent, float duration) { }
     
     public void ApplyKnockback(Vector2 dir, float power, float duration){ }
 

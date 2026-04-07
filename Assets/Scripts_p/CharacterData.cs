@@ -16,4 +16,12 @@ public class CharacterData : ScriptableObject
     public float AttackSpeed;
     public SkillData[] Skills;
     public UltData Ult;
+    
+    [Header("올라가는 스탯")]
+    public float RisingMoveSpeed;
+    public float RisingDamage;
+    public float RisingRange;
+    public float RisingAttackSpeed;
+    public float RisingMaxHp;
+
 }

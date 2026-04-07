@@ -23,3 +23,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f0ac6a64fa8c9e3479800ea1d189dd59, type: 2}
   - {fileID: 11400000, guid: 991ce46b4a95b594ba099cc54455fef7, type: 2}
   Ult: {fileID: 11400000, guid: 5aec454ca94c30e46857dad851f19b13, type: 2}
+  RisingMoveSpeed: 0
+  RisingDamage: 0.7
+  RisingRange: 0.08
+  RisingAttackSpeed: 0.015
+  RisingMaxHp: 4

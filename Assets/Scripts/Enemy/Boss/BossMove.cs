@@ -157,25 +157,18 @@ public class BossMove : MonoBehaviour, IBossReset, IEnemyMover, IDamageable
 
         direction = direction < 0f ? -1f : 1f;
 
-        if (bossType == BossType.magician)
+        if (distance > (interval * interval) - distanceThreshold &&
+            distance < (interval * interval) + distanceThreshold)
         {
-            if (distance > (interval * interval) - distanceThreshold &&
-                distance < (interval * interval) + distanceThreshold)
-            {
-                rb2d.linearVelocity = new Vector2(0f, rb2d.linearVelocity.y);
-            }
-            else if (distance > (interval * interval))
-            {
-                rb2d.linearVelocity = new Vector2(direction * speed, rb2d.linearVelocity.y);
-            }
-            else
-            {
-                rb2d.linearVelocity = new Vector2(-direction * speed * reverseDeceleration, rb2d.linearVelocity.y);
-            }
+            rb2d.linearVelocity = new Vector2(0f, rb2d.linearVelocity.y);
+        }
+        else if (distance > (interval * interval))
+        {
+            rb2d.linearVelocity = new Vector2(direction * speed, rb2d.linearVelocity.y);
         }
         else
         {
-            rb2d.linearVelocity = new Vector2(direction * speed, rb2d.linearVelocity.y);
+            rb2d.linearVelocity = new Vector2(-direction * speed * reverseDeceleration, rb2d.linearVelocity.y);
         }
     }
     

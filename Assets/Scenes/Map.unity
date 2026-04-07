@@ -190,6 +190,7 @@ Transform:
   - {fileID: 933660207}
   - {fileID: 182933662}
   - {fileID: 1555284319}
+  - {fileID: 1253626162}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &19633776
@@ -1491,8 +1492,8 @@ Transform:
   m_GameObject: {fileID: 795766927}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 23, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 73, z: 1}
+  m_LocalPosition: {x: 38.8097, y: 0, z: 0}
+  m_LocalScale: {x: 32.6195, y: 73, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1761196086}
@@ -2083,8 +2084,8 @@ Transform:
   m_GameObject: {fileID: 956369700}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 9, z: 0}
-  m_LocalScale: {x: 110, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 22.5039, z: 0}
+  m_LocalScale: {x: 110, y: 28.008446, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 689658813}
@@ -3059,6 +3060,50 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1253626161
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1253626162}
+  - component: {fileID: 1253626163}
+  m_Layer: 0
+  m_Name: BossSpawnSpot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1253626162
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1253626161}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 14526272}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1253626163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1253626161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f06d84b47962b93438d1c511640387fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossSpawner
 --- !u!1 &1258705670
 GameObject:
   m_ObjectHideFlags: 0
@@ -4493,7 +4538,7 @@ Transform:
   m_GameObject: {fileID: 1670816405}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -5.5, z: 0}
+  m_LocalPosition: {x: 3.03, y: -0.36, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4848,8 +4893,8 @@ Transform:
   m_GameObject: {fileID: 1963980791}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -23, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 73, z: 1}
+  m_LocalPosition: {x: -38.7355, y: 0, z: 0}
+  m_LocalScale: {x: 32.471, y: 73, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1761196086}
@@ -4987,8 +5032,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad7027da49fe6e944af7012a2820c9d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DifficultyLevelManager
-  interval: 15
-  difficultyLevel: 1
+  interval: 1
+  difficultyLevel: 9
   spawnManager: {fileID: 14526271}
 --- !u!4 &1983379321
 Transform:
@@ -5169,8 +5214,8 @@ Transform:
   m_GameObject: {fileID: 2132552069}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -9, z: 0}
-  m_LocalScale: {x: 110, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: -22.4346, z: 0}
+  m_LocalScale: {x: 110, y: 27.8691, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 689658813}

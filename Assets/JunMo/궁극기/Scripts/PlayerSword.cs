@@ -1,14 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public class PlayerSword : MonoBehaviour
 {
     [SerializeField] private CameraMove cam;
     [SerializeField] private GameObject swordIllusions;
     [SerializeField] private GameObject swordIllusions2;
-    [SerializeField] private GameObject attackIllusions;
     [SerializeField] private GameObject bigSwordIllusions;
     [SerializeField] private GameObject playerIllusions;
     [SerializeField] private SpriteRenderer me;
@@ -16,7 +17,6 @@ public class PlayerSword : MonoBehaviour
     [SerializeField] private RectTransform background;
     
     private List<GameObject> Illusions = new();
-    private List<GameObject> fastBroken = new();
     private int illusionsCnt = 5;
     private Vector2 playerPos;
     
@@ -102,20 +102,22 @@ public class PlayerSword : MonoBehaviour
 
             if (obj)
             {
-                Destroy(obj);
+                ObjectPoolManager.Instance.Release(ObjectName.UltraSwordIllusions, obj);
             }
-            obj = Instantiate(swordIllusions, pos, Quaternion.Euler(0, 0, angle - 90f));
+            obj = ObjectPoolManager.Instance.Get
+                (ObjectName.UltraSwordIllusions, pos, Quaternion.Euler(0, 0, angle - 90f));
             
             if (obj.TryGetComponent(out SwordUltraAttack swordUltra))
             {
                 swordUltra.Initialize(dir, 100);
             }
 
-            Illusions.Add(Instantiate(playerIllusions, pos, Quaternion.identity));
+            Illusions.Add(ObjectPoolManager.Instance.Get
+                (ObjectName.PlayerAvatar, pos, Quaternion.identity));
             
             yield return new WaitForSeconds(0.12f);
         }
-        Destroy(obj);
+        ObjectPoolManager.Instance.Release(ObjectName.UltraSwordIllusions, obj);
     }
 
     private IEnumerator Attacking()
@@ -126,23 +128,20 @@ public class PlayerSword : MonoBehaviour
             obj = SpawnSwordRandom();
             yield return new WaitForSeconds(0.015f);
         }
-        Destroy(obj);
+        ObjectPoolManager.Instance.Release(ObjectName.UltraSwordBigIllusions, obj);
     }
 
     private IEnumerator EndOfAttack()
     {
         foreach (var sword in Illusions)
         {
-            Destroy(sword);
+            ObjectPoolManager.Instance.Release(ObjectName.PlayerAvatar, sword);
         }
-        foreach (var sword in fastBroken)
-        {
-            Destroy(sword);
-        }
-        GameObject bigSword = Instantiate(bigSwordIllusions, playerPos, Quaternion.identity);
+        GameObject bigSword = ObjectPoolManager.Instance.
+            Get(ObjectName.UltraSwordFinal, playerPos, Quaternion.identity);
 
         yield return new WaitForSeconds(0.5f);
-        Destroy(bigSword);
+        ObjectPoolManager.Instance.Release(ObjectName.UltraSwordFinal, bigSword);
 
         yield return null;
     }
@@ -166,16 +165,24 @@ public class PlayerSword : MonoBehaviour
 
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
-        GameObject obj = Instantiate(swordIllusions2, pos, Quaternion.Euler(0, 0, angle - 90f));
+        GameObject obj = ObjectPoolManager.Instance.Get
+            (ObjectName.UltraSwordBigIllusions, pos, Quaternion.Euler(0, 0, angle - 90f));
         
         if (obj.TryGetComponent(out SwordUltraAttack swordUltra))
         {
             swordUltra.Initialize(dir, 100);
         }
+
+        // StartCoroutine(Die(obj));
         
-        Destroy(obj, 0.5f);
         return obj;
     }
+
+    // private IEnumerator Die(GameObject obj)
+    // {
+    //     yield return new WaitForSeconds(0.5f);
+    //     ObjectPoolManager.Instance.Release(ObjectName.UltraSwordBigIllusions, obj);
+    // }
 
     private void Reset()
     {

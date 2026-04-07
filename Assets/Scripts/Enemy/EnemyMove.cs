@@ -31,7 +31,7 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
     private bool isSide;
     private bool isJumping = false;
     
-    private float rangedInterval;
+    private float movingInterval;
     [SerializeField] private float jumpPersent = 0.02f;
     [SerializeField] private float reverseDeceleration;
 
@@ -59,7 +59,7 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
         jumpForce = stats.jumpForce;
         enemyType = stats.enemyType;
         attackRange = stats.attackRange;
-        rangedInterval = attackRange * 0.8f;
+        movingInterval = attackRange * Random.Range(0.7f, 0.9f);
         
         movingTarget = target;
         SetMoveLock(false);
@@ -151,26 +151,19 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
         }
 
         direction = direction < 0f ? -1f : 1f;
-
-        if (enemyType == EnemyType.ranged || enemyType == EnemyType.support)
+        
+        if (distance > (movingInterval * movingInterval) - distanceThreshold &&
+            distance < (movingInterval * movingInterval) + distanceThreshold)
         {
-            if (distance > (rangedInterval * rangedInterval) - distanceThreshold &&
-                distance < (rangedInterval * rangedInterval) + distanceThreshold)
-            {
-                rb2d.linearVelocity = new Vector2(0f, rb2d.linearVelocity.y);
-            }
-            else if (distance > (rangedInterval * rangedInterval))
-            {
-                rb2d.linearVelocity = new Vector2(direction * speed, rb2d.linearVelocity.y);
-            }
-            else
-            {
-                rb2d.linearVelocity = new Vector2(-direction * speed * reverseDeceleration, rb2d.linearVelocity.y);
-            }
+            rb2d.linearVelocity = new Vector2(0f, rb2d.linearVelocity.y);
+        }
+        else if (distance > (movingInterval * movingInterval))
+        {
+            rb2d.linearVelocity = new Vector2(direction * speed, rb2d.linearVelocity.y);
         }
         else
         {
-            rb2d.linearVelocity = new Vector2(direction * speed, rb2d.linearVelocity.y);
+            rb2d.linearVelocity = new Vector2(-direction * speed * reverseDeceleration, rb2d.linearVelocity.y);
         }
     }
     

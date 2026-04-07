@@ -12,6 +12,9 @@ public enum ObjectName
     
     SwordIllusions,
     PlayerAvatar,
+    UltraSwordIllusions,
+    UltraSwordBigIllusions,
+    UltraSwordFinal,
 }
 
 public class ObjectPoolManager : MonoBehaviour

@@ -5675,7 +5675,6 @@ MonoBehaviour:
   cam: {fileID: 1307229174}
   swordIllusions: {fileID: 5399030414042311396, guid: feaed1a865ae3ee4680fc7a7f7a6678b, type: 3}
   swordIllusions2: {fileID: 5399030414042311396, guid: 516b2b7752890a24ca1528ab179de655, type: 3}
-  attackIllusions: {fileID: 3792183195250595278, guid: afd9cc467031ea84281681048e9045ab, type: 3}
   bigSwordIllusions: {fileID: 4223256153860871357, guid: a7edca2dcf9438b41ae06cf6dbf32ce7, type: 3}
   playerIllusions: {fileID: 3699336652241653783, guid: b6f8aba811b67b14ca2c94bc1a91584d, type: 3}
   me: {fileID: 1993757906}
@@ -11293,6 +11292,31 @@ MonoBehaviour:
     prefab: {fileID: 3344381644252454771, guid: 7207f7e85309ce94199a97041bc0628b, type: 3}
     defaultCapacity: 3
     maxSize: 3
+    prewarm: 1
+  - key: 4
+    prefab: {fileID: 7851654145491328389, guid: 2fc5871cad4c81e47b83f9f5692b8520, type: 3}
+    defaultCapacity: 1
+    maxSize: 1
+    prewarm: 1
+  - key: 7
+    prefab: {fileID: 5399030414042311396, guid: feaed1a865ae3ee4680fc7a7f7a6678b, type: 3}
+    defaultCapacity: 0
+    maxSize: 20
+    prewarm: 1
+  - key: 8
+    prefab: {fileID: 5399030414042311396, guid: 516b2b7752890a24ca1528ab179de655, type: 3}
+    defaultCapacity: 0
+    maxSize: 20
+    prewarm: 1
+  - key: 6
+    prefab: {fileID: 3699336652241653783, guid: b6f8aba811b67b14ca2c94bc1a91584d, type: 3}
+    defaultCapacity: 0
+    maxSize: 5
+    prewarm: 1
+  - key: 9
+    prefab: {fileID: 4223256153860871357, guid: a7edca2dcf9438b41ae06cf6dbf32ce7, type: 3}
+    defaultCapacity: 1
+    maxSize: 1
     prewarm: 1
 --- !u!4 &1177791714
 Transform:

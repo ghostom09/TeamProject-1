@@ -18,6 +18,7 @@ public class PlayerSword : MonoBehaviour
     private List<GameObject> Illusions = new();
     private List<GameObject> fastBroken = new();
     private int illusionsCnt = 5;
+    private Vector2 playerPos;
     
     public float radius = 6f;
     
@@ -38,57 +39,10 @@ public class PlayerSword : MonoBehaviour
         new Vector2(0.22f, 3.89f),
         new Vector2(1.83f, -3.28f),
     };
-    // private List<SwordIllusionsAttack> _illusions 
-    //     = new List<SwordIllusionsAttack>();
-    // private Transform _pivot; //asd
-    // public void SpawnIllusions(float damage)
-    // {
-    //     ClearIllusions();
-    //
-    //     int count = 3;
-    //     float radius = 0.7f;
-    //     float totalAngle = 80f;
-    //
-    //     _pivot = new GameObject("IllusionPivot").transform;
-    //     _pivot.position = transform.position;
-    //     for (int i = 0; i < count; i++)
-    //     {
-    //         float angle = i * (360f / count);
-    //         float radian = angle * Mathf.Deg2Rad;
-    //
-    //         Vector3 offset = new Vector3(
-    //             Mathf.Cos(radian),
-    //             Mathf.Sin(radian),
-    //             0f
-    //         ) * radius;
-    //
-    //         Vector3 spawnPos = transform.position + offset;
-    //
-    //         GameObject obj = Instantiate(
-    //             illusionPrefab,
-    //             spawnPos,
-    //             Quaternion.Euler(0, 0, angle - 90f)
-    //         );
-    //
-    //         var illusion = obj.GetComponent<SwordIllusionsAttack>();
-    //         illusion.Init(damage);
-    //         obj.transform.SetParent(_pivot);
-    //
-    //         _illusions.Add(illusion);
-    //     }
-    // }
-    //
-    // void Update()
-    // {
-    //     if (_pivot != null)
-    //     {
-    //         _pivot.Rotate(0, 0, 30f * Time.deltaTime);
-    //     }
-    // }
-
     
-    public void Ultimate()
+    public void Ultimate(Vector2 pos)
     {
+        playerPos = pos;
         StartCoroutine(UltimateRoutine());
     }
 
@@ -141,12 +95,12 @@ public class PlayerSword : MonoBehaviour
         GameObject obj = null;
         for (int i = 0; i < posOffsets.Length; i++)
         {
-            Vector2 pos = (Vector2)transform.position + posOffsets[i];
-            Vector2 dir = (Vector2)transform.position + dirOffsets[i];
+            Vector2 pos = playerPos + posOffsets[i];
+            Vector2 dir = playerPos + dirOffsets[i];
 
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
-            if (obj != null)
+            if (obj)
             {
                 Destroy(obj);
             }
@@ -159,7 +113,6 @@ public class PlayerSword : MonoBehaviour
 
             Illusions.Add(Instantiate(playerIllusions, pos, Quaternion.identity));
             
-            // SpawnAttackRandom();
             yield return new WaitForSeconds(0.12f);
         }
         Destroy(obj);
@@ -167,7 +120,6 @@ public class PlayerSword : MonoBehaviour
 
     private IEnumerator Attacking()
     {
-        // SpawnAttackRandom();
         GameObject obj = null;
         for (int i = 0; i < posOffsets.Length * 10; i++)
         {
@@ -187,30 +139,12 @@ public class PlayerSword : MonoBehaviour
         {
             Destroy(sword);
         }
-        GameObject bigSword = Instantiate(bigSwordIllusions, transform.position, Quaternion.identity);
+        GameObject bigSword = Instantiate(bigSwordIllusions, playerPos, Quaternion.identity);
 
         yield return new WaitForSeconds(0.5f);
         Destroy(bigSword);
 
         yield return null;
-    }
-
-    private IEnumerator Timer(float time)
-    {
-        yield return new WaitForSeconds(time);
-    }
-
-    private void SpawnAttackRandom()
-    {
-        Vector2 randomStart = (Vector2)transform.position + Random.insideUnitCircle * 5.5f;
-        Vector2 randomTarget = (Vector2)transform.position + Random.insideUnitCircle * 5.5f;
-
-        GameObject obj = Instantiate(attackIllusions, randomStart, Quaternion.identity);
-        if (obj.TryGetComponent(out SwordUltraAttack sword))
-        {
-            sword.Initialize(randomTarget, 100);
-        }
-        fastBroken.Add(obj);
     }
 
     private GameObject SpawnSwordRandom()
@@ -223,10 +157,10 @@ public class PlayerSword : MonoBehaviour
         float angle3 = angle1 * rad;
         float angle2 = (angle1 + offset) * rad;
 
-        Vector2 pos = (Vector2)transform.position + 
+        Vector2 pos = playerPos + 
                       new Vector2(Mathf.Cos(angle3), Mathf.Sin(angle3)) * radius + 
                       new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
-        Vector2 dir = (Vector2)transform.position + 
+        Vector2 dir = playerPos + 
                       new Vector2(Mathf.Cos(angle2), Mathf.Sin(angle2)) * radius + 
                       new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
 
@@ -248,13 +182,5 @@ public class PlayerSword : MonoBehaviour
         StopAllCoroutines();
         background.anchorMin = new Vector2(0, 0);
         background.anchorMax = new Vector2(0, 1);
-    }
-    
-    void Update()
-    {
-        if (Keyboard.current.rKey.wasPressedThisFrame)
-        {
-            Ultimate();
-        }
     }
 }

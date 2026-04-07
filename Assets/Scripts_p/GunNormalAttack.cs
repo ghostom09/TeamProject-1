@@ -42,9 +42,7 @@ public class GunNormalAttack : INormalAttack
         Vector2 origin = user.transform.position;
 
         float damage = enhanced ? player.Stats.Damage * 2.2f : player.Stats.Damage;
-        float range = data.Range;
-
-        Debug.DrawRay(origin, dir * range, Color.cyan, 0.2f);
+        float range = player.Stats.Range;
 
         if (enhanced)
             DoPiercingHitscan(origin, dir, damage, range);
@@ -54,12 +52,15 @@ public class GunNormalAttack : INormalAttack
 
     private void DoSingleHitscan(Vector2 origin, Vector2 dir, float damage, float range)
     {
+        SkillController.Instance.GunNormalAttack(origin, dir);
         RaycastHit2D hit = Physics2D.Raycast(
             origin,
             dir,
             range,
             hitLayer
         );
+        
+        Debug.DrawRay(origin, dir * range, Color.cyan, 0.2f);
 
         if (hit.collider == null)
             return;
@@ -73,12 +74,14 @@ public class GunNormalAttack : INormalAttack
 
     private void DoPiercingHitscan(Vector2 origin, Vector2 dir, float damage, float range)
     {
+        SkillController.Instance.GunUltraAttack(origin, dir);
         RaycastHit2D[] hits = Physics2D.RaycastAll(
             origin,
             dir,
             range * 2,
             hitLayer
         );
+        Debug.DrawRay(origin, dir * range * 2, Color.cyan, 0.2f);
 
         foreach (var hit in hits)
         {

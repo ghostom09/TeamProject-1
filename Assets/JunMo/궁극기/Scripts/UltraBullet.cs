@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class UltraBullet : MonoBehaviour, IBulletBehavior
+public class UltraBullet : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private TrailRenderer trail;
@@ -16,8 +16,11 @@ public class UltraBullet : MonoBehaviour, IBulletBehavior
         rb.linearVelocity = direction * speed;
     }
     
-    public void BulletDestroy()
+    void Update()
     {
-        Destroy(gameObject);
+        if (Vector2.Distance(startPosition, transform.position) >= maxDistance)
+        {
+            ObjectPoolManager.Instance.Release(ObjectName.UltraBullet, gameObject);
+        }
     }
 }

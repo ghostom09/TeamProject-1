@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Bullet : MonoBehaviour, IBulletBehavior
+public class Bullet : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private TrailRenderer trail;
@@ -20,20 +20,15 @@ public class Bullet : MonoBehaviour, IBulletBehavior
     {
         if (Vector2.Distance(startPosition, transform.position) >= maxDistance)
         {
-            Destroy(gameObject);
+            ObjectPoolManager.Instance.Release(ObjectName.NormalBullet, gameObject);
         }
-    }
-
-    public void BulletDestroy()
-    {
-        Destroy(gameObject);
     }
     
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") || other.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
-            Destroy(gameObject);
+            ObjectPoolManager.Instance.Release(ObjectName.NormalBullet, gameObject);
         }
     }
 }

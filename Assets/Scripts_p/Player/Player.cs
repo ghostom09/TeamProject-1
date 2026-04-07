@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
-public class Player : MonoBehaviour, IDamageable
+public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
 {
     
     [SerializeField] private PlayerSkillExecutor playerSkillExecutor;
@@ -23,7 +23,7 @@ public class Player : MonoBehaviour, IDamageable
     
     private void Start()
     {
-        character = CharDataManager.Instance.data;
+        // character = CharDataManager.Instance.data;
         Init(character);
         UnLockedUlt();
     }
@@ -125,4 +125,39 @@ public class Player : MonoBehaviour, IDamageable
         }
     }
     
+
+    public void StatUp()
+    {
+        float prevMaxHp = Stats.MaxHp;
+        float prevDmg  = Stats.Damage;
+        float prevSpd  = Stats.MoveSpeed;
+        float prevASpd = Stats.AttackSpeed;
+        float prevRange = Stats.Range;
+        
+        Stats.AddMoveSpeed(character.RisingMoveSpeed);
+        Stats.AddDamage(character.RisingDamage);
+        Stats.AddRange(character.RisingRange);
+        Stats.AddAttackSpeed(character.RisingAttackSpeed);
+        Stats.AddMaxHp(character.RisingMaxHp);
+        
+        Debug.Log($"<color=#FFD700><b>[Level Up!]</b></color> 캐릭터 스탯이 상승했습니다.");
+    
+        string log = $"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                     $"[HP] : {prevMaxHp:F1} ➔ <color=#FF4444>{Stats.MaxHp:F1}</color> (+{character.RisingMaxHp})\n" +
+                     $"[공격력] : {prevDmg:F1} ➔ <color=#FF4444>{Stats.Damage:F1}</color> (+{character.RisingDamage * 100}%)\n" +
+                     $"[이동속도] : {prevSpd:F1} ➔ <color=#4444FF>{Stats.MoveSpeed:F1}</color> (+{character.RisingMoveSpeed * 100}%)\n" +
+                     $"[공격속도] : {prevASpd:F1} ➔ <color=#4444FF>{Stats.AttackSpeed:F1}</color> (+{character.RisingAttackSpeed * 100}%)\n" +
+                     $"[사거리] : {prevRange:F1} ➔ <color=#FFFF44>{Stats.Range:F1}</color> (+{character.RisingRange * 100}%)\n" +
+                     $"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
+    
+        Debug.Log(log);
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current.tKey.wasPressedThisFrame)
+        {
+            StatUp();
+        }
+    }
 }

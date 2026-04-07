@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.Jobs.LowLevel.Unsafe;
 using UnityEngine;
 
 public class SwordUlt : SkillBase
@@ -23,6 +24,8 @@ public class SwordUlt : SkillBase
 
         user.GetComponent<MonoBehaviour>()
             .StartCoroutine(UltimateRoutine(user));
+        
+        SkillController.Instance.SwordUltra(user.transform.position);
 
         return true;
     }

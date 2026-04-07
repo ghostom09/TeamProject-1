@@ -68,12 +68,9 @@ public class PlayerAttack : MonoBehaviour
             ) * radius;
     
             Vector3 spawnPos = transform.position + offset;
-    
-            GameObject obj = Instantiate(
-                illusionPrefab,
-                spawnPos,
-                Quaternion.Euler(0, 0, angle - 90f)
-            );
+            
+            GameObject obj = ObjectPoolManager.Instance.Get
+                (ObjectName.SwordIllusions, spawnPos, Quaternion.Euler(0, 0, angle - 90f));
     
             var illusion = obj.GetComponent<SwordIllusionsAttack>();
             illusion.Init(damage);
@@ -110,7 +107,7 @@ public class PlayerAttack : MonoBehaviour
         {
             foreach (var illusion in _illusions)
             {
-                Destroy(illusion.gameObject);
+                ObjectPoolManager.Instance.Release(ObjectName.SwordIllusions, illusion.gameObject);
             }
         }
         _illusions.Clear();

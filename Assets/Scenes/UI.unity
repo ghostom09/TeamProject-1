@@ -5732,7 +5732,7 @@ MonoBehaviour:
   paradoxController: {fileID: 669782247}
   playerGun: {fileID: 669782248}
   playerSword: {fileID: 669782246}
-  charData: {fileID: 11400000, guid: 4906926dc1371e24da7fc7f1e6cd86a4, type: 2}
+  charData: {fileID: 11400000, guid: 6c9cdfd605f355340ac2b3041233929a, type: 2}
   usingUltra: 0
 --- !u!4 &669782250
 Transform:
@@ -11234,6 +11234,76 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1177791712
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1177791714}
+  - component: {fileID: 1177791713}
+  m_Layer: 0
+  m_Name: ObjectPoolManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1177791713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1177791712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9511e4806c0056649a205276eee2a6f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ObjectPoolManager
+  poolDataList:
+  - key: 3
+    prefab: {fileID: 7021013449918932408, guid: 1b6811a00976b1a4b95c14378a7a57bd, type: 3}
+    defaultCapacity: 15
+    maxSize: 30
+    prewarm: 1
+  - key: 2
+    prefab: {fileID: 3792183195250595278, guid: 565db26b300513f42ab11c5e1f158f50, type: 3}
+    defaultCapacity: 1
+    maxSize: 1
+    prewarm: 1
+  - key: 1
+    prefab: {fileID: 2865926002424116187, guid: f819993d5c4fcfd4ba50a8f90ae860a1, type: 3}
+    defaultCapacity: 1
+    maxSize: 1
+    prewarm: 1
+  - key: 0
+    prefab: {fileID: 9022994086395464316, guid: d63f28696bb8d2243a5bb458487ee5bd, type: 3}
+    defaultCapacity: 1
+    maxSize: 1
+    prewarm: 1
+  - key: 5
+    prefab: {fileID: 3344381644252454771, guid: 7207f7e85309ce94199a97041bc0628b, type: 3}
+    defaultCapacity: 3
+    maxSize: 3
+    prewarm: 1
+--- !u!4 &1177791714
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1177791712}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -7.16373, y: -5.43355, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -22804,7 +22874,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   playerSkillExecutor: {fileID: 1993757897}
-  character: {fileID: 11400000, guid: 4906926dc1371e24da7fc7f1e6cd86a4, type: 2}
+  character: {fileID: 11400000, guid: 6c9cdfd605f355340ac2b3041233929a, type: 2}
   attacker: {fileID: 1993757895}
   move: {fileID: 1993757898}
   invincibilityDuration: 0
@@ -23498,3 +23568,4 @@ SceneRoots:
   - {fileID: 1993757907}
   - {fileID: 669782250}
   - {fileID: 1867912450}
+  - {fileID: 1177791714}

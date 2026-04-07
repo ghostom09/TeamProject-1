@@ -7,7 +7,11 @@ public enum ObjectName
     NormalBullet,
     GoldenBullet,
     UltraBullet,
-    Ghost,  
+    Ghost,
+    Boom,
+    
+    SwordIllusions,
+    PlayerAvatar,
 }
 
 public class ObjectPoolManager : MonoBehaviour

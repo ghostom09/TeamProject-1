@@ -16,7 +16,6 @@ public class SwordIllusionsAttack : MonoBehaviour
 
     private Vector3 _startPos;
     private float _randomOffset;
-    [SerializeField] private GameObject Boom;
 
     public void Init(float damage)
     {
@@ -36,8 +35,7 @@ public class SwordIllusionsAttack : MonoBehaviour
     private IEnumerator SwordBoom()
     {
         yield return new WaitForSeconds(3f);
-        Instantiate(Boom, transform.position, Quaternion.identity);
-        Destroy(gameObject);
+        ObjectPoolManager.Instance.Release(ObjectName.SwordIllusions, gameObject);
     }
 
     private void Update()

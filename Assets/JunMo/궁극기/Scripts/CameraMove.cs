@@ -20,7 +20,6 @@ public class CameraMove : MonoBehaviour
 
     void Update()
     {
-        // Shake(0.1f);
         if (timeLeft > 0)
         {
             transform.localPosition =

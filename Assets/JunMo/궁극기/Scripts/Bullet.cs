@@ -26,7 +26,6 @@ public class Bullet : MonoBehaviour
     
     void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log(other.gameObject.name);
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") || other.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
             ObjectPoolManager.Instance.Release(ObjectName.NormalBullet, gameObject);

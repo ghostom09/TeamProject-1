@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   enemyType: 1
   health: 35
-  speed: 2.6
+  speed: 2.8
   damage: 9
   attackRange: 0
   attackSpeed: 1

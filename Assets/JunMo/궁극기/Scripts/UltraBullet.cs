@@ -20,7 +20,7 @@ public class UltraBullet : MonoBehaviour
     {
         if (Vector2.Distance(startPosition, transform.position) >= maxDistance)
         {
-            Destroy(gameObject);
+            ObjectPoolManager.Instance.Release(ObjectName.UltraBullet, gameObject);
         }
     }
 }

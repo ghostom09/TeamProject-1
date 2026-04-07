@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3101535001679371463}
   - component: {fileID: 6723233884360577580}
   - component: {fileID: 2855731533039949747}
+  - component: {fileID: 6097696140811053614}
   m_Layer: 31
   m_Name: Ghost
   m_TagString: Player
@@ -105,3 +106,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Trigger
   lifeTime: 0.4
   fadeSpeed: 2
+--- !u!114 &6097696140811053614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7021013449918932408}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2984dde40e0db2a438fb2747dd7445e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PooledObject

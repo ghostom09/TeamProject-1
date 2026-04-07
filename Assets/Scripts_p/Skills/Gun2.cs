@@ -50,7 +50,7 @@ public class Gun2 : SkillBase
         golden.cooldownReductionRate -= 0.5f;
         golden.ignoreMoveLock = originLock;
         
-        SkillController.Instance.Gun2(user, true);
+        SkillController.Instance.Gun2(user, false);
         Debug.Log("트리거 종료");
     }
 }

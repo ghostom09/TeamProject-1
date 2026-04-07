@@ -60,7 +60,7 @@ public class Gun1 : SkillBase
         Debug.DrawRay(origin, dir.normalized * (data.Range * 2), Color.yellow, 1f);
 
         if (!hit) return;
-
+        
         Collider2D[] explosion = Physics2D.OverlapCircleAll(
             hit.point,
             data.Range / 4,

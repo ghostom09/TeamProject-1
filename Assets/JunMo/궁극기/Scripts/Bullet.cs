@@ -20,7 +20,7 @@ public class Bullet : MonoBehaviour
     {
         if (Vector2.Distance(startPosition, transform.position) >= maxDistance)
         {
-            Destroy(gameObject);
+            ObjectPoolManager.Instance.Release(ObjectName.NormalBullet, gameObject);
         }
     }
     
@@ -29,8 +29,7 @@ public class Bullet : MonoBehaviour
         Debug.Log(other.gameObject.name);
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") || other.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
-            Debug.Log(other.gameObject.name);
-            Destroy(gameObject);
+            ObjectPoolManager.Instance.Release(ObjectName.NormalBullet, gameObject);
         }
     }
 }

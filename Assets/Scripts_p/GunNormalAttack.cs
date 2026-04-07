@@ -52,6 +52,7 @@ public class GunNormalAttack : INormalAttack
 
     private void DoSingleHitscan(Vector2 origin, Vector2 dir, float damage, float range)
     {
+        SkillController.Instance.GunNormalAttack(origin, dir);
         RaycastHit2D hit = Physics2D.Raycast(
             origin,
             dir,
@@ -73,6 +74,7 @@ public class GunNormalAttack : INormalAttack
 
     private void DoPiercingHitscan(Vector2 origin, Vector2 dir, float damage, float range)
     {
+        SkillController.Instance.GunUltraAttack(origin, dir);
         RaycastHit2D[] hits = Physics2D.RaycastAll(
             origin,
             dir,

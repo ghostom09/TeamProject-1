@@ -23,8 +23,7 @@ public class GoldenBullet : MonoBehaviour
     {
         if (Vector2.Distance(startPosition, transform.position) >= maxDistance)
         {
-            Instantiate(Boom, transform.position, Quaternion.identity);
-            Destroy(gameObject);
+            ObjectPoolManager.Instance.Release(ObjectName.GoldenBullet, gameObject);
         }
     }
     
@@ -33,7 +32,7 @@ public class GoldenBullet : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") || other.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
             Instantiate(Boom, (Vector2)transform.position - dir, Quaternion.identity);
-            Destroy(gameObject);
+            ObjectPoolManager.Instance.Release(ObjectName.GoldenBullet, gameObject);
         }
     }
 }

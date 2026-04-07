@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Trigger : MonoBehaviour
 {
@@ -8,16 +10,27 @@ public class Trigger : MonoBehaviour
     private SpriteRenderer sprite;
     private Color color;
 
-    void Start()
+    void OnEnable()
     {
         sprite = GetComponent<SpriteRenderer>();
+
         color = sprite.color;
-        Destroy(gameObject, lifeTime);
+        color.a = 1f;
+        sprite.color = color;
+
+        StopAllCoroutines();
+        StartCoroutine(Die());
     }
 
     void Update()
     {
         color.a -= fadeSpeed * Time.deltaTime;
         sprite.color = color;
+    }
+
+    IEnumerator Die()
+    {
+        yield return new WaitForSeconds(lifeTime);
+        ObjectPoolManager.Instance.Release(ObjectName.Ghost, gameObject);
     }
 }

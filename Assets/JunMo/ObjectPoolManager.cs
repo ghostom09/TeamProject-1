@@ -4,7 +4,10 @@ using UnityEngine.Pool;
 
 public enum ObjectName
 {
-    Argument,
+    NormalBullet,
+    GoldenBullet,
+    UltraBullet,
+    Ghost,  
 }
 
 public class ObjectPoolManager : MonoBehaviour
@@ -109,7 +112,7 @@ public class ObjectPoolManager : MonoBehaviour
             pool.Release(obj);
     }
 
-    public GameObject Get(ObjectName key)
+    public GameObject Get(ObjectName key, Vector3 position, Quaternion rotation)
     {
         if (!pools.TryGetValue(key, out var pool))
         {
@@ -117,7 +120,9 @@ public class ObjectPoolManager : MonoBehaviour
             return null;
         }
 
-        return pool.Get();
+        GameObject obj = pool.Get();
+        obj.transform.SetPositionAndRotation(position, rotation);
+        return obj;
     }
 
     public void Release(ObjectName key, GameObject obj)

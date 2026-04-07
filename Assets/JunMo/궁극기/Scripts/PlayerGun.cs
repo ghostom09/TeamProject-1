@@ -11,30 +11,26 @@ public class PlayerGun : MonoBehaviour
     [SerializeField] private GameObject ammoUltraPrefab;
 
     [SerializeField]private GameObject ghostPrefab;
-    private float speed = 50f;
+    [SerializeField]private float speed = 50f;
     private float maxDistance = 6f;
-    
+    private bool isTriggerUse = false;
     private GameObject player;
     private SpriteRenderer playerRenderer;
     
-    public void NormalBullet(GameObject user, Vector2 dir)
+    
+    public void NormalBullet(Vector2 origin, Vector2 dir)
     {
-        GameObject bulletObj = Instantiate(
-            ammoNormalPrefab,
-            user.transform.position,
-            Quaternion.Euler(0f, 0f, Angle(dir))
-        );
+        GameObject bulletObj =
+            ObjectPoolManager.Instance.Get
+                (ObjectName.NormalBullet, origin, Quaternion.Euler(0f, 0f, Angle(dir)));
 
         Bullet bullet = bulletObj.GetComponent<Bullet>();
         bullet.Initialize(dir, speed, maxDistance);
     }
-    public void UltraBullet(Player user, Vector2 dir)
+    public void UltraBullet(Vector2 origin, Vector2 dir)
     {
-        GameObject bulletObj = Instantiate(
-            ammoUltraPrefab,
-            user.transform.position,
-            Quaternion.Euler(0f, 0f, Angle(dir))
-        );
+        GameObject bulletObj = ObjectPoolManager.Instance.Get
+            (ObjectName.UltraBullet, origin, Quaternion.Euler(0f, 0f, Angle(dir)));
 
         UltraBullet bullet = bulletObj.GetComponent<UltraBullet>();
         bullet.Initialize(dir, speed * 2, maxDistance * 2);
@@ -43,11 +39,8 @@ public class PlayerGun : MonoBehaviour
     
     public void GoldenBullet(Vector2 pos, Vector2 dir)
     {
-        GameObject bulletObj = Instantiate(
-            ammoGoldenPrefab,
-            pos,
-            Quaternion.Euler(0f, 0f, Angle(dir))
-        );
+        GameObject bulletObj = ObjectPoolManager.Instance.Get
+            (ObjectName.GoldenBullet, pos, Quaternion.Euler(0f, 0f, Angle(dir)));
 
         GoldenBullet bullet = bulletObj.GetComponent<GoldenBullet>();
         bullet.Initialize(dir, speed * 2, maxDistance * 2);
@@ -60,19 +53,21 @@ public class PlayerGun : MonoBehaviour
     
     public void SpawnGhost(GameObject player, bool use)
     {
+        isTriggerUse = use;
+        
         this.player = player;
         playerRenderer = player.GetComponent<SpriteRenderer>();
-
-        StartCoroutine(Ghost(use));
+        
+        StartCoroutine(Ghost());
     }
 
-    private IEnumerator Ghost(bool use)
+    private IEnumerator Ghost()
     {
         WaitForSeconds wait = new WaitForSeconds(0.05f);
 
-        while (use)
+        while (isTriggerUse)
         {
-            GameObject ghost = Instantiate(ghostPrefab, player.transform.position, Quaternion.identity);
+            GameObject ghost = ObjectPoolManager.Instance.Get(ObjectName.Ghost, player.transform.position, Quaternion.identity);
 
             var ghostSr = ghost.GetComponent<SpriteRenderer>();
 

@@ -46,7 +46,6 @@ public class SkillController : MonoBehaviour
 
     void PressUltra()
     {
-        paradoxController.SetVolumeActive(true);
         if (!usingUltra)
         {
             UseUltra();
@@ -59,22 +58,23 @@ public class SkillController : MonoBehaviour
 
     private void UseUltra()
     {
-        
+        paradoxController.SetVolumeActive(true);
+        usingUltra = !usingUltra;
     }
 
     private void OffUltra()
     {
         paradoxController.SetVolumeActive(false);
-        usingUltra = false;
+        usingUltra = !usingUltra;
     }
 
-    public void GunNormalAttack(GameObject user, Vector2 dir)
+    public void GunNormalAttack(Vector2 origin, Vector2 dir)
     {
-        playerGun.NormalBullet(user, dir);
+        playerGun.NormalBullet(origin, dir);
     }
 
-    public void GunUltraAttack(Player user, Vector2 dir)
+    public void GunUltraAttack(Vector2 origin, Vector2 dir)
     {
-        playerGun.UltraBullet(user, dir);
+        playerGun.UltraBullet(origin, dir);
     }
 }

@@ -5716,6 +5716,7 @@ MonoBehaviour:
   ammoGoldenPrefab: {fileID: 2865926002424116187, guid: f819993d5c4fcfd4ba50a8f90ae860a1, type: 3}
   ammoUltraPrefab: {fileID: 3792183195250595278, guid: 565db26b300513f42ab11c5e1f158f50, type: 3}
   ghostPrefab: {fileID: 7021013449918932408, guid: 1b6811a00976b1a4b95c14378a7a57bd, type: 3}
+  speed: 50
 --- !u!114 &669782249
 MonoBehaviour:
   m_ObjectHideFlags: 0

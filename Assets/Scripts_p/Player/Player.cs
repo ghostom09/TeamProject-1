@@ -124,6 +124,7 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
                 break;
         }
     }
+    
 
     public void StatUp()
     {
@@ -151,5 +152,12 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
     
         Debug.Log(log);
     }
-    
+
+    private void Update()
+    {
+        if (Keyboard.current.tKey.wasPressedThisFrame)
+        {
+            StatUp();
+        }
+    }
 }

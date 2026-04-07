@@ -42,7 +42,7 @@ public class GunNormalAttack : INormalAttack
         Vector2 origin = user.transform.position;
 
         float damage = enhanced ? player.Stats.Damage * 2.2f : player.Stats.Damage;
-        float range = data.Range;
+        float range = player.Stats.Range;
 
         if (enhanced)
             DoPiercingHitscan(origin, dir, damage, range);

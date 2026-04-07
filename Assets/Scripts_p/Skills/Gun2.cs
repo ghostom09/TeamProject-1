@@ -28,12 +28,13 @@ public class Gun2 : SkillBase
             Debug.LogError("Gun1 스킬을 찾을 수 없음");
             return false;
         }
-
-        player.StartCoroutine(TriggerAwakening(golden));
+        
+        SkillController.Instance.Gun2(user, true);
+        player.StartCoroutine(TriggerAwakening(golden, user));
         return true;
     }
 
-    private IEnumerator TriggerAwakening(Gun1 golden)
+    private IEnumerator TriggerAwakening(Gun1 golden, GameObject user)
     {
         Debug.Log("트리거 발동");
 
@@ -48,7 +49,8 @@ public class Gun2 : SkillBase
         
         golden.cooldownReductionRate -= 0.5f;
         golden.ignoreMoveLock = originLock;
-
+        
+        SkillController.Instance.Gun2(user, false);
         Debug.Log("트리거 종료");
     }
 }

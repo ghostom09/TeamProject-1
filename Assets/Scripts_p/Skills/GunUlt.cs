@@ -10,8 +10,11 @@ public class GunUlt : SkillBase
     {
         Player player = user.GetComponent<Player>();
         
+        
         if (player.isUsingUltimate)
         {
+            SkillController.Instance.GunUltra();
+
             player.StopUltimate();
             return false;
         }
@@ -22,9 +25,10 @@ public class GunUlt : SkillBase
 
         PlayerMove playerMove = player.GetComponent<PlayerMove>();
         PlayerAttack attack = player.GetComponent<PlayerAttack>();
+        
+        SkillController.Instance.GunUltra();
 
         GunNormalAttack gun = attack.GetNormalAttack() as GunNormalAttack;
-
         player.StartCoroutine(MindWorldRoutine(player, playerMove, gun));
 
         return true;
@@ -46,7 +50,7 @@ public class GunUlt : SkillBase
         {
             if (!player.UseGauge(GaugeDrainPerSecond))
                 break;
-
+            
             yield return new WaitForSeconds(1f);
 
             if (!player.isUsingUltimate)

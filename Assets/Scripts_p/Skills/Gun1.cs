@@ -22,7 +22,7 @@ public class Gun1 : SkillBase
 
         if (player.isUsingUltimate)
             return false;
-
+        
         player.StartCoroutine(GoldenShotRoutine(player, dir));
         
         return true;
@@ -41,7 +41,8 @@ public class Gun1 : SkillBase
             yield return new WaitForSeconds(waitTime);
 
         mover?.SetMoveLock(MoveLockType.None);
-
+        
+        SkillController.Instance.Gun1(player.transform.position, dir);
         FireHitScan(player, dir);
     }
 
@@ -59,7 +60,7 @@ public class Gun1 : SkillBase
         Debug.DrawRay(origin, dir.normalized * (data.Range * 2), Color.yellow, 1f);
 
         if (!hit) return;
-
+        
         Collider2D[] explosion = Physics2D.OverlapCircleAll(
             hit.point,
             data.Range / 4,

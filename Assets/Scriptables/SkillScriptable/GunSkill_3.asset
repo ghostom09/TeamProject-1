@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: GunSkill_3
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
   SkillName: 5
-  Cooldown: 25
+  Cooldown: 0

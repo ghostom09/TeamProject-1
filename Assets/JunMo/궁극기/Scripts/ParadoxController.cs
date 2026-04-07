@@ -54,11 +54,6 @@ public class ParadoxController : MonoBehaviour
             fadeOut.color = new Color(0f, 0f, 0f, alpha);
             yield return null;
         }
-
-        for (int i = 0; i < 10; i++)
-        {
-            yield return null;
-        }
         
         globalVolume.weight = enable ? 1f : 0f;
         localVolume.weight = enable ? 1f : 0f;

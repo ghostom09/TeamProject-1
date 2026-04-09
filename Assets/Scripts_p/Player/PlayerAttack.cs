@@ -17,8 +17,7 @@ public class PlayerAttack : MonoBehaviour
     private float _illusionDamage;
     private Transform _pivot;
     
-    private List<SwordIllusionsAttack> _illusions 
-        = new();
+    private List<SwordIllusionsAttack> _illusions = new();
 
     public void Init(CharacterData data)
     {

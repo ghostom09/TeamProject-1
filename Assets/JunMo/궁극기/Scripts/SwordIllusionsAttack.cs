@@ -8,21 +8,31 @@ public class SwordIllusionsAttack : MonoBehaviour
     private float _speed;
     private Transform _target;
 
-    private bool _isFired = false;
+    private bool _isFired;
 
     private float _hoverTimer;
     private Transform _playerTransform;
     private Vector3 _relativeOffset;
+    
+    private TrailRenderer _trail;
 
-    private Vector3 _startPos;
-    private float _randomOffset;
+    private void OnEnable()
+    {
+        _trail = GetComponentInChildren<TrailRenderer>();
+    }
+
+    private void OnDisable()
+    {
+        _trail.Clear();
+    }
 
     public void Init(float damage)
     {
+        _trail.enabled = true;
         _damage = damage;
         _speed = 14f;
-        _startPos = transform.position;
-        _randomOffset = Random.Range(0f, Mathf.PI * 2f);
+        _target = null;
+        _isFired = false;
     }
 
     public void Fire(Transform target)
@@ -44,8 +54,12 @@ public class SwordIllusionsAttack : MonoBehaviour
         {
             return;
         }
-        
-        if (_target == null) { Destroy(gameObject); return; }
+
+        if (!_target)
+        {
+            ObjectPoolManager.Instance.Release(ObjectName.SwordIllusions, gameObject);
+            return;
+        }
 
         Vector2 targetDir = (_target.position - transform.position).normalized;
         
@@ -69,7 +83,7 @@ public class SwordIllusionsAttack : MonoBehaviour
                 target.TakeDamage(_damage);
             }
             StopCoroutine(SwordBoom());
-            Destroy(gameObject);
+            ObjectPoolManager.Instance.Release(ObjectName.SwordIllusions, gameObject);
         }
     }
 }

@@ -106,7 +106,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f48d07d4be1b1f443941baf9f04e71c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SwordIllusionsAttack
-  Boom: {fileID: 131879653582738169, guid: af1d0767162d2d34788769af703d1f2e, type: 3}
 --- !u!50 &2806293016199481885
 Rigidbody2D:
   serializedVersion: 5

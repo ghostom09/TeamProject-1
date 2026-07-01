@@ -31,8 +31,9 @@ public class GoldenBullet : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") || other.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
-            ObjectPoolManager.Instance.Get
+            GameObject obj = ObjectPoolManager.Instance.Get
                 (ObjectName.Boom, (Vector2)transform.position - dir, Quaternion.identity);
+            obj.transform.localScale = new Vector2(maxDistance / 4, maxDistance / 4);
             ObjectPoolManager.Instance.Release(ObjectName.GoldenBullet, gameObject);
         }
     }

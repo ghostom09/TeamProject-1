@@ -4,10 +4,14 @@ using System.Collections;
 public class Boom : MonoBehaviour
 {
     private float lifeTime = 0.2f;
-    void Start()
+    Coroutine dieCoroutine;
+
+    void OnEnable()
     {
-        StopCoroutine(Die());
-        StartCoroutine(Die());
+        if (dieCoroutine != null)
+            StopCoroutine(dieCoroutine);
+
+        dieCoroutine = StartCoroutine(Die());
     }
 
     private IEnumerator Die()

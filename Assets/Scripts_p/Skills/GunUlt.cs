@@ -20,8 +20,7 @@ public class GunUlt : SkillBase
         }
 
         // 게이지 부족
-        if (player.currentGauge < MinGaugeToUse)
-            return false;
+        if (player.currentGauge < MinGaugeToUse) return false;
 
         PlayerMove playerMove = player.GetComponent<PlayerMove>();
         PlayerAttack attack = player.GetComponent<PlayerAttack>();
@@ -49,7 +48,11 @@ public class GunUlt : SkillBase
         while (true)
         {
             if (!player.UseGauge(GaugeDrainPerSecond))
+            {
+                Debug.Log("success");
+                SkillController.Instance.GunUltra();
                 break;
+            }
             
             yield return new WaitForSeconds(1f);
 

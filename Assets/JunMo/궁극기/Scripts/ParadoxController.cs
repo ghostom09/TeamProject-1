@@ -57,7 +57,7 @@ public class ParadoxController : MonoBehaviour
         
         globalVolume.weight = enable ? 1f : 0f;
         localVolume.weight = enable ? 1f : 0f;
-        enemy.UseUltra(enable);
+        // enemy.UseUltra(enable);
         cursor.UseUltra(enable);
 
         if (enable)

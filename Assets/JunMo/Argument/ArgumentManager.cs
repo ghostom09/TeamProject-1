@@ -13,7 +13,6 @@ public class ArgumentManager : MonoBehaviour
     private float maxWidth = 450f;
     private int argumentCount = 0;
     private int spawnCount = 3;
-    private bool argumentSpawned = false;
     private int levelUpCnt = 0;
     
     public int playerLevel = 1;
@@ -32,6 +31,11 @@ public class ArgumentManager : MonoBehaviour
         PlayerLevelManager.OnLevelUp -= LevelUp;
     }
 
+    void Start()
+    {
+        Spawn(spawnCount);
+    }
+
     private void LevelUp(int currentLevel)
     {
         levelUpCnt++;
@@ -43,10 +47,7 @@ public class ArgumentManager : MonoBehaviour
     {
         while (levelUpCnt > 0)
         {
-            if (argumentSpawned)
-                return;
             levelUpCnt--;
-            argumentSpawned = !argumentSpawned;
             Spawn(spawnCount);
         }
     }
@@ -117,6 +118,5 @@ public class ArgumentManager : MonoBehaviour
                 clickedArgument.FadeOut(0.3f);
             }
         }
-        argumentSpawned = !argumentSpawned;
     }
 }

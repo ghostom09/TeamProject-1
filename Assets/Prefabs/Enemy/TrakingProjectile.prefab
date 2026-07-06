@@ -170,4 +170,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrackingProjectile
   speed: 4
   fireInterval: 2
-  projectileHealth: 5
+  projectileHealth: 1

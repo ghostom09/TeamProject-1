@@ -1302,6 +1302,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   bodyCollider: {fileID: 0}
   autoFitColliderToSprite: 1
+  updateColliderOnEverySpriteChange: 0
   invincibilityDuration: 0.1
   currentGauge: 100
   maxGauge: 100
@@ -1798,8 +1799,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 087443d8371b8ee48890f3a2ac9f7f20, type: 2}
   _runTimeStats: []
   resetBossStats:
-  - {fileID: 11400000, guid: 3dd4084ddff1f854b9f10dd493872bcd, type: 2}
   - {fileID: 11400000, guid: 7e653eede9be07b44bb96114ca58aedb, type: 2}
+  - {fileID: 11400000, guid: 3dd4084ddff1f854b9f10dd493872bcd, type: 2}
   _runTimeBossStats: []
   tankerMaxProb: 0.25
   rangedMaxProb: 0.25

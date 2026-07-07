@@ -13,7 +13,7 @@ public class Gun1 : SkillBase
 
     public Gun1()
     {
-        hitLayer = LayerMask.GetMask("Enemy", "Wall");
+        hitLayer = LayerMask.GetMask("Enemy", "Wall", "Bullet");
     }
 
     protected override bool Execute(GameObject user, Vector2 dir)

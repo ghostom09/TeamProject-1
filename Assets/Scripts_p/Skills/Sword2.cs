@@ -10,7 +10,7 @@ public class Sword2 : SkillBase
 
     public Sword2()
     {
-        enemyLayer = LayerMask.GetMask("Enemy");
+        enemyLayer = LayerMask.GetMask("Enemy", "Bullet");
     }
 
     protected override bool Execute(GameObject user, Vector2 dir)

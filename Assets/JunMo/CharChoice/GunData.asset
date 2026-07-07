@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: GunData
   m_EditorClassIdentifier: Assembly-CSharp::DescriptionData
   description: Use a Gun
-  profile: {fileID: -1346211299725249458, guid: 805aa7b3305ec50499f36bfbab1cd5e1, type: 3}
-  character: {fileID: 4888360746784007150, guid: 9cf6c88602727ea46ac303ec8def83df, type: 3}
+  profile: {fileID: 4888360746784007150, guid: 9cf6c88602727ea46ac303ec8def83df, type: 3}
+  character: {fileID: -1346211299725249458, guid: 805aa7b3305ec50499f36bfbab1cd5e1, type: 3}
   charName: Etern
   skills:
   - {fileID: 4672150231360456796, guid: 1e96023a341a21b4d83b051ccd1b7b30, type: 3}

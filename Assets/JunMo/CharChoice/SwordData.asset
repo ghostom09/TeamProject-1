@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: SwordData
   m_EditorClassIdentifier: Assembly-CSharp::DescriptionData
   description: Use a Sword
-  profile: {fileID: 8489164638026775100, guid: 3bbe2ea645e1645408f11975277da6b9, type: 3}
-  character: {fileID: 6049650341417161021, guid: 219f330eec7674644a5047e5e89f70b3, type: 3}
+  profile: {fileID: 6049650341417161021, guid: 219f330eec7674644a5047e5e89f70b3, type: 3}
+  character: {fileID: 8489164638026775100, guid: 3bbe2ea645e1645408f11975277da6b9, type: 3}
   charName: Ender
   skills:
   - {fileID: -3304320421086532018, guid: 45b7c51fb4a41864195c093bcbf893ec, type: 3}

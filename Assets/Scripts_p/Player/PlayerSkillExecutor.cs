@@ -102,10 +102,7 @@ public class PlayerSkillExecutor : MonoBehaviour
 
     private bool IsSkillUnlocked(SkillType type)
     {
-        if (_levelManager == null)
-            return true;
-
-        return _levelManager.CurrentLevel >= GetSkillUnlockLevel(type);
+        return true;
     }
 
     private int GetSkillUnlockLevel(SkillType type)

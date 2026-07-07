@@ -32,7 +32,7 @@ public class WarriorLongAttack : IBossSkillStrategy
     {
         Debug.Log("Warrior wide melee attack start");
         const float attackDelay = 2f;
-        const float effectDelay = attackDelay * 0.5f;
+        const float effectDelay = attackDelay * 0.5f + 0.2f;
 
         yield return new WaitForSeconds(effectDelay);
 
@@ -41,7 +41,7 @@ public class WarriorLongAttack : IBossSkillStrategy
             BossSkillType.longDistance,
             effectPosition,
             direction,
-            new Vector2(attackRange * 1.25f, attackRange * 1.25f),
+            new Vector2(attackRange, attackRange),
             attackDelay - effectDelay);
 
         yield return new WaitForSeconds(attackDelay - effectDelay); 

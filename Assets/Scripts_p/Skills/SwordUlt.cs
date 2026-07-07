@@ -11,7 +11,7 @@ public class SwordUlt : SkillBase
 
     public SwordUlt()
     {
-        enemyLayer = LayerMask.GetMask("Enemy");
+        enemyLayer = LayerMask.GetMask("Enemy", "Bullet");
     }
 
     protected override bool Execute(GameObject user, Vector2 dir)

@@ -32,6 +32,14 @@ public class Bullet : MonoBehaviour
         if (isReleased)
             return;
 
+        if (other.gameObject.layer == LayerMask.NameToLayer("Bullet") &&
+            other.TryGetComponent(out IDamageable target))
+        {
+            target.TakeDamage(1f);
+            Release();
+            return;
+        }
+
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") || other.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
             Release();

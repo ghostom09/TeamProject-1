@@ -1,5 +1,6 @@
 using UnityEngine.InputSystem;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
 
@@ -7,7 +8,7 @@ public class ArgumentManager : MonoBehaviour
 {
     [SerializeField]private GameObject argumentPanel;
     [SerializeField]private Canvas canvas;
-    
+
     private ArgumentDataManager upgradeManager;
     private List<Argument> arguments = new ();
 
@@ -18,7 +19,8 @@ public class ArgumentManager : MonoBehaviour
     private bool isChoosing = false;
     private bool isClosing = false;
     private float previousTimeScale = 1f;
-    
+    private Image argumentBackdrop;
+
     public int playerLevel = 1;
     void Awake()
     {
@@ -34,6 +36,7 @@ public class ArgumentManager : MonoBehaviour
     void OnDisable()
     {
         PlayerLevelManager.OnLevelUp -= LevelUp;
+        DestroyBackdrop();
         ResumeGame();
     }
 
@@ -58,10 +61,11 @@ public class ArgumentManager : MonoBehaviour
         levelUpCnt--;
         Spawn(spawnCount);
     }
-    
+
     void Spawn(int count)
     {
         ConfigureArgumentCanvas();
+        ShowBackdrop();
 
         isChoosing = true;
         isClosing = false;
@@ -78,6 +82,7 @@ public class ArgumentManager : MonoBehaviour
 
         if (datas.Count == 0)
         {
+            DestroyBackdrop();
             isChoosing = false;
             isClosing = false;
             ResumeGame();
@@ -122,7 +127,6 @@ public class ArgumentManager : MonoBehaviour
         }
     }
 
-    
     void OnArgumentClicked(int argumentID)
     {
         if (isClosing)
@@ -171,6 +175,7 @@ public class ArgumentManager : MonoBehaviour
         }
         else
         {
+            DestroyBackdrop();
             ResumeGame();
         }
     }
@@ -196,5 +201,46 @@ public class ArgumentManager : MonoBehaviour
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.overrideSorting = true;
         canvas.sortingOrder = 100;
+    }
+
+    private void ShowBackdrop()
+    {
+        if (canvas == null)
+            return;
+
+        if (argumentBackdrop == null)
+        {
+            GameObject obj = new GameObject(
+                "ArgumentBackdrop",
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(Image));
+
+            obj.layer = canvas.gameObject.layer;
+            obj.transform.SetParent(canvas.transform, false);
+            obj.transform.SetAsFirstSibling();
+
+            RectTransform rect = obj.transform as RectTransform;
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+
+            argumentBackdrop = obj.GetComponent<Image>();
+            argumentBackdrop.color = new Color(0.015f, 0.02f, 0.035f, 0.72f);
+            argumentBackdrop.raycastTarget = true;
+        }
+
+        argumentBackdrop.gameObject.SetActive(true);
+        transform.SetAsLastSibling();
+    }
+
+    private void DestroyBackdrop()
+    {
+        if (argumentBackdrop == null)
+            return;
+
+        Destroy(argumentBackdrop.gameObject);
+        argumentBackdrop = null;
     }
 }

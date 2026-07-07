@@ -25,6 +25,7 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private BoxCollider2D bodyCollider;
     [SerializeField] private bool autoFitColliderToSprite = true;
+    [SerializeField] private bool updateColliderOnEverySpriteChange;
     
     private Coroutine invincibleCoroutine;
     private Sprite lastColliderSprite;
@@ -33,6 +34,7 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
     private AnimationClip originalAttackClip;
     private AnimationClip currentAttackClip;
     private float facingDirection = 1f;
+    private bool forcedIdle;
 
     public PlayerStats Stats { get; private set; } = new PlayerStats();
     
@@ -271,7 +273,8 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
 
     private void LateUpdate()
     {
-        UpdateSpriteColliderIfNeeded();
+        if (updateColliderOnEverySpriteChange)
+            UpdateSpriteColliderIfNeeded();
     }
 
     public void NotifyHealthChanged()
@@ -395,12 +398,21 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
 
     private void ForceIdleWhenStopped(bool isMovingHorizontally, bool isGrounded)
     {
+        if (isMovingHorizontally)
+        {
+            forcedIdle = false;
+            return;
+        }
+
         if (!isGrounded || isMovingHorizontally || animator == null || animator.runtimeAnimatorController == null)
             return;
 
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        if (stateInfo.IsName("Run"))
+        if (!forcedIdle && stateInfo.IsName("Run"))
+        {
             animator.CrossFade("Idle", 0f);
+            forcedIdle = true;
+        }
     }
 
     public void SetFacingDirection(float direction)

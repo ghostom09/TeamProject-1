@@ -54,6 +54,15 @@ public class GoldenBullet : MonoBehaviour
         if (isReleased)
             return;
 
+        if (other.gameObject.layer == LayerMask.NameToLayer("Bullet") &&
+            other.TryGetComponent(out IDamageable target))
+        {
+            target.TakeDamage(1f);
+            SpawnBoom();
+            Release();
+            return;
+        }
+
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") || other.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
             SpawnBoom();

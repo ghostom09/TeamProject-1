@@ -446,12 +446,21 @@ public class BossAttack : MonoBehaviour, IBossReset
         }
 
         Vector2 spriteSize = renderer.sprite.bounds.size;
-        float baseWidth = spriteSize.x > 0f ? spriteSize.x : 1f;
-        float baseHeight = spriteSize.y > 0f ? spriteSize.y : 1f;
+        Vector3 rendererScale = renderer.transform.lossyScale;
+        float baseWidth = spriteSize.x * Mathf.Abs(rendererScale.x);
+        float baseHeight = spriteSize.y * Mathf.Abs(rendererScale.y);
+
+        if (baseWidth <= 0f)
+            baseWidth = 1f;
+
+        if (baseHeight <= 0f)
+            baseHeight = 1f;
+
+        Vector3 currentScale = effectObject.transform.localScale;
 
         return new Vector3(
-            Mathf.Max(minScale, effectSize.x / baseWidth),
-            Mathf.Max(minScale, effectSize.y / baseHeight),
+            Mathf.Max(minScale, Mathf.Abs(currentScale.x) * effectSize.x / baseWidth),
+            Mathf.Max(minScale, Mathf.Abs(currentScale.y) * effectSize.y / baseHeight),
             1f);
     }
 

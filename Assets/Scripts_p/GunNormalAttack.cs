@@ -16,7 +16,7 @@ public class GunNormalAttack : INormalAttack
     public void Init(CharacterData data)
     {
         this.data = data;
-        hitLayer = LayerMask.GetMask("Enemy", "Wall");
+        hitLayer = LayerMask.GetMask("Enemy", "Wall", "Bullet");
     }
 
     public void SetEnhancedMode(bool value)
@@ -72,7 +72,8 @@ public class GunNormalAttack : INormalAttack
         if (hit.collider == null)
             return;
 
-        if (hit.collider.TryGetComponent(out IDamageable target))
+        IDamageable target = GetDamageable(hit.collider);
+        if (target != null)
         {
             target.TakeDamage(damage);
             target.ApplyKnockback(dir, 3f, 0.15f);
@@ -97,7 +98,8 @@ public class GunNormalAttack : INormalAttack
 
         foreach (var hit in hits)
         {
-            if (hit.collider.TryGetComponent(out IDamageable target))
+            IDamageable target = GetDamageable(hit.collider);
+            if (target != null)
             {
                 target.TakeDamage(damage);
                 target.ApplyKnockback(dir, 2f, 0.08f);
@@ -109,6 +111,14 @@ public class GunNormalAttack : INormalAttack
 
         if (didHit)
             CameraShake.Shake(0.1f, 0.1f);
+    }
+
+    private IDamageable GetDamageable(Collider2D hitCollider)
+    {
+        if (hitCollider.TryGetComponent(out IDamageable target))
+            return target;
+
+        return hitCollider.GetComponentInParent<IDamageable>();
     }
 
     private void NotifyGunUltraHitEffect(Collider2D hitCollider, Vector2 origin, Vector2 dir)

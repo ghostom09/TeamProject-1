@@ -207,6 +207,12 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
         float targetSpeed = movement.x * maxSpeed;
         float currentSpeed = rb.linearVelocity.x;
 
+        if (Mathf.Abs(movement.x) <= 0.01f && Mathf.Abs(currentSpeed) <= 0.05f)
+        {
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            return;
+        }
+
         float accelRate;
 
         if (moveLockType == MoveLockType.HorizontalOnly)

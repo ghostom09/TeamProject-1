@@ -6,8 +6,10 @@ public class CameraShake : MonoBehaviour
     private static CameraShake instance;
 
     private float duration;
+    private float fadeDuration;
     private float intensity;
     private Vector3 lastOffset;
+    private Vector3 lastShakenPosition;
 
     public static void Shake(float power, float time)
     {
@@ -17,6 +19,7 @@ public class CameraShake : MonoBehaviour
 
         shake.intensity = Mathf.Max(shake.intensity, power);
         shake.duration = Mathf.Max(shake.duration, time);
+        shake.fadeDuration = Mathf.Max(shake.fadeDuration, time);
     }
 
     private static CameraShake GetOrCreate()
@@ -42,22 +45,33 @@ public class CameraShake : MonoBehaviour
 
     private void LateUpdate()
     {
+        Vector3 basePosition = transform.position;
         if (lastOffset != Vector3.zero)
         {
-            transform.position -= lastOffset;
+            bool positionStillHasShake = (transform.position - lastShakenPosition).sqrMagnitude < 0.0001f;
+            if (positionStillHasShake)
+                basePosition -= lastOffset;
+
             lastOffset = Vector3.zero;
         }
 
         if (duration <= 0f)
+        {
+            transform.position = basePosition;
             return;
+        }
 
         duration -= Time.unscaledDeltaTime;
-        float fade = Mathf.Clamp01(duration / 0.18f);
+        float fade = Mathf.Clamp01(duration / Mathf.Max(0.001f, fadeDuration));
         Vector2 offset = Random.insideUnitCircle * (intensity * fade);
         lastOffset = new Vector3(offset.x, offset.y, 0f);
-        transform.position += lastOffset;
+        lastShakenPosition = basePosition + lastOffset;
+        transform.position = lastShakenPosition;
 
         if (duration <= 0f)
+        {
             intensity = 0f;
+            fadeDuration = 0f;
+        }
     }
 }

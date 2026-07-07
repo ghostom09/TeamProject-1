@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class SwordNormalAttack : INormalAttack
 {
+    private const float EffectMinScale = 0.1f;
     private int comboIndex = 0;
     private float lastAttackTime;
     private const float ComboResetTime = 1.5f;
@@ -18,7 +19,7 @@ public class SwordNormalAttack : INormalAttack
     public void Init(CharacterData data)
     {
         this.data = data;
-        enemyLayer = LayerMask.GetMask("Enemy");
+        enemyLayer = LayerMask.GetMask("Enemy", "Bullet");
     }
 
     public void SetEffectPrefabs(GameObject[] prefabs)
@@ -74,13 +75,14 @@ public class SwordNormalAttack : INormalAttack
 
         float range = data.Range * GetComboRangeMultiplier();
         float damage = player.Stats.Damage * GetComboDamageMultiplier();
+        float attackRadius = range * 0.5f;
 
-        Vector2 center = origin + dir * range * 0.5f;
-        SpawnAttackEffect(center, dir, range);
+        Vector2 center = origin + dir * attackRadius;
+        SpawnAttackEffect(center, dir, attackRadius);
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(
             center,
-            range * 0.5f,
+            attackRadius,
             enemyLayer
         );
 
@@ -89,7 +91,8 @@ public class SwordNormalAttack : INormalAttack
 
         foreach (var hit in hits)
         {
-            if (!hit.TryGetComponent(out IDamageable target))
+            IDamageable target = GetDamageable(hit);
+            if (target == null)
                 continue;
 
             if (hitTargets.Contains(target))
@@ -114,7 +117,15 @@ public class SwordNormalAttack : INormalAttack
         comboIndex = (comboIndex + 1) % 3;
     }
 
-    private void SpawnAttackEffect(Vector2 position, Vector2 dir, float range)
+    private IDamageable GetDamageable(Collider2D hit)
+    {
+        if (hit.TryGetComponent(out IDamageable target))
+            return target;
+
+        return hit.GetComponentInParent<IDamageable>();
+    }
+
+    private void SpawnAttackEffect(Vector2 position, Vector2 dir, float attackRadius)
     {
         GameObject prefab = GetEffectPrefab();
         if (prefab == null)
@@ -125,26 +136,33 @@ public class SwordNormalAttack : INormalAttack
             : 0f;
 
         GameObject effect = Object.Instantiate(prefab, position, Quaternion.Euler(0f, 0f, angle));
-        float scale = GetScaleForEffectDiameter(effect, range);
+        float scale = GetScaleForEffectRadius(effect, attackRadius);
         effect.transform.localScale = new Vector3(scale, scale, 1f);
 
         Object.Destroy(effect, GetEffectLifetime(effect));
     }
 
-    private float GetScaleForEffectDiameter(GameObject effect, float diameter)
+    private float GetScaleForEffectRadius(GameObject effect, float attackRadius)
     {
-        const float minScale = 0.1f;
-
         SpriteRenderer renderer = effect.GetComponentInChildren<SpriteRenderer>();
+        float attackDiameter = attackRadius * 2f;
         if (renderer == null || renderer.sprite == null)
-            return Mathf.Max(minScale, diameter);
+            return Mathf.Max(EffectMinScale, attackDiameter);
 
         Vector2 spriteSize = renderer.sprite.bounds.size;
-        float baseDiameter = Mathf.Max(spriteSize.x, spriteSize.y);
+        Vector3 rendererScale = renderer.transform.lossyScale;
+        float baseDiameter = Mathf.Max(
+            spriteSize.x * Mathf.Abs(rendererScale.x),
+            spriteSize.y * Mathf.Abs(rendererScale.y)
+        );
         if (baseDiameter <= 0f)
-            return Mathf.Max(minScale, diameter);
+            return Mathf.Max(EffectMinScale, attackDiameter);
 
-        return Mathf.Max(minScale, diameter / baseDiameter);
+        float currentScale = Mathf.Max(Mathf.Abs(effect.transform.localScale.x), Mathf.Abs(effect.transform.localScale.y));
+        if (currentScale <= 0f)
+            currentScale = 1f;
+
+        return Mathf.Max(EffectMinScale, currentScale * attackDiameter / baseDiameter);
     }
 
     private GameObject GetEffectPrefab()

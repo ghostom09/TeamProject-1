@@ -42,12 +42,10 @@ public class WarriorShortAttack : IBossSkillStrategy
         
         yield return new WaitForSeconds(1.5f);
 
-        Vector2 effectPosition = boxCenter + Vector2.down * (boxSize.y * 0.5f);
-
         bossAttack?.SpawnWarriorAttackEffect(
             BossSkillType.shortDistance,
-            effectPosition,
-            Vector2.right,
+            boxCenter,
+            attackDirection,
             boxSize,
             1f);
         

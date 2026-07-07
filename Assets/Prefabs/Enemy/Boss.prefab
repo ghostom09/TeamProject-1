@@ -238,12 +238,14 @@ MonoBehaviour:
   rightWallCheck: {fileID: 6031194714896962523}
   leftSideGroundCheck: {fileID: 4583731506185488615}
   rightSideGroundCheck: {fileID: 298106283844846214}
-  jumpForce: 0
+  jumpForce: 13
   groundRadius: 0.35
   sideRadius: 0.1
   isGrounded: 0
   interval: 0
-  jumpPersent: 0.02
+  jumpPersent: 0.015
+  higherTargetJumpCooldown: 1.2
+  higherTargetMinY: 0.25
   reverseDeceleration: 0.4
   stopThreshold: 0.05
   distanceThreshold: 0.1

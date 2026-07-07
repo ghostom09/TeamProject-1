@@ -1,6 +1,6 @@
-using System;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class BossProjectile : MonoBehaviour
 {
     private float damage;
@@ -21,6 +21,22 @@ public class BossProjectile : MonoBehaviour
 
     public void Init(float damage, float range, Vector2 dir, GameObject target, BossType bossType)
     {
+        if (rb2d == null)
+            rb2d = GetComponent<Rigidbody2D>();
+
+        if (rb2d == null)
+        {
+            Debug.LogError($"{name} needs a Rigidbody2D to move as a boss projectile.", this);
+            Destroy(gameObject);
+            return;
+        }
+
+        if (target == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         this.damage = damage;
         maxDistance = range;
         startPosition = transform.position;

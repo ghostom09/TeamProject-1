@@ -9,6 +9,7 @@ public class MagicianLongAttack : IBossSkillStrategy
     private BossAttack bossAttack;
     private LineRenderer lineRenderer;
     private LayerMask targetLayer;
+    private const float CastDelay = 0.5f;
 
     private float lastDamageTime;
 
@@ -29,7 +30,8 @@ public class MagicianLongAttack : IBossSkillStrategy
 
     private IEnumerator AttackRoutine(GameObject boss, GameObject target, System.Action onComplete)
     {
-        yield return new WaitForSeconds(0.5f);
+        bossAttack.SpawnMagicCircle(BossSkillType.longDistance, boss.transform.position, 2f, CastDelay);
+        yield return new WaitForSeconds(CastDelay);
         
         Vector2 dir = (target.transform.position - boss.transform.position).normalized;
         lineRenderer.enabled = true;

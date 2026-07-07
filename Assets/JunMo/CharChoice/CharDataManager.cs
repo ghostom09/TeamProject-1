@@ -10,9 +10,9 @@ public class CharDataManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(this);
+            DontDestroyOnLoad(gameObject);
         }
-        else Destroy(this);
+        else Destroy(gameObject);
     }
 
     public void GetData(CharacterData nowData)

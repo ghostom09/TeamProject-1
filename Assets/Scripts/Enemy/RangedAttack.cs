@@ -24,19 +24,20 @@ public class RangedAttack : IEnemyAttackStrategy
         enemyMove =  move;
     }
 
-    public void TryAttack(GameObject self, Transform target, Vector2 direction)
+    public bool TryAttack(GameObject self, Transform target, Vector2 direction)
     {
         distSqr = (target.position - self.transform.position).sqrMagnitude;
         interval = 1f / attackSpeed;
 
         if (Time.time < lastAttackTime + interval || distSqr > attackRange * attackRange)
         {
-            return;
+            return false;
         }
 
         lastAttackTime = Time.time;
 
         Shoot(self.transform, direction);
+        return true;
     }
     
     private void Shoot(Transform self, Vector2 dir)

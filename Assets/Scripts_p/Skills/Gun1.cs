@@ -42,24 +42,27 @@ public class Gun1 : SkillBase
 
         mover?.SetMoveLock(MoveLockType.None);
         
-        SkillController.Instance.Gun1(player.transform.position, dir);
-        FireHitScan(player, dir);
+        float maxDistance = data.Range * 2;
+        float bulletDistance = FireHitScan(player, dir, maxDistance, out bool hasHit);
+        SkillController.Instance.Gun1(player.transform.position, dir, bulletDistance, hasHit, maxDistance);
     }
 
-    private void FireHitScan(Player player, Vector2 dir)
+    private float FireHitScan(Player player, Vector2 dir, float maxDistance, out bool hasHit)
     {
         Vector2 origin = player.transform.position;
 
         RaycastHit2D hit = Physics2D.Raycast(
             origin,
             dir.normalized,
-            data.Range * 2,
+            maxDistance,
             hitLayer
         );
 
-        Debug.DrawRay(origin, dir.normalized * (data.Range * 2), Color.yellow, 1f);
+        Debug.DrawRay(origin, dir.normalized * maxDistance, Color.yellow, 1f);
 
-        if (!hit) return;
+        hasHit = hit.collider != null;
+        if (!hasHit)
+            return maxDistance;
         
         Collider2D[] explosion = Physics2D.OverlapCircleAll(
             hit.point,
@@ -83,5 +86,7 @@ public class Gun1 : SkillBase
                 player.AddGauge(1);
             }
         }
+
+        return hit.distance;
     }
 }

@@ -167,5 +167,5 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cac49526ef00d2d4ea088071eb91af11, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MagicainProjectile
+  m_EditorClassIdentifier: Assembly-CSharp::BossProjectile
   speed: 8

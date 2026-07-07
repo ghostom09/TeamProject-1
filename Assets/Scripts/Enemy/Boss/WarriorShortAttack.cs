@@ -41,6 +41,12 @@ public class WarriorShortAttack : IBossSkillStrategy
         Debug.Log("단거리 공격 시작");
         
         Vector2 boxCenter = (Vector2)boss.transform.position + boxOffset;
+        bossAttack?.SpawnWarriorAttackEffect(
+            BossSkillType.shortDistance,
+            boxCenter,
+            direction,
+            attackRange,
+            1.5f);
         
         HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
         

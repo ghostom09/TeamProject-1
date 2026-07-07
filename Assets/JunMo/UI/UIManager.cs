@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -13,11 +14,14 @@ public class UIManager : MonoBehaviour
     
     [SerializeField]private GameObject pop;
     [SerializeField]private GameObject stopGame;
+    [SerializeField]private Button restart;
+    [SerializeField]private Button toLobby;
     private InGameUIManager hudManager;
+    private SkillData[] currentSkills;
     
     private bool isPaused = false;
     private int playerLevel;
-    private jobType jobType;
+    private CharacterData currentCharacter;
 
     void Awake()
     {
@@ -28,12 +32,14 @@ public class UIManager : MonoBehaviour
         }
         else Destroy(gameObject);
     }
-    
 
     private void OnEnable()
     {
         if (hudManager != null)
+        {
             hudManager.on_esc += OnEsc;
+            hudManager.UpdateSkillTime(currentSkills);
+        }
     }
 
     private void OnDisable()
@@ -48,9 +54,52 @@ public class UIManager : MonoBehaviour
             hudManager.on_esc -= OnEsc;
     
         hudManager = hud;
+        BindInGameUI();
     
         if (hudManager != null)
+        {
             hudManager.on_esc += OnEsc;
+            hudManager.UpdateSkillTime(currentSkills);
+        }
+    }
+
+    private void BindInGameUI()
+    {
+        stopGame = FindSceneObject("StopGameBackground");
+        restart = FindSceneButton("Restart");
+        toLobby = FindSceneButton("Lobby");
+        
+        if (restart != null)
+        {
+            restart.onClick.RemoveListener(RestartGame);
+            restart.onClick.AddListener(RestartGame);
+        }
+
+        if (toLobby != null)
+        {
+            toLobby.onClick.RemoveListener(QuitInGame);
+            toLobby.onClick.AddListener(QuitInGame);
+        }
+    }
+
+    private GameObject FindSceneObject(string objectName)
+    {
+        UnityEngine.SceneManagement.Scene activeScene =
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+
+        foreach (GameObject obj in Resources.FindObjectsOfTypeAll<GameObject>())
+        {
+            if (obj.scene == activeScene && obj.name == objectName)
+                return obj;
+        }
+
+        return null;
+    }
+
+    private Button FindSceneButton(string objectName)
+    {
+        GameObject obj = FindSceneObject(objectName);
+        return obj != null ? obj.GetComponent<Button>() : null;
     }
     
     private void OnEsc()
@@ -63,14 +112,16 @@ public class UIManager : MonoBehaviour
     private void PauseGame()
     {
         isPaused = true;
-        stopGame.SetActive(true);
+        if (stopGame != null)
+            stopGame.SetActive(true);
         Time.timeScale = 0;
         AudioListener.pause = true;
     }
     private void ResumeGame()
     {
         isPaused = false;
-        stopGame.SetActive(false);
+        if (stopGame != null)
+            stopGame.SetActive(false);
         Time.timeScale = 1;
         AudioListener.pause = false;
     }
@@ -82,7 +133,16 @@ public class UIManager : MonoBehaviour
 
     public void QuitInGame()
     {
+        ResumeGame();
         SceneManager.Instance.ChangeScene(SceneName.MainMenu);
+    }
+
+    private void RestartGame()
+    {
+        ResumeGame();
+        hudManager = null;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
     }
 
     public void Open(GameObject obj)
@@ -97,22 +157,55 @@ public class UIManager : MonoBehaviour
 
     public void UpdateInGameUI()
     {
-        if (jobType.Sword == jobType)
+        CharacterData selectedCharacter = currentCharacter;
+
+        if (selectedCharacter == null && CharDataManager.Instance != null)
+            selectedCharacter = CharDataManager.Instance.data;
+
+        if (selectedCharacter == null || hudManager == null)
+            return;
+
+        if (selectedCharacter.JobType == jobType.Sword)
         {
             SwordUI();
         }
         else GunUI();
     }
 
+    public void SetCharacter(CharacterData character)
+    {
+        currentCharacter = character;
+        UpdateInGameUI();
+    }
+
     private void SwordUI()
     {
         hudManager.UpdateProfile(swordIcon);
-        hudManager.UpdateSkillTime(10,10,10);
     }
 
     private void GunUI()
     {
         hudManager.UpdateProfile(gunIcon);
-        hudManager.UpdateSkillTime(10,10,10);
+    }
+
+    public void SetSkillCooldowns(SkillData[] skills)
+    {
+        currentSkills = skills;
+        hudManager?.UpdateSkillTime(skills);
+    }
+
+    public void UpdateSkillTimer(int index)
+    {
+        hudManager?.UpdateSkillTimer(index);
+    }
+
+    public void ShowMagicianUltimateEffect(float duration)
+    {
+        hudManager?.ShowMagicianUltimateEffect(duration);
+    }
+
+    public void HideMagicianUltimateEffect()
+    {
+        hudManager?.HideMagicianUltimateEffect();
     }
 }

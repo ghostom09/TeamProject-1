@@ -15,13 +15,13 @@ public class SupportAttack : IEnemyAttackStrategy
         attackSpeed = stats.attackSpeed;
     }
 
-    public void TryAttack(GameObject self, Transform target, Vector2 direction)
+    public bool TryAttack(GameObject self, Transform target, Vector2 direction)
     {
         
         interval = 1f / attackSpeed;
         
         if (Time.time < lastAttackTime + interval)
-            return;
+            return false;
 
         lastAttackTime = Time.time;
         
@@ -52,6 +52,8 @@ public class SupportAttack : IEnemyAttackStrategy
                 
             }
         }
+
+        return true;
     }
     
     private void DrawAttackRange(Transform self, float duration)

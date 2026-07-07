@@ -13,6 +13,11 @@ MonoBehaviour:
   m_Name: magician boss
   m_EditorClassIdentifier: Assembly-CSharp::BossStats
   bossType: 2
+  sprite: {fileID: -8326972625193024646, guid: 6c7eeedc1860c134ea863ba3d0716acf, type: 3}
+  animatorController: {fileID: 9100000, guid: 8ae18378516be754980bbb9a5cef9f92, type: 2}
+  useSpriteBoundsForCollider: 1
+  colliderOffset: {x: 0, y: 0}
+  colliderSize: {x: 0, y: 0}
   health: 750
   speed: 2
   jumpForce: 15

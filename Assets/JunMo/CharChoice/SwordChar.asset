@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c20bb56358f82c44995b563c1342eb4, type: 3}
   m_Name: SwordChar
   m_EditorClassIdentifier: Assembly-CSharp::CharJobData
-  profile: {fileID: -1856773366626861424, guid: 915a5f54a26e5c943a35419e58b17270, type: 3}
+  profile: {fileID: 6049650341417161021, guid: 219f330eec7674644a5047e5e89f70b3, type: 3}
   charName: 0

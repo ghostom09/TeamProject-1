@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GunData
   m_EditorClassIdentifier: Assembly-CSharp::DescriptionData
   charName: 1
-  description: your are my sunshine. hahahahaha
+  description: Use a Gun
   profile: {fileID: -1856773366626861424, guid: 915a5f54a26e5c943a35419e58b17270, type: 3}
   skills:
   - {fileID: -9113471008304037689, guid: 3f68e43f6537efc40982e16eb0ca0ba3, type: 3}

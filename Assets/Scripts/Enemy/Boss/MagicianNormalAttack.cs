@@ -8,6 +8,7 @@ public class MagicianNormalAttack : IBossSkillStrategy
     
     private Vector2 dir;
     private BossAttack bossAttack;
+    private const float CastDelay = 0.3f;
     
     public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject target)
     {
@@ -24,7 +25,8 @@ public class MagicianNormalAttack : IBossSkillStrategy
 
     private IEnumerator AttackRoutine(GameObject boss, GameObject target , System.Action onComplete)
     {
-        yield return new WaitForSeconds(0.3f);
+        bossAttack.SpawnMagicCircle(BossSkillType.Normal, boss.transform.position, 1.2f, CastDelay);
+        yield return new WaitForSeconds(CastDelay);
         
         dir = (target.transform.position - boss.transform.position).normalized;
         bossAttack.ShootProjectile(dir, damage, attackRange);

@@ -4,7 +4,7 @@ public enum SceneName
 {
     MainMenu,
     PlayerChoice,
-    PlayerTest,
+    InGame
 }
 public class SceneManager : MonoBehaviour
 {

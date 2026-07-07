@@ -17,20 +17,21 @@ public class MeleeAttack : IEnemyAttackStrategy
         attackSpeed = stats.attackSpeed;
     }
 
-    public void TryAttack(GameObject self, Transform target, Vector2 direction)
+    public bool TryAttack(GameObject self, Transform target, Vector2 direction)
     {
         distSqr = (target.position - self.transform.position).sqrMagnitude;
 
         if (distSqr > FIXED_RANGE * FIXED_RANGE)
-            return;
+            return false;
 
         interval = 1f / attackSpeed;
 
         if (Time.time < lastAttackTime + interval)
-            return;
+            return false;
 
         lastAttackTime = Time.time;
 
         target.GetComponent<IDamageable>()?.TakeDamage(damage);
+        return true;
     }
 }

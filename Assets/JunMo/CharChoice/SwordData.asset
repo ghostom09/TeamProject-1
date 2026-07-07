@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SwordData
   m_EditorClassIdentifier: Assembly-CSharp::DescriptionData
   charName: 0
-  description: fsehuguhgrhurghubnoianbl
+  description: Use a Sword
   profile: {fileID: -1316839025742549532, guid: 5ccbf8878d49c5d45a8fed53dc69fdc4, type: 3}
   skills:
   - {fileID: -9113471008304037689, guid: 3f68e43f6537efc40982e16eb0ca0ba3, type: 3}

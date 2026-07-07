@@ -13,6 +13,11 @@ MonoBehaviour:
   m_Name: warrior boss
   m_EditorClassIdentifier: Assembly-CSharp::BossStats
   bossType: 1
+  sprite: {fileID: 934956616992456034, guid: 61594d2ebb72c644680975ce4874e000, type: 3}
+  animatorController: {fileID: 9100000, guid: 3005d16c84b38c34d9279e21ec023daf, type: 2}
+  useSpriteBoundsForCollider: 1
+  colliderOffset: {x: 0, y: 0}
+  colliderSize: {x: 0, y: 0}
   health: 1000
   speed: 2.5
   jumpForce: 13

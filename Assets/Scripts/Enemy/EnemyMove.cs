@@ -5,7 +5,17 @@ using Random = UnityEngine.Random;
 
 public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
 {
+    private static readonly int SpeedHash = Animator.StringToHash("Speed");
+    private static readonly int WalkHash = Animator.StringToHash("Walk");
+    private static readonly int MoveXHash = Animator.StringToHash("MoveX");
+    private static readonly int YVelocityHash = Animator.StringToHash("YVelocity");
+    private static readonly int IsMovingHash = Animator.StringToHash("IsMoving");
+    private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
+    private static readonly int IsJumpingHash = Animator.StringToHash("IsJumping");
+    private static readonly int IsMoveLockedHash = Animator.StringToHash("IsMoveLocked");
+
     [SerializeField] private GameObject movingTarget;
+    [SerializeField] private Animator animator;
     
     [SerializeField] private LayerMask wallLayer;
     [SerializeField] private Transform groundCheck;
@@ -46,11 +56,26 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
     private Coroutine knockRoutine;
 
     private EnemyHit _enemyHit;
+    private SpriteRenderer spriteRenderer;
+    private bool hasSpeedParam;
+    private bool hasWalkParam;
+    private bool hasMoveXParam;
+    private bool hasYVelocityParam;
+    private bool hasIsMovingParam;
+    private bool hasIsGroundedParam;
+    private bool hasIsJumpingParam;
+    private bool hasIsMoveLockedParam;
 
     private void Awake()
     {
         rb2d = GetComponent<Rigidbody2D>();
         _enemyHit = GetComponent<EnemyHit>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
+
+        CacheAnimatorParameters();
     }
 
     public void Init(EnemyStats stats, GameObject target, EnemySpawnerManager m)
@@ -68,14 +93,20 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
     private void FixedUpdate()
     {
         if(movingTarget == null)
+        {
+            UpdateAnimator();
             return;
+        }
         
         CheckGround();
         CheckWall();
         CheckSide();
         
         if(_isMoveLocked)
+        {
+            UpdateAnimator();
             return;
+        }
         
         horizontalmove();
         
@@ -96,6 +127,9 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
                 }
             }
         }
+
+        UpdateFacing();
+        UpdateAnimator();
     }
     
     private void CheckWall()
@@ -175,6 +209,8 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
         {
             rb2d.linearVelocity = new Vector2(0, 0);
         }
+
+        UpdateAnimator();
     }
     
     public void ApplyKnockback(Vector2 dir, float power, float duration)
@@ -208,4 +244,63 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
     public void TakeDamage(float damage){_enemyHit.TakeDamage(damage);}
 
     public void ApplySlow(float percent, float duration){_enemyHit.ApplySlow(percent, duration);}
+
+    private void UpdateFacing()
+    {
+        if (spriteRenderer == null || Mathf.Abs(rb2d.linearVelocity.x) <= 0.01f)
+            return;
+
+        spriteRenderer.flipX = rb2d.linearVelocity.x < 0f;
+    }
+
+    private void UpdateAnimator()
+    {
+        if (animator == null || rb2d == null)
+            return;
+
+        float horizontalSpeed = Mathf.Abs(rb2d.linearVelocity.x);
+
+        if (hasSpeedParam)
+            animator.SetFloat(SpeedHash, rb2d.linearVelocity.magnitude);
+        if (hasWalkParam)
+            animator.SetBool(WalkHash, horizontalSpeed > 0.01f && !_isMoveLocked);
+        if (hasMoveXParam)
+            animator.SetFloat(MoveXHash, rb2d.linearVelocity.x);
+        if (hasYVelocityParam)
+            animator.SetFloat(YVelocityHash, rb2d.linearVelocity.y);
+        if (hasIsMovingParam)
+            animator.SetBool(IsMovingHash, horizontalSpeed > 0.01f && !_isMoveLocked);
+        if (hasIsGroundedParam)
+            animator.SetBool(IsGroundedHash, isGrounded);
+        if (hasIsJumpingParam)
+            animator.SetBool(IsJumpingHash, isJumping || rb2d.linearVelocity.y > 0.01f);
+        if (hasIsMoveLockedParam)
+            animator.SetBool(IsMoveLockedHash, _isMoveLocked);
+    }
+
+    private void CacheAnimatorParameters()
+    {
+        if (animator == null)
+            return;
+
+        foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
+            if (parameter.nameHash == SpeedHash)
+                hasSpeedParam = true;
+            else if (parameter.nameHash == WalkHash)
+                hasWalkParam = true;
+            else if (parameter.nameHash == MoveXHash)
+                hasMoveXParam = true;
+            else if (parameter.nameHash == YVelocityHash)
+                hasYVelocityParam = true;
+            else if (parameter.nameHash == IsMovingHash)
+                hasIsMovingParam = true;
+            else if (parameter.nameHash == IsGroundedHash)
+                hasIsGroundedParam = true;
+            else if (parameter.nameHash == IsJumpingHash)
+                hasIsJumpingParam = true;
+            else if (parameter.nameHash == IsMoveLockedHash)
+                hasIsMoveLockedParam = true;
+        }
+    }
 }

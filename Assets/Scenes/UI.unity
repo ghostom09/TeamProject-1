@@ -5680,6 +5680,9 @@ MonoBehaviour:
   me: {fileID: 1993757906}
   trail: {fileID: 1993757894}
   background: {fileID: 1880397360}
+  backgroundSortingOrder: -1000
+  backgroundMapCenter: {x: 0, y: 0}
+  backgroundMapSize: {x: 120, y: 80}
   radius: 4
 --- !u!114 &669782247
 MonoBehaviour:
@@ -5804,6 +5807,8 @@ MonoBehaviour:
   - {fileID: 0}
   pop: {fileID: 0}
   stopGame: {fileID: 1769371753}
+  restart: {fileID: 0}
+  toLobby: {fileID: 0}
 --- !u!4 &742831115
 Transform:
   m_ObjectHideFlags: 0
@@ -16932,6 +16937,7 @@ MonoBehaviour:
   levelText: {fileID: 988810010}
   skillPanel: {fileID: 2447850408149012629, guid: b185a036e176bad4094a670a3de0b8af, type: 3}
   canvas: {fileID: 2145905947}
+  deadBackground: {fileID: 0}
 --- !u!4 &1699844688
 Transform:
   m_ObjectHideFlags: 0
@@ -22898,7 +22904,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   playerSkillExecutor: {fileID: 1993757897}
-  character: {fileID: 11400000, guid: 6c9cdfd605f355340ac2b3041233929a, type: 2}
+  character: {fileID: 11400000, guid: 4906926dc1371e24da7fc7f1e6cd86a4, type: 2}
   attacker: {fileID: 1993757895}
   move: {fileID: 1993757898}
   invincibilityDuration: 0

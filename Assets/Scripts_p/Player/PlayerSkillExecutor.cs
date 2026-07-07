@@ -15,6 +15,7 @@ public class PlayerSkillExecutor : MonoBehaviour
 {
     private SkillData[] _skills;
     private Dictionary<SkillType, ISkillAction> _actions;
+    private PlayerLevelManager _levelManager;
 
     private CharacterData data;
 
@@ -33,12 +34,15 @@ public class PlayerSkillExecutor : MonoBehaviour
         };
 
         this.data = data;
+        _levelManager = GetComponent<PlayerLevelManager>();
         
         foreach (var skillData in _skills)
         {
             SkillType type = skillData.SkillName;
             _actions[type].Init(data, skillData);
         }
+
+        UIManager.Instance?.SetSkillCooldowns(_skills);
     }
 
     public void GetDirection(int index)
@@ -53,9 +57,32 @@ public class PlayerSkillExecutor : MonoBehaviour
     }
     public void UseSkill(int index, Vector2 dir)
     {
+        if (_skills == null || index < 0 || index >= _skills.Length)
+            return;
+
         SkillType type = _skills[index].SkillName;
-        _actions[type].TryUse(gameObject, dir);
+        if (!CanUseSkill(index, type))
+            return;
+
+        if (_actions[type].TryUse(gameObject, dir))
+        {
+            UIManager.Instance?.UpdateSkillTimer(index);
+        }
     }
+
+    private bool CanUseSkill(int index, SkillType type)
+    {
+        // if (index == 0)
+        //     return true;
+        //
+        // if (ArgumentDataManager.Instance == null || _levelManager == null)
+        //     return true;
+        //
+        // int unlockLevel = ArgumentDataManager.Instance.GetSkillUnlockLevel(type);
+        // return _levelManager.CurrentLevel >= unlockLevel;
+        return true;
+    }
+
     public SkillBase GetSkill(SkillType type)
     {
         return _actions[type] as SkillBase;

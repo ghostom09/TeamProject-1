@@ -8,6 +8,7 @@ public class CharBtnManager : MonoBehaviour
     [SerializeField] private List<CharIconSetting> charBtn;
     [SerializeField] private List<Button> charBtns;
     [SerializeField] private List<GameObject> descriptions;
+    [SerializeField] private Button lobbyBtn;
     void Start()
     {
         SetButton();
@@ -21,6 +22,12 @@ public class CharBtnManager : MonoBehaviour
             int index = i;
             charBtns[i].onClick.AddListener(() => OnClick(index));
         }
+        lobbyBtn.onClick.AddListener(CloseChoice);
+    }
+
+    private void CloseChoice()
+    {
+        SceneManager.Instance.ChangeScene(SceneName.MainMenu);
     }
 
     private void OnClick(int index)

@@ -7,12 +7,15 @@ public class UltraBullet : MonoBehaviour
 
     private Vector2 startPosition;
     private float maxDistance;
+    private bool isReleased;
 
     public void Initialize(Vector2 direction, float speed, float distance)
     {
         startPosition = transform.position;
         maxDistance = distance;
+        isReleased = false;
 
+        trail?.Clear();
         rb.linearVelocity = direction * speed;
     }
     
@@ -20,7 +23,17 @@ public class UltraBullet : MonoBehaviour
     {
         if (Vector2.Distance(startPosition, transform.position) >= maxDistance)
         {
-            ObjectPoolManager.Instance.Release(ObjectName.UltraBullet, gameObject);
+            Release();
         }
+    }
+
+    private void Release()
+    {
+        if (isReleased)
+            return;
+
+        isReleased = true;
+        rb.linearVelocity = Vector2.zero;
+        ObjectPoolManager.Instance.Release(ObjectName.UltraBullet, gameObject);
     }
 }

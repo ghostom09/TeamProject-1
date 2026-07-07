@@ -21,6 +21,11 @@ public class ParadoxController : MonoBehaviour
 
     void Awake()
     {
+        if (fadeOut != null && fadeOut.transform.parent != null)
+        {
+            fadeOut.transform.parent.SetAsFirstSibling();
+        }
+
         if(auraParticle != null)
             emission = auraParticle.emission;
     }

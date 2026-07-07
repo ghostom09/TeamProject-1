@@ -88,7 +88,6 @@ public class Argument : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         StopAllCoroutines();
         StartCoroutine(FadeCoroutine(duration));
-        StartCoroutine(FadeCoroutine(duration));
     }
     private IEnumerator FadeCoroutine(float duration)
     {
@@ -96,7 +95,7 @@ public class Argument : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         while (elapsed < duration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
             float t = elapsed / duration;
             float alpha = Mathf.Lerp(1f, 0f, t);
 

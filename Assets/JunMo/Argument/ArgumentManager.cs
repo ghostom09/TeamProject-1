@@ -1,6 +1,7 @@
 using UnityEngine.InputSystem;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class ArgumentManager : MonoBehaviour
 {
@@ -14,11 +15,15 @@ public class ArgumentManager : MonoBehaviour
     private int argumentCount = 0;
     private int spawnCount = 3;
     private int levelUpCnt = 0;
+    private bool isChoosing = false;
+    private bool isClosing = false;
+    private float previousTimeScale = 1f;
     
     public int playerLevel = 1;
     void Awake()
     {
         upgradeManager = GetComponent<ArgumentDataManager>();
+        ConfigureArgumentCanvas();
     }
 
     void OnEnable()
@@ -29,44 +34,66 @@ public class ArgumentManager : MonoBehaviour
     void OnDisable()
     {
         PlayerLevelManager.OnLevelUp -= LevelUp;
+        ResumeGame();
     }
 
     void Start()
     {
-        Spawn(spawnCount);
     }
 
     private void LevelUp(int currentLevel)
     {
         levelUpCnt++;
         playerLevel = currentLevel;
-        SpawnCalculate();
+
+        if (!isChoosing)
+            SpawnCalculate();
     }
 
     private void SpawnCalculate()
     {
-        while (levelUpCnt > 0)
-        {
-            levelUpCnt--;
-            Spawn(spawnCount);
-        }
+        if (levelUpCnt <= 0 || isChoosing)
+            return;
+
+        levelUpCnt--;
+        Spawn(spawnCount);
     }
     
     void Spawn(int count)
     {
+        ConfigureArgumentCanvas();
+
+        isChoosing = true;
+        isClosing = false;
+        PauseGame();
+
+        foreach (Argument argument in arguments)
+        {
+            if (argument != null)
+                Destroy(argument.gameObject);
+        }
         arguments.Clear();
 
         List<ArgumentData> datas = upgradeManager.GetRandomArguments(count);
 
-        float spacing = (count == 1) ? 0 : maxWidth / (count - 1);
+        if (datas.Count == 0)
+        {
+            isChoosing = false;
+            isClosing = false;
+            ResumeGame();
+            return;
+        }
+
+        int displayCount = datas.Count;
+        float spacing = (displayCount == 1) ? 0 : maxWidth / (displayCount - 1);
 
         for (int i = 0; i < datas.Count; i++)
         {
             float x;
-            bool centerAlign = (count % 2 == 1);
+            bool centerAlign = (displayCount % 2 == 1);
 
             if (centerAlign)
-                x = -(spacing * (count - 1)) / 2f + i * spacing;
+                x = -(spacing * (displayCount - 1)) / 2f + i * spacing;
             else
                 x = i * spacing - maxWidth / 2f;
 
@@ -98,7 +125,15 @@ public class ArgumentManager : MonoBehaviour
     
     void OnArgumentClicked(int argumentID)
     {
+        if (isClosing)
+            return;
+
         ArgumentData data = upgradeManager.MakeArgument(argumentID);
+
+        if (data == null || argumentID < 0 || argumentID >= arguments.Count)
+            return;
+
+        isClosing = true;
 
         foreach (Argument clickedArgument in arguments)
         {
@@ -118,5 +153,48 @@ public class ArgumentManager : MonoBehaviour
                 clickedArgument.FadeOut(0.3f);
             }
         }
+
+        StartCoroutine(CloseAndShowNextRoutine());
+    }
+
+    private IEnumerator CloseAndShowNextRoutine()
+    {
+        yield return new WaitForSecondsRealtime(1f);
+
+        arguments.Clear();
+        isChoosing = false;
+        isClosing = false;
+
+        if (levelUpCnt > 0)
+        {
+            SpawnCalculate();
+        }
+        else
+        {
+            ResumeGame();
+        }
+    }
+
+    private void PauseGame()
+    {
+        if (Time.timeScale > 0f)
+            previousTimeScale = Time.timeScale;
+
+        Time.timeScale = 0f;
+    }
+
+    private void ResumeGame()
+    {
+        Time.timeScale = previousTimeScale <= 0f ? 1f : previousTimeScale;
+    }
+
+    private void ConfigureArgumentCanvas()
+    {
+        if (canvas == null)
+            return;
+
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.overrideSorting = true;
+        canvas.sortingOrder = 100;
     }
 }

@@ -25,9 +25,16 @@ public class WarriorUltimateAttack : IBossSkillStrategy
     }
     private IEnumerator Attack(GameObject boss, GameObject target, System.Action onComplete)
     {
-        yield return new WaitForSeconds(3f);
-        
         dir = (target.transform.position - boss.transform.position).normalized;
+        Vector2 effectPosition = (Vector2)boss.transform.position + dir * (attackRange * 0.5f);
+        bossAttack?.SpawnWarriorAttackEffect(
+            BossSkillType.ultimate,
+            effectPosition,
+            dir,
+            attackRange,
+            3.5f);
+
+        yield return new WaitForSeconds(3f);
         
         yield return new WaitForSeconds(0.5f);
         

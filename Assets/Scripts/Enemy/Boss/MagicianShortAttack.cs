@@ -10,6 +10,7 @@ public class MagicianShortAttack : IBossSkillStrategy
     private BossAttack bossAttack;
     
     private Vector2 bulletOffset;
+    private const float CastDelay = 0.2f;
     public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject target)
     {
         damage = data.damage;
@@ -25,7 +26,7 @@ public class MagicianShortAttack : IBossSkillStrategy
     
     private IEnumerator AttackRoutine(GameObject boss, GameObject target, System.Action onComplete)
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(CastDelay);
     
         Vector2 baseDir = (target.transform.position - boss.transform.position).normalized;
 
@@ -36,7 +37,8 @@ public class MagicianShortAttack : IBossSkillStrategy
             yield return new WaitForSeconds(0.2f);
             Vector2 shotDir = RotateVector(baseDir, angle);
             bulletOffset = ((Vector2)boss.transform.position + (shotDir * 3));
-        
+
+            bossAttack.SpawnMagicCircle(BossSkillType.shortDistance, bulletOffset, 1.2f, 0.5f);
             bossAttack.ShootTrakingProjectile(shotDir, damage, attackRange, bulletOffset);
         }
 

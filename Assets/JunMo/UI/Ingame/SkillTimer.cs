@@ -15,6 +15,9 @@ public class SkillTimer : MonoBehaviour
     public void Timer(int skill)
     {
         skillTime = skill;
+        nowSkillTime = 0;
+        skillTimerText.SetText("");
+        skillTimerEffect.fillAmount = 0f;
     }
 
     public bool UseSkill()

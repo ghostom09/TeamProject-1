@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -11,6 +12,7 @@ public class CharUI : MonoBehaviour
     [SerializeField] private GridLayoutGroup grid;
     [SerializeField] private RectTransform viewport;
     [SerializeField] private CharacterData[] characters;
+    [SerializeField] private GameObject errorPanel;
     
     private CharacterData characterData;
 
@@ -55,7 +57,19 @@ public class CharUI : MonoBehaviour
 
     private void OnStartGame()
     {
+        if (!characterData)
+        {
+            StartCoroutine(Error());
+            return;
+        }
         CharDataManager.Instance.GetData(characterData);
-        SceneManager.Instance.ChangeScene(SceneName.PlayerTest);
+        SceneManager.Instance.ChangeScene(SceneName.InGame);
+    }
+
+    private IEnumerator Error()
+    {
+        errorPanel.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        errorPanel.SetActive(false);
     }
 }

@@ -5,6 +5,9 @@ using Random = UnityEngine.Random;
 
 public class BossMove : MonoBehaviour, IBossReset, IEnemyMover, IDamageable
 {
+    private static readonly int WalkHash = Animator.StringToHash("Walk");
+
+    [SerializeField] private Animator animator;
     [SerializeField] private GameObject movingTarget;
     
     [SerializeField] private LayerMask wallLayer;
@@ -47,15 +50,28 @@ public class BossMove : MonoBehaviour, IBossReset, IEnemyMover, IDamageable
     private Coroutine knockRoutine;
 
     private BossHit _bossHit;
+    private SpriteRenderer spriteRenderer;
+    private bool hasWalkParam;
 
     private void Awake()
     {
         rb2d = GetComponent<Rigidbody2D>();
         _bossHit = GetComponent<BossHit>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
+
+        hasWalkParam = HasAnimatorParameter(WalkHash);
     }
 
     public void Init(BossStats stats, GameObject target, EnemySpawnerManager m)
     {
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
+
+        hasWalkParam = HasAnimatorParameter(WalkHash);
+
         speed = stats.speed;
         jumpForce = stats.jumpForce;
         bossType = stats.bossType;
@@ -72,15 +88,22 @@ public class BossMove : MonoBehaviour, IBossReset, IEnemyMover, IDamageable
     private void FixedUpdate()
     {
         if(movingTarget == null)
+        {
+            UpdateAnimator();
             return;
+        }
         
         CheckGround();
         CheckWall();
         CheckSide();
         lookSide = (movingTarget.transform.position.x > transform.position.x) ? 1f : -1f;
+        UpdateFacing();
         
         if(_isMoveLocked)
+        {
+            UpdateAnimator();
             return;
+        }
         
         horizontalmove();
         
@@ -101,6 +124,20 @@ public class BossMove : MonoBehaviour, IBossReset, IEnemyMover, IDamageable
                 }
             }
         }
+
+        UpdateAnimator();
+    }
+
+    private void UpdateFacing()
+    {
+        if (spriteRenderer == null)
+            return;
+
+        float faceDirection = Mathf.Abs(rb2d.linearVelocity.x) > 0.01f
+            ? rb2d.linearVelocity.x
+            : lookSide;
+
+        spriteRenderer.flipX = faceDirection < 0f;
     }
     
     private void CheckWall()
@@ -180,6 +217,8 @@ public class BossMove : MonoBehaviour, IBossReset, IEnemyMover, IDamageable
         {
             rb2d.linearVelocity = new Vector2(0, 0);
         }
+
+        UpdateAnimator();
     }
     
     public void ApplyKnockback(Vector2 dir, float power, float duration)
@@ -215,4 +254,30 @@ public class BossMove : MonoBehaviour, IBossReset, IEnemyMover, IDamageable
     public void TakeDamage(float damage){_bossHit.TakeDamage(damage);}
 
     public void ApplySlow(float percent, float duration) { }
+
+    private void UpdateAnimator()
+    {
+        if (animator == null || !hasWalkParam)
+            return;
+
+        bool isWalking = bossType == BossType.warrior &&
+                         !_isMoveLocked &&
+                         Mathf.Abs(rb2d.linearVelocity.x) > 0.01f;
+
+        animator.SetBool(WalkHash, isWalking);
+    }
+
+    private bool HasAnimatorParameter(int parameterHash)
+    {
+        if (animator == null)
+            return false;
+
+        foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
+            if (parameter.nameHash == parameterHash)
+                return true;
+        }
+
+        return false;
+    }
 }

@@ -28,6 +28,16 @@ public class SkillController : MonoBehaviour
     {
         playerGun.GoldenBullet(pos, dir);
     }
+
+    public void Gun1(Vector2 pos, Vector2 dir, float distance, bool explodeAtMaxDistance)
+    {
+        playerGun.GoldenBullet(pos, dir, distance, explodeAtMaxDistance);
+    }
+
+    public void Gun1(Vector2 pos, Vector2 dir, float distance, bool explodeAtMaxDistance, float boomScaleDistance)
+    {
+        playerGun.GoldenBullet(pos, dir, distance, explodeAtMaxDistance, boomScaleDistance);
+    }
     
     public void Gun2(GameObject player, bool use)
     {
@@ -68,9 +78,9 @@ public class SkillController : MonoBehaviour
         usingUltra = !usingUltra;
     }
 
-    public void GunNormalAttack(Vector2 origin, Vector2 dir)
+    public void GunNormalAttack(Vector2 origin, Vector2 dir, float distance)
     {
-        playerGun.NormalBullet(origin, dir);
+        playerGun.NormalBullet(origin, dir, distance);
     }
 
     public void GunUltraAttack(Vector2 origin, Vector2 dir)

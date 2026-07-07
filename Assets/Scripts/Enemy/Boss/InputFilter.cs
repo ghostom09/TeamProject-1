@@ -46,6 +46,7 @@ public class InputFilter : MonoBehaviour
     public void ActivateSkill(float time)
     {
         if (shuffleCoroutine != null) StopCoroutine(shuffleCoroutine);
+        UIManager.Instance?.ShowMagicianUltimateEffect(time);
         shuffleCoroutine = StartCoroutine(ShuffleRoutine(time));
     }
 

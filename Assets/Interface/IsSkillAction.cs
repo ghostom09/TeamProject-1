@@ -4,5 +4,5 @@ public interface ISkillAction
 {
     void Init(CharacterData data, SkillData skillData);
     bool CanUse();
-    void TryUse(GameObject user, Vector2 dir);
+    bool TryUse(GameObject user, Vector2 dir);
 }

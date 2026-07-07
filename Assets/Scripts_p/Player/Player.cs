@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
@@ -20,10 +21,22 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
     public float maxGauge = 100f;
     public bool isInvincible;
     public bool isUsingUltimate;
+    public bool debugNoDamage;
+
+    public event Action<float, float> OnHealthChanged;
+    public event Action<float, float> OnGaugeChanged;
     
     private void Start()
     {
-        // character = CharDataManager.Instance.data;
+        if (CharDataManager.Instance != null && CharDataManager.Instance.data != null)
+            character = CharDataManager.Instance.data;
+
+        if (character == null)
+        {
+            Debug.LogError("Player character data is missing.");
+            return;
+        }
+
         Init(character);
         UnLockedUlt();
     }
@@ -39,10 +52,15 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
     }
     public void Init(CharacterData data)
     {
+        character = data;
         Stats.Init(data);
         playerSkillExecutor.Init(data.Skills, data);
         move.Init(this, 13);
         attacker.Init(data);
+        ArgumentDataManager.Instance?.GetJob(data.JobType);
+        UIManager.Instance?.SetCharacter(data);
+        NotifyHealthChanged();
+        NotifyGaugeChanged();
     }
 
     public void UnLockedUlt()
@@ -71,19 +89,23 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
             return false;
 
         currentGauge -= amount;
+        NotifyGaugeChanged();
         return true;
     }
 
     public void AddGauge(float amount)
     {
         currentGauge = Mathf.Clamp(currentGauge + amount, 0, maxGauge);
+        NotifyGaugeChanged();
     }
 
     public void TakeDamage(float amount)
     {
+        if (debugNoDamage) return;
         if (isInvincible) return;  
-        Stats.currentHp -= amount;
+        Stats.currentHp = Mathf.Clamp(Stats.currentHp - amount, 0, Stats.MaxHp);
         Debug.Log(Stats.currentHp);
+        NotifyHealthChanged();
         StartInvincibility(invincibilityDuration);
     }
 
@@ -118,6 +140,7 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
                 break;
             case ArgumentKind.Stat:
                 Stats.ApplyStat(result);
+                NotifyHealthChanged();
                 break;
             default:
                 Debug.Log("에러발생 : 증강데이터 타입 소실");
@@ -139,6 +162,7 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
         Stats.AddRange(character.RisingRange);
         Stats.AddAttackSpeed(character.RisingAttackSpeed);
         Stats.AddMaxHp(character.RisingMaxHp);
+        NotifyHealthChanged();
         
         Debug.Log($"<color=#FFD700><b>[Level Up!]</b></color> 캐릭터 스탯이 상승했습니다.");
     
@@ -155,9 +179,28 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
 
     private void Update()
     {
+        if (Keyboard.current == null)
+            return;
+
         if (Keyboard.current.tKey.wasPressedThisFrame)
         {
             StatUp();
         }
+
+        if (Keyboard.current.pKey.wasPressedThisFrame)
+        {
+            debugNoDamage = !debugNoDamage;
+            Debug.Log($"Debug no damage: {debugNoDamage}");
+        }
+    }
+
+    public void NotifyHealthChanged()
+    {
+        OnHealthChanged?.Invoke(Stats.currentHp, Stats.MaxHp);
+    }
+
+    private void NotifyGaugeChanged()
+    {
+        OnGaugeChanged?.Invoke(currentGauge, maxGauge);
     }
 }

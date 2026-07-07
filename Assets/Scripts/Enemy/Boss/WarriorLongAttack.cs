@@ -7,23 +7,19 @@ public class WarriorLongAttack : IBossSkillStrategy
     private float damage;
     private float attackRange;
     
-    private float distSqr;
     private LayerMask targetLayer;
     
     private const float ConeThreshold = 0.3f;
     
-    private BossAttack bossAttack;
-    
-    private GameObject hitArea;
-    
     private Vector2 dir;
+    private BossAttack bossAttack;
         
     public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject target)
     {
         damage = data.damage;
         attackRange = data.attackRange;
         this.bossAttack = bossAttack;
-        targetLayer = 1<<target.layer;
+        targetLayer = 1 << target.layer;
     }
 
     public void TryAttack(GameObject boss, GameObject target, Vector2 direction, System.Action onComplete)
@@ -34,7 +30,15 @@ public class WarriorLongAttack : IBossSkillStrategy
 
     private IEnumerator Attack(GameObject boss, GameObject target, Vector2 direction, System.Action onComplete)
     {
-        Debug.Log("장거리공격 시작");
+        Debug.Log("Warrior wide melee attack start");
+        Vector2 effectPosition = (Vector2)boss.transform.position + direction.normalized * (attackRange * 0.5f);
+        bossAttack?.SpawnWarriorAttackEffect(
+            BossSkillType.longDistance,
+            effectPosition,
+            direction,
+            attackRange,
+            2f);
+
         yield return new WaitForSeconds(2f); 
 
         Collider2D[] hits = 
@@ -57,7 +61,6 @@ public class WarriorLongAttack : IBossSkillStrategy
             if (Vector2.Dot(direction.normalized, hitTarget) < ConeThreshold)
                 continue;
         
-            
             dir = (target.transform.position - boss.transform.position).normalized;
             targetComponent.ApplyKnockback(dir, 8f, 0.25f);
             targetComponent.TakeDamage(damage);
@@ -70,7 +73,7 @@ public class WarriorLongAttack : IBossSkillStrategy
 
     public void EndAttack(GameObject hitArea, System.Action onComplete)
     {
-        Debug.Log("장거리공격 끝");
+        Debug.Log("Warrior wide melee attack end");
         onComplete?.Invoke();
     }
 }

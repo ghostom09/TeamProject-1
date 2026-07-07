@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class EnemyTest : MonoBehaviour, IDamageable
+public class EnemyTest : MonoBehaviour, IDamageable, IHitEffectReceiver
 {
     [SerializeField] private ParticleSystem mainParticle;
     [SerializeField] private ParticleSystem sparkParticle;
@@ -23,19 +23,32 @@ public class EnemyTest : MonoBehaviour, IDamageable
 
     public void TakeDamage(float damage)
     {
-        // if (SkillController.usingUltra)
-        // {
-        //     UltraAttacked();
-        // }
-        // else
-        // {
-        //     Attacked();
-        // }
+        if (SkillController.Instance != null && SkillController.Instance.usingUltra)
+        {
+            UltraAttacked();
+        }
+        else
+        {
+            Attacked();
+        }
     }
 
     public void ApplySlow(float percent, float duration) { }
     
     public void ApplyKnockback(Vector2 dir, float power, float duration){ }
+
+    public void PlayGunUltraNormalHitEffect(Vector2 attackerPosition, Vector2 hitDirection)
+    {
+        if (SkillController.Instance != null && SkillController.Instance.usingUltra)
+            return;
+
+        Transform attacker = player != null ? player.transform : null;
+
+        if (attacker != null)
+            SpawnHitEffect(attacker, transform);
+        else
+            SpawnHitEffect(attackerPosition, hitDirection);
+    }
 
     void UltraAttacked()
     {
@@ -66,6 +79,22 @@ public class EnemyTest : MonoBehaviour, IDamageable
         var shape = ps.shape;
         ps.Play();
     
+        Destroy(ps.gameObject, ps.main.duration + ps.main.startLifetime.constantMax);
+    }
+
+    void SpawnHitEffect(Vector2 attackerPosition, Vector2 hitDirection)
+    {
+        Vector3 direction = hitDirection.sqrMagnitude > 0f
+            ? hitDirection.normalized
+            : ((Vector2)transform.position - attackerPosition).normalized;
+
+        if (direction.sqrMagnitude <= 0f)
+            direction = Vector3.right;
+
+        Vector3 effectPosition = transform.position + direction * offsetDistance;
+        ParticleSystem ps = Instantiate(ultraSparkParticle, effectPosition, Quaternion.identity);
+        ps.Play();
+
         Destroy(ps.gameObject, ps.main.duration + ps.main.startLifetime.constantMax);
     }
 

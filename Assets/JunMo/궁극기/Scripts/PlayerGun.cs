@@ -18,14 +18,14 @@ public class PlayerGun : MonoBehaviour
     private SpriteRenderer playerRenderer;
     
     
-    public void NormalBullet(Vector2 origin, Vector2 dir)
+    public void NormalBullet(Vector2 origin, Vector2 dir, float distance)
     {
         GameObject bulletObj =
             ObjectPoolManager.Instance.Get
                 (ObjectName.NormalBullet, origin, Quaternion.Euler(0f, 0f, Angle(dir)));
 
         Bullet bullet = bulletObj.GetComponent<Bullet>();
-        bullet.Initialize(dir, speed, maxDistance);
+        bullet.Initialize(dir, speed, distance);
     }
     public void UltraBullet(Vector2 origin, Vector2 dir)
     {
@@ -44,6 +44,24 @@ public class PlayerGun : MonoBehaviour
 
         GoldenBullet bullet = bulletObj.GetComponent<GoldenBullet>();
         bullet.Initialize(dir, speed * 2, maxDistance * 2);
+    }
+
+    public void GoldenBullet(Vector2 pos, Vector2 dir, float distance, bool explodeAtMaxDistance)
+    {
+        GameObject bulletObj = ObjectPoolManager.Instance.Get
+            (ObjectName.GoldenBullet, pos, Quaternion.Euler(0f, 0f, Angle(dir)));
+
+        GoldenBullet bullet = bulletObj.GetComponent<GoldenBullet>();
+        bullet.Initialize(dir, speed * 2, distance, explodeAtMaxDistance);
+    }
+
+    public void GoldenBullet(Vector2 pos, Vector2 dir, float distance, bool explodeAtMaxDistance, float boomScaleDistance)
+    {
+        GameObject bulletObj = ObjectPoolManager.Instance.Get
+            (ObjectName.GoldenBullet, pos, Quaternion.Euler(0f, 0f, Angle(dir)));
+
+        GoldenBullet bullet = bulletObj.GetComponent<GoldenBullet>();
+        bullet.Initialize(dir, speed * 2, distance, explodeAtMaxDistance, boomScaleDistance);
     }
 
     private float Angle(Vector2 dir)

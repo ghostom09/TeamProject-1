@@ -7,12 +7,15 @@ public class Bullet : MonoBehaviour
 
     private Vector2 startPosition;
     private float maxDistance;
+    private bool isReleased;
 
     public void Initialize(Vector2 direction, float speed, float distance)
     {
         startPosition = transform.position;
         maxDistance = distance;
+        isReleased = false;
 
+        trail?.Clear();
         rb.linearVelocity = direction * speed;
     }
 
@@ -20,15 +23,28 @@ public class Bullet : MonoBehaviour
     {
         if (Vector2.Distance(startPosition, transform.position) >= maxDistance)
         {
-            ObjectPoolManager.Instance.Release(ObjectName.NormalBullet, gameObject);
+            Release();
         }
     }
     
     void OnTriggerEnter2D(Collider2D other)
     {
+        if (isReleased)
+            return;
+
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") || other.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
-            ObjectPoolManager.Instance.Release(ObjectName.NormalBullet, gameObject);
+            Release();
         }
+    }
+
+    private void Release()
+    {
+        if (isReleased)
+            return;
+
+        isReleased = true;
+        rb.linearVelocity = Vector2.zero;
+        ObjectPoolManager.Instance.Release(ObjectName.NormalBullet, gameObject);
     }
 }

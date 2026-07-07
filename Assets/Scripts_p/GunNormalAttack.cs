@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class GunNormalAttack : INormalAttack
 {
+    private const float BulletHitRadius = 0.1f;
+
     private float lastAttackTime;
     private CharacterData data;
 
@@ -18,7 +20,7 @@ public class GunNormalAttack : INormalAttack
     public void SetEnhancedMode(bool value)
     {
         enhanced = value;
-        Debug.Log("변함");
+        Debug.Log($"Gun enhanced mode: {enhanced}");
     }
 
     public bool TryAttack(GameObject user, Vector2 dir)
@@ -52,14 +54,17 @@ public class GunNormalAttack : INormalAttack
 
     private void DoSingleHitscan(Vector2 origin, Vector2 dir, float damage, float range)
     {
-        SkillController.Instance.GunNormalAttack(origin, dir);
-        RaycastHit2D hit = Physics2D.Raycast(
+        RaycastHit2D hit = Physics2D.CircleCast(
             origin,
+            BulletHitRadius,
             dir,
             range,
             hitLayer
         );
-        
+
+        float visualDistance = hit.collider != null ? hit.distance : range;
+        SkillController.Instance.GunNormalAttack(origin, dir, visualDistance);
+
         Debug.DrawRay(origin, dir * range, Color.cyan, 0.2f);
 
         if (hit.collider == null)
@@ -75,12 +80,14 @@ public class GunNormalAttack : INormalAttack
     private void DoPiercingHitscan(Vector2 origin, Vector2 dir, float damage, float range)
     {
         SkillController.Instance.GunUltraAttack(origin, dir);
-        RaycastHit2D[] hits = Physics2D.RaycastAll(
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(
             origin,
+            BulletHitRadius,
             dir,
             range * 2,
             hitLayer
         );
+
         Debug.DrawRay(origin, dir * range * 2, Color.cyan, 0.2f);
 
         foreach (var hit in hits)
@@ -89,7 +96,21 @@ public class GunNormalAttack : INormalAttack
             {
                 target.TakeDamage(damage);
                 target.ApplyKnockback(dir, 2f, 0.08f);
+
+                NotifyGunUltraHitEffect(hit.collider, origin, dir);
             }
         }
+    }
+
+    private void NotifyGunUltraHitEffect(Collider2D hitCollider, Vector2 origin, Vector2 dir)
+    {
+        if (hitCollider.TryGetComponent(out IHitEffectReceiver effectReceiver))
+        {
+            effectReceiver.PlayGunUltraNormalHitEffect(origin, dir);
+            return;
+        }
+
+        effectReceiver = hitCollider.GetComponentInParent<IHitEffectReceiver>();
+        effectReceiver?.PlayGunUltraNormalHitEffect(origin, dir);
     }
 }

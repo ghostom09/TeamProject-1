@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class PlayerSword : MonoBehaviour
@@ -15,12 +16,24 @@ public class PlayerSword : MonoBehaviour
     [SerializeField] private SpriteRenderer me;
     [SerializeField] private TrailRenderer trail;
     [SerializeField] private RectTransform background;
+    [SerializeField] private int backgroundSortingOrder = -1000;
+    [SerializeField] private Vector2 backgroundMapCenter = Vector2.zero;
+    [SerializeField] private Vector2 backgroundMapSize = new Vector2(120f, 80f);
     
     private List<GameObject> Illusions = new();
     private int illusionsCnt = 5;
     private Vector2 playerPos;
+    private SpriteRenderer worldBackground;
+    private float backgroundProgress;
+    private bool isUltimateRunning;
     
     public float radius = 6f;
+
+    private void Awake()
+    {
+        CreateWorldBackground();
+        HideUiBackground();
+    }
     
     Vector2[] posOffsets = new Vector2[]
     {
@@ -42,12 +55,16 @@ public class PlayerSword : MonoBehaviour
     
     public void Ultimate(Vector2 pos)
     {
+        if (isUltimateRunning)
+            return;
+
         playerPos = pos;
         StartCoroutine(UltimateRoutine());
     }
 
     private IEnumerator UltimateRoutine()
     {
+        isUltimateRunning = true;
         StartCoroutine(Background());
         yield return new WaitForSeconds(0.1f);
         
@@ -63,8 +80,7 @@ public class PlayerSword : MonoBehaviour
         StartCoroutine(Attacking());
         yield return new WaitForSeconds(1.4f);
         yield return new WaitForSeconds(0.8f);
-        StartCoroutine(EndOfAttack());
-        yield return new WaitForSeconds(0.56f);
+        yield return EndOfAttack();
         Reset();
         
     }
@@ -74,20 +90,19 @@ public class PlayerSword : MonoBehaviour
         float time = 0f;
         float duration = 1f;
 
-        background.anchorMin = new Vector2(0, 0);
-        background.anchorMax = new Vector2(0, 1);
+        PrepareWorldBackground(0f);
 
         while (time < duration)
         {
             time += Time.deltaTime * 7;
             float progress = Mathf.Clamp01(time / duration);
 
-            background.anchorMax = new Vector2(progress, 1);
+            SetWorldBackgroundProgress(progress);
 
             yield return null;
         }
 
-        background.anchorMax = new Vector2(1, 1);
+        SetWorldBackgroundProgress(1f);
     }
 
     private IEnumerator StartAttack()
@@ -140,7 +155,10 @@ public class PlayerSword : MonoBehaviour
         GameObject bigSword = ObjectPoolManager.Instance.
             Get(ObjectName.UltraSwordFinal, playerPos, Quaternion.identity);
 
-        yield return new WaitForSeconds(0.5f);
+        float finalDuration = GetAnimationDuration(bigSword, 0.5f);
+        RestartAnimator(bigSword);
+
+        yield return new WaitForSeconds(finalDuration);
         ObjectPoolManager.Instance.Release(ObjectName.UltraSwordFinal, bigSword);
 
         yield return null;
@@ -187,7 +205,100 @@ public class PlayerSword : MonoBehaviour
     private void Reset()
     {
         StopAllCoroutines();
-        background.anchorMin = new Vector2(0, 0);
-        background.anchorMax = new Vector2(0, 1);
+        SetWorldBackgroundProgress(0f);
+        isUltimateRunning = false;
+    }
+
+    private float GetAnimationDuration(GameObject obj, float fallback)
+    {
+        Animator animator = obj != null ? obj.GetComponentInChildren<Animator>() : null;
+        if (animator != null && animator.runtimeAnimatorController != null)
+        {
+            AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
+            if (clips != null && clips.Length > 0)
+                return clips[0].length;
+        }
+
+        return fallback;
+    }
+
+    private void RestartAnimator(GameObject obj)
+    {
+        Animator animator = obj != null ? obj.GetComponentInChildren<Animator>() : null;
+        if (animator != null)
+        {
+            animator.Rebind();
+            animator.Update(0f);
+        }
+    }
+
+    private void HideUiBackground()
+    {
+        if (background != null && background.TryGetComponent(out Image image))
+        {
+            image.enabled = false;
+        }
+    }
+
+    private void CreateWorldBackground()
+    {
+        if (worldBackground != null)
+            return;
+
+        GameObject obj = new GameObject("SwordUltimateWorldBackground");
+        obj.transform.SetParent(transform, false);
+
+        Texture2D texture = new Texture2D(1, 1);
+        texture.SetPixel(0, 0, Color.white);
+        texture.Apply();
+
+        Sprite sprite = Sprite.Create(
+            texture,
+            new Rect(0, 0, 1, 1),
+            new Vector2(0.5f, 0.5f),
+            1f
+        );
+
+        worldBackground = obj.AddComponent<SpriteRenderer>();
+        worldBackground.sprite = sprite;
+        worldBackground.color = Color.black;
+        worldBackground.sortingOrder = backgroundSortingOrder;
+        worldBackground.enabled = false;
+    }
+
+    private void PrepareWorldBackground(float progress)
+    {
+        if (worldBackground == null)
+            CreateWorldBackground();
+
+        worldBackground.enabled = true;
+        SetWorldBackgroundProgress(progress);
+    }
+
+    private void SetWorldBackgroundProgress(float progress)
+    {
+        if (worldBackground == null)
+            return;
+
+        backgroundProgress = Mathf.Clamp01(progress);
+        UpdateWorldBackgroundTransform();
+    }
+
+    private void UpdateWorldBackgroundTransform()
+    {
+        if (worldBackground == null)
+            return;
+
+        float width = backgroundMapSize.x;
+        float height = backgroundMapSize.y;
+
+        worldBackground.transform.position = new Vector3(
+            backgroundMapCenter.x - width * 0.5f + width * backgroundProgress * 0.5f,
+            backgroundMapCenter.y,
+            0f
+        );
+        worldBackground.transform.localScale = new Vector3(width * backgroundProgress, height, 1f);
+        worldBackground.sortingOrder = backgroundSortingOrder;
+        worldBackground.enabled = backgroundProgress > 0f;
     }
 }

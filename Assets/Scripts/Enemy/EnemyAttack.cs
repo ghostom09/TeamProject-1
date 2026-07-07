@@ -3,16 +3,26 @@ using UnityEngine;
 
 public class EnemyAttack : MonoBehaviour, IEnemyReset
 {
+    private static readonly int AttackHash = Animator.StringToHash("Attack");
+
+    [SerializeField] private Animator animator;
+
     private IEnemyAttackStrategy strategy;
 
     private Transform attackTarget;
     private EnemyMove _enemyMove;
 
     private Vector2 dir;
+    private bool hasAttackParam;
 
     private void Awake()
     {
         _enemyMove = GetComponent<EnemyMove>();
+
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
+
+        hasAttackParam = HasAnimatorParameter(AttackHash);
     }
 
     public void Init(EnemyStats stats, GameObject target, EnemySpawnerManager m)
@@ -36,6 +46,27 @@ public class EnemyAttack : MonoBehaviour, IEnemyReset
         if(attackTarget == null)
             return;
         dir = ((Vector2)attackTarget.position - (Vector2)transform.position).normalized;
-        strategy?.TryAttack(gameObject, attackTarget, dir);
+        if (strategy != null && strategy.TryAttack(gameObject, attackTarget, dir))
+            SetAttackTrigger();
+    }
+
+    private void SetAttackTrigger()
+    {
+        if (animator != null && hasAttackParam)
+            animator.SetTrigger(AttackHash);
+    }
+
+    private bool HasAnimatorParameter(int parameterHash)
+    {
+        if (animator == null)
+            return false;
+
+        foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
+            if (parameter.nameHash == parameterHash)
+                return true;
+        }
+
+        return false;
     }
 }

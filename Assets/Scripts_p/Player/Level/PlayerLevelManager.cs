@@ -8,12 +8,21 @@ public class PlayerLevelManager : MonoBehaviour
 
     [SerializeField] private ExperienceTable expTable;
     public static event Action<int> OnLevelUp;
+    public event Action<int, int> OnExperienceChanged;
+
+    public int RequiredExp => expTable.GetRequiredExp(CurrentLevel);
+
+    private void Start()
+    {
+        NotifyExperienceChanged();
+    }
 
     public void AddExp(int amount)
     {
         CurrentExp += amount;
         
         CheckLevelUp();
+        NotifyExperienceChanged();
     }
 
     private void CheckLevelUp()
@@ -30,5 +39,11 @@ public class PlayerLevelManager : MonoBehaviour
     {
         CurrentLevel++;
         OnLevelUp?.Invoke(CurrentLevel);
+        NotifyExperienceChanged();
+    }
+
+    private void NotifyExperienceChanged()
+    {
+        OnExperienceChanged?.Invoke(CurrentExp, RequiredExp);
     }
 }

@@ -88,9 +88,6 @@ public class ArgumentDataManager : MonoBehaviour
 
                 if (playerLevel < skillData.playerMinLevel)
                     continue;
-
-                if (skillData.playerMinLevel > 0 && playerLevel > skillData.playerMinLevel)
-                    continue;
             }
 
             pool.Add(arg);
@@ -179,5 +176,16 @@ public class ArgumentDataManager : MonoBehaviour
             return owned.currentLevel;
 
         return 0;
+    }
+
+    public int GetSkillUnlockLevel(SkillType skillType)
+    {
+        foreach (SkillArgumentData skillData in skillArguments)
+        {
+            if (skillData.skillType == skillType)
+                return skillData.playerMinLevel;
+        }
+
+        return 1;
     }
 }

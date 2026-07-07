@@ -14,6 +14,8 @@ public enum EnemyType
 public class EnemyStats : ScriptableObject
 {
     public EnemyType enemyType;
+    public Sprite sprite;
+    public RuntimeAnimatorController animatorController;
     public float health;
     public float speed;
     public float damage;

@@ -16,6 +16,10 @@ public class CharacterData : ScriptableObject
     public float AttackSpeed;
     public SkillData[] Skills;
     public UltData Ult;
+
+    [Header("Animation")]
+    public RuntimeAnimatorController AnimatorController;
+    public Sprite DefaultSprite;
     
     [Header("올라가는 스탯")]
     public float RisingMoveSpeed;

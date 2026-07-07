@@ -32,6 +32,7 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
     private float maxHealthBar;
     private bool hasDieParam;
     private bool isDead;
+    private Collider2D[] colliders;
     public bool IsDead => isDead;
 
     private void Awake()
@@ -45,6 +46,7 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
         if (healthBar != null)
             healthCanvas = healthBar.GetComponentInParent<Canvas>(true);
 
+        colliders = GetComponents<Collider2D>();
         CacheAnimatorParameters();
         maxHealthBar = healthBar.sizeDelta.x;
         color = renderer.color;
@@ -61,6 +63,7 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
         maxHealth = stats.health;
         shield = 0;
         isDead = false;
+        SetCollidersEnabled(true);
         exp = stats.exp;
         spawnerManager = m;
         SetHealthBarVisible(true);
@@ -102,6 +105,7 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
     {
         isDead = true;
         GameResultTracker.Instance?.RegisterKill();
+        SetCollidersEnabled(false);
         StopBossCoroutines();
         _bossAttack?.CleanupSpawnedSkillObjects();
         playerInput?.DeactivateInputShuffle();
@@ -172,7 +176,25 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
     
     public void ApplySlow(float slowPercent, float slowDuration) { }
     
-    public void ApplyKnockback(Vector2 dir, float power, float duration) {_bossMove.ApplyKnockback(dir, power, duration);}
+    public void ApplyKnockback(Vector2 dir, float power, float duration)
+    {
+        if (isDead)
+            return;
+
+        _bossMove.ApplyKnockback(dir, power, duration);
+    }
+
+    private void SetCollidersEnabled(bool isEnabled)
+    {
+        if (colliders == null)
+            colliders = GetComponents<Collider2D>();
+
+        foreach (Collider2D col in colliders)
+        {
+            if (col != null)
+                col.enabled = isEnabled;
+        }
+    }
 
     private PlayerInput FindPlayerInput(GameObject target)
     {

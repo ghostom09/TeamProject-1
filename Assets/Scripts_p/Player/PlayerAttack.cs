@@ -60,7 +60,10 @@ public class PlayerAttack : MonoBehaviour
         Vector2 dir = (mouseWorld - (Vector2)transform.position).normalized;
         
         if (_normal.TryAttack(gameObject, dir))
+        {
+            _player?.PlayAttackAnimation();
             CameraShake.Shake(0.06f, 0.08f);
+        }
     }
     public INormalAttack GetNormalAttack()
     {

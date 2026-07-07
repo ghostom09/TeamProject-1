@@ -25,8 +25,19 @@ public class EnemyAttack : MonoBehaviour, IEnemyReset
         hasAttackParam = HasAnimatorParameter(AttackHash);
     }
 
+    public void SetAnimator(Animator targetAnimator)
+    {
+        animator = targetAnimator;
+        hasAttackParam = HasAnimatorParameter(AttackHash);
+    }
+
     public void Init(EnemyStats stats, GameObject target, EnemySpawnerManager m)
     {
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
+
+        hasAttackParam = HasAnimatorParameter(AttackHash);
+
         strategy = stats.enemyType switch
         {
             EnemyType.normal  => new MeleeAttack(),

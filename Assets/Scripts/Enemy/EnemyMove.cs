@@ -71,6 +71,8 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
         rb2d = GetComponent<Rigidbody2D>();
         _enemyHit = GetComponent<EnemyHit>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
@@ -78,8 +80,19 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
         CacheAnimatorParameters();
     }
 
+    public void SetAnimator(Animator targetAnimator)
+    {
+        animator = targetAnimator;
+        CacheAnimatorParameters();
+    }
+
     public void Init(EnemyStats stats, GameObject target, EnemySpawnerManager m)
     {
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
+
+        CacheAnimatorParameters();
+
         speed = stats.speed;
         jumpForce = stats.jumpForce;
         enemyType = stats.enemyType;
@@ -280,6 +293,15 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
 
     private void CacheAnimatorParameters()
     {
+        hasSpeedParam = false;
+        hasWalkParam = false;
+        hasMoveXParam = false;
+        hasYVelocityParam = false;
+        hasIsMovingParam = false;
+        hasIsGroundedParam = false;
+        hasIsJumpingParam = false;
+        hasIsMoveLockedParam = false;
+
         if (animator == null)
             return;
 

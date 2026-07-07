@@ -40,6 +40,8 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset, IHitEffectRecei
     private void Awake()
     {
         renderer = GetComponent<SpriteRenderer>();
+        if (renderer == null)
+            renderer = GetComponentInChildren<SpriteRenderer>();
         enemyMove = GetComponent<EnemyMove>();
 
         if (animator == null)
@@ -59,8 +61,19 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset, IHitEffectRecei
         StopChildParticles();
     }
 
+    public void SetAnimator(Animator targetAnimator)
+    {
+        animator = targetAnimator;
+        CacheAnimatorParameters();
+    }
+
     public void Init(EnemyStats stats, GameObject target, EnemySpawnerManager m)
     {
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
+
+        CacheAnimatorParameters();
+
         health = stats.health;
         maxHealth = stats.health;
         exp = stats.exp;
@@ -69,6 +82,7 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset, IHitEffectRecei
         levelManager = target.GetComponent<PlayerLevelManager>();
         isDead = false;
         SetCollidersEnabled(true);
+        SetTrigger(ReviveHash, hasReviveParam);
     }
 
     public void TakeDamage(float dmg)
@@ -226,6 +240,10 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset, IHitEffectRecei
 
     private void CacheAnimatorParameters()
     {
+        hasHitParam = false;
+        hasDieParam = false;
+        hasReviveParam = false;
+
         if (animator == null)
             return;
 

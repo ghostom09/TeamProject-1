@@ -6,11 +6,21 @@ using UnityEngine.TextCore.Text;
 
 public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
 {
+    private static readonly int SpeedHash = Animator.StringToHash("Speed");
+    private static readonly int MoveXHash = Animator.StringToHash("MoveX");
+    private static readonly int YVelocityHash = Animator.StringToHash("YVelocity");
+    private static readonly int IsMovingHash = Animator.StringToHash("IsMoving");
+    private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
+    private static readonly int AttackHash = Animator.StringToHash("Attack");
+    private static readonly int HitHash = Animator.StringToHash("Hit");
+    private static readonly int DieHash = Animator.StringToHash("Die");
     
     [SerializeField] private PlayerSkillExecutor playerSkillExecutor;
     [SerializeField] private CharacterData character;
     [SerializeField] private PlayerAttack attacker;
     [SerializeField] private PlayerMove move;
+    [SerializeField] private Animator animator;
+    [SerializeField] private SpriteRenderer spriteRenderer;
     
     private Coroutine invincibleCoroutine;
 
@@ -28,6 +38,25 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
     public event Action OnDeath;
 
     private bool isDead;
+    private bool hasSpeedParam;
+    private bool hasMoveXParam;
+    private bool hasYVelocityParam;
+    private bool hasIsMovingParam;
+    private bool hasIsGroundedParam;
+    private bool hasAttackParam;
+    private bool hasHitParam;
+    private bool hasDieParam;
+
+    private void Awake()
+    {
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
+
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        CacheAnimatorParameters();
+    }
     
     private void Start()
     {
@@ -57,6 +86,7 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
     {
         character = data;
         isDead = false;
+        ApplyCharacterVisual(data);
         Stats.Init(data);
         playerSkillExecutor.Init(data.Skills, data);
         move.Init(this, 13);
@@ -110,12 +140,14 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
         if (isInvincible) return;  
         Stats.currentHp = Mathf.Clamp(Stats.currentHp - amount, 0, Stats.MaxHp);
         CameraShake.Shake(0.24f, 0.18f);
+        PlayHitAnimation();
         Debug.Log(Stats.currentHp);
         NotifyHealthChanged();
 
         if (Stats.currentHp <= 0f)
         {
             isDead = true;
+            PlayDieAnimation();
             OnDeath?.Invoke();
             return;
         }
@@ -216,5 +248,85 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
     private void NotifyGaugeChanged()
     {
         OnGaugeChanged?.Invoke(currentGauge, maxGauge);
+    }
+
+    private void ApplyCharacterVisual(CharacterData data)
+    {
+        if (data == null)
+            return;
+
+        if (animator != null && data.AnimatorController != null)
+        {
+            animator.runtimeAnimatorController = data.AnimatorController;
+            CacheAnimatorParameters();
+        }
+
+        if (spriteRenderer != null && data.DefaultSprite != null)
+            spriteRenderer.sprite = data.DefaultSprite;
+    }
+
+    public void UpdateMoveAnimation(Vector2 velocity, Vector2 input, bool isGrounded)
+    {
+        if (animator == null)
+            return;
+
+        if (hasSpeedParam)
+            animator.SetFloat(SpeedHash, Mathf.Abs(velocity.x));
+
+        if (hasMoveXParam)
+            animator.SetFloat(MoveXHash, input.x);
+
+        if (hasYVelocityParam)
+            animator.SetFloat(YVelocityHash, velocity.y);
+
+        if (hasIsMovingParam)
+            animator.SetBool(IsMovingHash, Mathf.Abs(input.x) > 0.01f);
+
+        if (hasIsGroundedParam)
+            animator.SetBool(IsGroundedHash, isGrounded);
+    }
+
+    public void PlayAttackAnimation()
+    {
+        if (animator != null && hasAttackParam)
+            animator.SetTrigger(AttackHash);
+    }
+
+    private void PlayHitAnimation()
+    {
+        if (animator != null && hasHitParam)
+            animator.SetTrigger(HitHash);
+    }
+
+    private void PlayDieAnimation()
+    {
+        if (animator != null && hasDieParam)
+            animator.SetTrigger(DieHash);
+    }
+
+    private void CacheAnimatorParameters()
+    {
+        hasSpeedParam = HasAnimatorParameter(SpeedHash);
+        hasMoveXParam = HasAnimatorParameter(MoveXHash);
+        hasYVelocityParam = HasAnimatorParameter(YVelocityHash);
+        hasIsMovingParam = HasAnimatorParameter(IsMovingHash);
+        hasIsGroundedParam = HasAnimatorParameter(IsGroundedHash);
+        hasAttackParam = HasAnimatorParameter(AttackHash);
+        hasHitParam = HasAnimatorParameter(HitHash);
+        hasDieParam = HasAnimatorParameter(DieHash);
+    }
+
+    private bool HasAnimatorParameter(int parameterHash)
+    {
+        if (animator == null || animator.runtimeAnimatorController == null)
+            return false;
+
+        foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
+            if (parameter.nameHash == parameterHash)
+                return true;
+        }
+
+        return false;
     }
 }

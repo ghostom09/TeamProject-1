@@ -86,6 +86,7 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
         HandleMove();
         HandleJump();
         HandleJumpCut();
+        player?.UpdateMoveAnimation(rb.linearVelocity, movement, IsGrounded);
     }
 
     private void UpdateGround()

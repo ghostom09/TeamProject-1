@@ -5,6 +5,7 @@ public class PlayerLevelManager : MonoBehaviour
 {
     public int CurrentLevel { get; private set; } = 1;
     public int CurrentExp { get; private set; }
+    public int TotalExp { get; private set; }
 
     [SerializeField] private ExperienceTable expTable;
     public static event Action<int> OnLevelUp;
@@ -19,6 +20,7 @@ public class PlayerLevelManager : MonoBehaviour
 
     public void AddExp(int amount)
     {
+        TotalExp += amount;
         CurrentExp += amount;
         
         CheckLevelUp();

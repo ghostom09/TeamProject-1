@@ -28,6 +28,7 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
     private EnemySpawnerManager spawnerManager;
     
     [SerializeField] private RectTransform healthBar;
+    private Canvas healthCanvas;
     private float maxHealthBar;
     private bool hasDieParam;
     private bool isDead;
@@ -40,6 +41,9 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
         renderer = GetComponent<SpriteRenderer>();
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
+
+        if (healthBar != null)
+            healthCanvas = healthBar.GetComponentInParent<Canvas>(true);
 
         CacheAnimatorParameters();
         maxHealthBar = healthBar.sizeDelta.x;
@@ -59,6 +63,7 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
         isDead = false;
         exp = stats.exp;
         spawnerManager = m;
+        SetHealthBarVisible(true);
         healthBar.sizeDelta = new Vector2(maxHealthBar, healthBar.sizeDelta.y);
         if (Shield != null)
             Shield.SetActive(false);
@@ -96,6 +101,7 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
     private void Die()
     {
         isDead = true;
+        GameResultTracker.Instance?.RegisterKill();
         StopBossCoroutines();
         _bossAttack?.CleanupSpawnedSkillObjects();
         playerInput?.DeactivateInputShuffle();
@@ -151,6 +157,17 @@ public class BossHit : MonoBehaviour, IBossReset, IDamageable
         if (Shield != null)
             Shield.SetActive(true);
         shield = shieldStock;
+    }
+
+    public void SetHealthBarVisible(bool visible)
+    {
+        if (healthCanvas == null && healthBar != null)
+            healthCanvas = healthBar.GetComponentInParent<Canvas>(true);
+
+        if (healthCanvas != null)
+            healthCanvas.gameObject.SetActive(visible);
+        else if (healthBar != null)
+            healthBar.gameObject.SetActive(visible);
     }
     
     public void ApplySlow(float slowPercent, float slowDuration) { }

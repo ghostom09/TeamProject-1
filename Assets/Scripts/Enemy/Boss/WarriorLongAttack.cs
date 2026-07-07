@@ -31,15 +31,20 @@ public class WarriorLongAttack : IBossSkillStrategy
     private IEnumerator Attack(GameObject boss, GameObject target, Vector2 direction, System.Action onComplete)
     {
         Debug.Log("Warrior wide melee attack start");
+        const float attackDelay = 2f;
+        const float effectDelay = attackDelay * 0.5f;
+
+        yield return new WaitForSeconds(effectDelay);
+
         Vector2 effectPosition = (Vector2)boss.transform.position + direction.normalized * (attackRange * 0.5f);
         bossAttack?.SpawnWarriorAttackEffect(
             BossSkillType.longDistance,
             effectPosition,
             direction,
-            attackRange,
-            2f);
+            new Vector2(attackRange * 1.25f, attackRange * 1.25f),
+            attackDelay - effectDelay);
 
-        yield return new WaitForSeconds(2f); 
+        yield return new WaitForSeconds(attackDelay - effectDelay); 
 
         Collider2D[] hits = 
             Physics2D.OverlapCircleAll(boss.transform.position, 
@@ -63,6 +68,7 @@ public class WarriorLongAttack : IBossSkillStrategy
         
             dir = (target.transform.position - boss.transform.position).normalized;
             targetComponent.ApplyKnockback(dir, 8f, 0.25f);
+            GameResultTracker.Instance?.SetDeathReason("Hit by Warrior Boss sword wave");
             targetComponent.TakeDamage(damage);
 
             hitTargets.Add(targetComponent);

@@ -74,6 +74,7 @@ public class GunNormalAttack : INormalAttack
         {
             target.TakeDamage(damage);
             target.ApplyKnockback(dir, 3f, 0.15f);
+            CameraShake.Shake(0.085f, 0.08f);
         }
     }
 
@@ -90,6 +91,8 @@ public class GunNormalAttack : INormalAttack
 
         Debug.DrawRay(origin, dir * range * 2, Color.cyan, 0.2f);
 
+        bool didHit = false;
+
         foreach (var hit in hits)
         {
             if (hit.collider.TryGetComponent(out IDamageable target))
@@ -98,8 +101,12 @@ public class GunNormalAttack : INormalAttack
                 target.ApplyKnockback(dir, 2f, 0.08f);
 
                 NotifyGunUltraHitEffect(hit.collider, origin, dir);
+                didHit = true;
             }
         }
+
+        if (didHit)
+            CameraShake.Shake(0.1f, 0.1f);
     }
 
     private void NotifyGunUltraHitEffect(Collider2D hitCollider, Vector2 origin, Vector2 dir)

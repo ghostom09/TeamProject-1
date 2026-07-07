@@ -57,6 +57,7 @@ public class RangedAttack : IEnemyAttackStrategy
         {
             if (hit.collider.TryGetComponent<IDamageable>(out var target))
             {
+                GameResultTracker.Instance?.SetDeathReason("Defeated by ranged enemy");
                 target.TakeDamage(damage);
                 target.ApplyKnockback(dir, 3f, 0.15f);
             }

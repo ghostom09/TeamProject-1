@@ -8,21 +8,69 @@ public class SkillTimer : MonoBehaviour
     [SerializeField] private Image skillTimerEffect;
     [SerializeField] private TextMeshProUGUI skillTimerText;
     [SerializeField] private Image skillIcon;
-    private int skillTime;
-    private int nowSkillTime = 0;
+    private float skillTime;
+    private float cooldownEndTime;
+    private bool isCoolingDown;
     private Coroutine timer;
 
-    public void Timer(int skill)
+    private void Awake()
     {
-        skillTime = skill;
-        nowSkillTime = 0;
-        skillTimerText.SetText("");
-        skillTimerEffect.fillAmount = 0f;
+        EnsureSkillIcon();
+    }
+
+    public void SetIcon(Sprite sprite)
+    {
+        EnsureSkillIcon();
+
+        if (skillIcon == null)
+            return;
+
+        skillIcon.sprite = sprite;
+        skillIcon.enabled = sprite != null;
+        skillIcon.preserveAspect = true;
+        skillIcon.transform.SetAsFirstSibling();
+    }
+
+    private void EnsureSkillIcon()
+    {
+        if (skillIcon != null && skillIcon.gameObject != gameObject)
+            return;
+
+        Image[] images = GetComponentsInChildren<Image>(true);
+        foreach (Image image in images)
+        {
+            if (image.gameObject == gameObject || image == skillTimerEffect)
+                continue;
+
+            if (image.sprite == null)
+            {
+                skillIcon = image;
+                return;
+            }
+        }
+    }
+
+    public void Timer(float skill)
+    {
+        float newSkillTime = Mathf.Max(0.1f, skill);
+
+        if (isCoolingDown)
+        {
+            float remain = Mathf.Max(0f, cooldownEndTime - Time.time);
+            float elapsed = Mathf.Max(0f, skillTime - remain);
+
+            skillTime = newSkillTime;
+            cooldownEndTime = Time.time + Mathf.Max(0f, skillTime - elapsed);
+            return;
+        }
+
+        skillTime = newSkillTime;
+        ResetTimerView();
     }
 
     public bool UseSkill()
     {
-        if (nowSkillTime > 0) return false;
+        if (isCoolingDown) return false;
         if (timer != null)
             StopCoroutine(timer);
         timer = StartCoroutine(SkillTimerRoutine());
@@ -31,20 +79,28 @@ public class SkillTimer : MonoBehaviour
 
     private IEnumerator SkillTimerRoutine()
     {
-        nowSkillTime = skillTime;
+        isCoolingDown = true;
+        cooldownEndTime = Time.time + skillTime;
 
-        while (nowSkillTime > 0)
+        while (Time.time < cooldownEndTime)
         {
-            skillTimerText.SetText(nowSkillTime.ToString());
+            float remain = Mathf.Max(0f, cooldownEndTime - Time.time);
 
-            skillTimerEffect.fillAmount = (float)nowSkillTime / skillTime;
+            skillTimerText.SetText(Mathf.CeilToInt(remain).ToString());
+            skillTimerEffect.fillAmount = skillTime > 0f ? remain / skillTime : 0f;
 
-            yield return new WaitForSeconds(1f);
-            nowSkillTime--;
+            yield return null;
         }
-        skillTimerText.SetText("");
-        skillTimerEffect.fillAmount = 0;
+
+        isCoolingDown = false;
+        ResetTimerView();
 
         timer = null;
+    }
+
+    private void ResetTimerView()
+    {
+        skillTimerText.SetText("");
+        skillTimerEffect.fillAmount = 0f;
     }
 }

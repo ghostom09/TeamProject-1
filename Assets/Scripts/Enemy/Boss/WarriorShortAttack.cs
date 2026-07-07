@@ -11,10 +11,6 @@ public class WarriorShortAttack : IBossSkillStrategy
     private BossAttack bossAttack;
     
     private Vector2 boxSize;
-    private Vector2 boxOffset;
-
-    private GameObject hitArea;
-    
     private Vector2 dir;
 
     public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject target)
@@ -23,11 +19,7 @@ public class WarriorShortAttack : IBossSkillStrategy
         attackRange = data.attackRange;
         this.bossAttack = bossAttack;
         targetLayer = 1 << target.layer;
-        
-        this.hitArea = hitArea;
-
-        boxSize = new Vector2(attackRange*2, boss.transform.localScale.y/2);
-        boxOffset = new Vector2(0f, -boss.transform.localScale.y / 4);
+        boxSize = new Vector2(attackRange, Mathf.Max(0.5f, boss.transform.localScale.y / 2f));
     }
 
     public void TryAttack(GameObject boss, GameObject target, Vector2 direction, System.Action onComplete)
@@ -40,22 +32,29 @@ public class WarriorShortAttack : IBossSkillStrategy
     {
         Debug.Log("단거리 공격 시작");
         
-        Vector2 boxCenter = (Vector2)boss.transform.position + boxOffset;
-        bossAttack?.SpawnWarriorAttackEffect(
-            BossSkillType.shortDistance,
-            boxCenter,
-            direction,
-            attackRange,
-            1.5f);
-        
+        Vector2 attackDirection = direction.sqrMagnitude > 0.001f
+            ? direction.normalized
+            : Vector2.right;
+        Vector2 boxCenter = (Vector2)boss.transform.position + attackDirection * (attackRange * 0.5f);
+        float boxAngle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
+
         HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
         
         yield return new WaitForSeconds(1.5f);
+
+        Vector2 effectPosition = boxCenter + Vector2.down * (boxSize.y * 0.5f);
+
+        bossAttack?.SpawnWarriorAttackEffect(
+            BossSkillType.shortDistance,
+            effectPosition,
+            Vector2.right,
+            boxSize,
+            1f);
         
         Collider2D[] hits = 
             Physics2D.OverlapBoxAll(boxCenter, 
                 boxSize, 
-                0f, 
+                boxAngle, 
                 targetLayer);
         
         foreach (var hit in hits)
@@ -66,10 +65,9 @@ public class WarriorShortAttack : IBossSkillStrategy
             if (hitTargets.Contains(targetComponent))
                 continue;
             
-            float directionSign = hit.transform.position.x - boss.transform.position.x > 0 ? 1f : -1f;
-            
-            dir = new Vector2(directionSign * 0.258f, 0.966f).normalized;;
+            dir = ((Vector2)hit.transform.position - (Vector2)boss.transform.position).normalized;
             targetComponent.ApplyKnockback(dir, 15f, 0.2f);
+            GameResultTracker.Instance?.SetDeathReason("Hit by Warrior Boss ground slam");
             targetComponent.TakeDamage(damage);
             
             hitTargets.Add(targetComponent);

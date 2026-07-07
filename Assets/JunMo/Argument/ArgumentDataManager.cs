@@ -16,6 +16,7 @@ public class ArgumentDataManager : MonoBehaviour
     private List<ArgumentData> arguments = new();
     private List<ArgumentData> nowArguments = new();
     private Dictionary<SkillType, OwnedSkill> ownedSkills = new();
+    private List<AugmentData> selectedAugments = new();
 
     public static event Action<ArgumentResult> OnArgumentClicked;
 
@@ -123,6 +124,8 @@ public class ArgumentDataManager : MonoBehaviour
 
     public void ConvertToResult(ArgumentData data)
     {
+        RegisterSelectedAugment(data);
+
         ArgumentResult result = new ArgumentResult();
 
         if (data is StatArgumentData stat)
@@ -187,5 +190,29 @@ public class ArgumentDataManager : MonoBehaviour
         }
 
         return 1;
+    }
+
+    public List<AugmentData> GetOwnedAugments()
+    {
+        return new List<AugmentData>(selectedAugments);
+    }
+
+    private void RegisterSelectedAugment(ArgumentData data)
+    {
+        if (data == null)
+            return;
+
+        string displayName = data.itemName;
+        if (data is SkillArgumentData skillData &&
+            ownedSkills.TryGetValue(skillData.skillType, out OwnedSkill ownedSkill))
+        {
+            displayName = $"{data.itemName} Lv.{ownedSkill.currentLevel}";
+        }
+
+        selectedAugments.Add(new AugmentData
+        {
+            Name = displayName,
+            Icon = data.icon
+        });
     }
 }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillArgumentData
   itemName: sword
   description: sdafsafas
-  icon: {fileID: -1856773366626861424, guid: 915a5f54a26e5c943a35419e58b17270, type: 3}
+  icon: {fileID: -3304320421086532018, guid: 45b7c51fb4a41864195c093bcbf893ec, type: 3}
   weight: 10
   allowedJobs: 00000000
   maxLevel: 5

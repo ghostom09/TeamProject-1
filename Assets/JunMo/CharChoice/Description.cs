@@ -22,7 +22,7 @@ public class Description : MonoBehaviour
             skills[i].sprite = data.skills[i];
         }
         profile.sprite = data.profile;
-        charName.text = data.charName.ToString();
+        charName.text = data.charName;
         description.text = data.description;
     }
 }

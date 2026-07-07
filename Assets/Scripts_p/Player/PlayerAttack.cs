@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public class PlayerAttack : MonoBehaviour
 {
     [SerializeField] private GameObject illusionPrefab;
+    [SerializeField] private GameObject[] swordNormalEffectPrefabs;
     
     public float attackTime;
     
@@ -28,7 +29,27 @@ public class PlayerAttack : MonoBehaviour
             _ => null
         };
         _normal?.Init(data);
+
+        if (_normal is SwordNormalAttack swordNormalAttack)
+            swordNormalAttack.SetEffectPrefabs(GetSwordNormalEffectPrefabs());
+
         _player = GetComponent<Player>();
+    }
+
+    private GameObject[] GetSwordNormalEffectPrefabs()
+    {
+        if (swordNormalEffectPrefabs != null && swordNormalEffectPrefabs.Length > 0)
+            return swordNormalEffectPrefabs;
+
+#if UNITY_EDITOR
+        return new[]
+        {
+            UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Weapon/PlayerNormalAtk.prefab"),
+            UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Weapon/PlayerNormalAtk2.prefab")
+        };
+#else
+        return swordNormalEffectPrefabs;
+#endif
     }
 
     public void Attack()
@@ -38,7 +59,8 @@ public class PlayerAttack : MonoBehaviour
 
         Vector2 dir = (mouseWorld - (Vector2)transform.position).normalized;
         
-        _normal.TryAttack(gameObject, dir);
+        if (_normal.TryAttack(gameObject, dir))
+            CameraShake.Shake(0.06f, 0.08f);
     }
     public INormalAttack GetNormalAttack()
     {

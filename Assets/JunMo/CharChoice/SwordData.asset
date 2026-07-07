@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4424bdc6e4f522944a28162624ed55f1, type: 3}
   m_Name: SwordData
   m_EditorClassIdentifier: Assembly-CSharp::DescriptionData
-  charName: 0
   description: Use a Sword
-  profile: {fileID: -1316839025742549532, guid: 5ccbf8878d49c5d45a8fed53dc69fdc4, type: 3}
+  profile: {fileID: 6049650341417161021, guid: 219f330eec7674644a5047e5e89f70b3, type: 3}
+  character: {fileID: 6049650341417161021, guid: 219f330eec7674644a5047e5e89f70b3, type: 3}
+  charName: Ender
   skills:
-  - {fileID: -9113471008304037689, guid: 3f68e43f6537efc40982e16eb0ca0ba3, type: 3}
-  - {fileID: 4394833389499334647, guid: ea076d04ad2b4534491acec397dae5b4, type: 3}
-  - {fileID: 5686035412280222231, guid: 4cb92593dae7625479653096a80a8994, type: 3}
+  - {fileID: -3304320421086532018, guid: 45b7c51fb4a41864195c093bcbf893ec, type: 3}
+  - {fileID: 4695575502169663789, guid: 5398b0e8afb3c9a418af0a35a17de9d6, type: 3}
+  - {fileID: 714796993877209443, guid: f61bf83527fa3524ca8b6bbbf438fd79, type: 3}

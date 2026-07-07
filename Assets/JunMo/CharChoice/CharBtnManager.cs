@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class CharBtnManager : MonoBehaviour
 {
-    [SerializeField] private List<CharJobData> characters;
+    [SerializeField] private List<DescriptionData> characters;
     [SerializeField] private List<CharIconSetting> charBtn;
     [SerializeField] private List<Button> charBtns;
     [SerializeField] private List<GameObject> descriptions;
@@ -48,7 +48,7 @@ public class CharBtnManager : MonoBehaviour
     {
         for (int i = 0; i < characters.Count; i++)
         {
-            charBtn[i].Change(characters[i].profile, characters[i].charName);
+            charBtn[i].Change(characters[i]);
         }
     }
 }

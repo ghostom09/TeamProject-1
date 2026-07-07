@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: -8027470656829218584, guid: 15a1c198a8cf5d7408dbb0f3b3da956f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -554,7 +554,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: -8870200042796826180, guid: 4c486bd4b454140459ec8093c302b802, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -637,6 +637,5 @@ MonoBehaviour:
   level: {fileID: 5728416301956300790}
   icon: {fileID: 3819459135713283883}
   argumentPanel: {fileID: 7336542285521307625}
-  pooledObject: {fileID: 7351884510874842274}
   normalScale: {x: 1, y: 1, z: 1}
   kind: 0

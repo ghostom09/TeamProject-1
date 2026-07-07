@@ -8,6 +8,7 @@ public class DifficultyLevelManager : MonoBehaviour
     [SerializeField] private EnemySpawnerManager spawnManager;
 
     private float timer;
+    public int CurrentDifficulty => difficultyLevel;
     
     
     private void Start()

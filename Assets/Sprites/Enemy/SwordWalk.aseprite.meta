@@ -36,7 +36,7 @@ ScriptedImporter:
     spriteMeshType: 1
     alignment: 0
     spritePivot: {x: 0.5, y: 0.5}
-    spritePixelsToUnits: 32
+    spritePixelsToUnits: 20
     spriteBorder: {x: 0, y: 0, z: 0, w: 0}
     spriteGenerateFallbackPhysicsShape: 0
     generateCubemap: 6
@@ -102,7 +102,7 @@ ScriptedImporter:
     generateIndividualEvents: 1
     generateSpriteAtlas: 1
   importFileNodeState: 1
-  platformSettingsDirtyTick: 639189611907809958
+  platformSettingsDirtyTick: 639190589680586844
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -129,7 +129,7 @@ ScriptedImporter:
   animatedSpriteImportData:
   - name: Frame_0
     originalName: 
-    pivot: {x: 0.3125, y: 0.53333336}
+    pivot: {x: 0.46198785, y: 0.5203546}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -150,7 +150,7 @@ ScriptedImporter:
     uvTransform: {x: 4, y: 4}
   - name: Frame_1
     originalName: 
-    pivot: {x: 0.3125, y: 0.53333336}
+    pivot: {x: 0.4619879, y: 0.5185005}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -171,7 +171,7 @@ ScriptedImporter:
     uvTransform: {x: 4, y: 42}
   - name: Frame_2
     originalName: 
-    pivot: {x: 0.3125, y: 0.55172414}
+    pivot: {x: 0.46894097, y: 0.49801886}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -192,7 +192,7 @@ ScriptedImporter:
     uvTransform: {x: 28, y: 42}
   - name: Frame_3
     originalName: 
-    pivot: {x: 0.3125, y: 0.53333336}
+    pivot: {x: 0.4654644, y: 0.5203547}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -213,7 +213,7 @@ ScriptedImporter:
     uvTransform: {x: 4, y: 80}
   - name: Frame_4
     originalName: 
-    pivot: {x: 0.3125, y: 0.53333336}
+    pivot: {x: 0.47241735, y: 0.52220875}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -234,7 +234,7 @@ ScriptedImporter:
     uvTransform: {x: 28, y: 4}
   - name: Frame_5
     originalName: 
-    pivot: {x: 0.3125, y: 0.55172414}
+    pivot: {x: 0.4585116, y: 0.49610084}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 

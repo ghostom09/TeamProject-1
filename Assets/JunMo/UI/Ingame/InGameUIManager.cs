@@ -21,8 +21,15 @@ public class InGameUIManager : MonoBehaviour
     [SerializeField] private GameObject skillPanel;
     [SerializeField] Canvas canvas;
     [SerializeField] private GameObject deadBackground;
+    [SerializeField] private GameOverUI gameOverUI;
+    [SerializeField] private GameResultTracker resultTracker;
+    [SerializeField] private DifficultyLevelManager difficultyManager;
+    [SerializeField] private ArgumentDataManager argumentManager;
     [SerializeField] private int deadCanvasSortingOrder = 32767;
     [SerializeField] private int magicianUltimateSortingOrder = 32766;
+    [SerializeField] private float deathSlowMotionScale = 0.2f;
+    [SerializeField] private float deathSlowMotionDuration = 0.3f;
+    [SerializeField] private float deathBackgroundFadeDuration = 0.7f;
     
     private float lerpSpeed = 20f;
     private GameObject magicianUltimateEdgeCanvas;
@@ -34,14 +41,19 @@ public class InGameUIManager : MonoBehaviour
     private float displayedUltra;
     
     private Coroutine delayRoutine;
+    private Coroutine deathRoutine;
 
     private List<SkillTimer> skillTimers = new();
     private int spawnCount = 3;
     private Player player;
+    private PlayerInput playerInput;
     private PlayerLevelManager levelManager;
+    private bool isGameOver;
     
     private void Awake()
     {
+        EnsureGameOverDependencies();
+
         displayedHealth = 0;
         displayedUltra = 0;
         displayedExperience = 0;
@@ -83,6 +95,9 @@ public class InGameUIManager : MonoBehaviour
 
     void OnStop(InputAction.CallbackContext context)
     {
+        if (isGameOver)
+            return;
+
         on_esc?.Invoke();
     }
 
@@ -100,6 +115,7 @@ public class InGameUIManager : MonoBehaviour
     {
         player = FindObjectOfType<Player>();
         levelManager = player != null ? player.GetComponent<PlayerLevelManager>() : FindObjectOfType<PlayerLevelManager>();
+        playerInput = player != null ? player.GetComponent<PlayerInput>() : FindObjectOfType<PlayerInput>();
 
         SubscribePlayerUI();
 
@@ -122,8 +138,10 @@ public class InGameUIManager : MonoBehaviour
         {
             player.OnHealthChanged -= UpdateHealth;
             player.OnGaugeChanged -= UpdateUltimate;
+            player.OnDeath -= OnPlayerDeath;
             player.OnHealthChanged += UpdateHealth;
             player.OnGaugeChanged += UpdateUltimate;
+            player.OnDeath += OnPlayerDeath;
         }
 
         if (levelManager != null)
@@ -141,6 +159,7 @@ public class InGameUIManager : MonoBehaviour
         {
             player.OnHealthChanged -= UpdateHealth;
             player.OnGaugeChanged -= UpdateUltimate;
+            player.OnDeath -= OnPlayerDeath;
         }
 
         if (levelManager != null)
@@ -163,7 +182,13 @@ public class InGameUIManager : MonoBehaviour
         float targetHP = Mathf.Clamp(current, 0, max);
 
         healthBar.fillAmount = targetHP / max;
-        SetDeadBackground(targetHP <= 0f);
+        if (targetHP <= 0f)
+        {
+            SetDeadBackground(true);
+            return;
+        }
+
+        SetDeadBackground(false);
 
         if (displayedHealth <= 0) displayedHealth = max;
 
@@ -173,6 +198,11 @@ public class InGameUIManager : MonoBehaviour
         }
 
         delayRoutine = StartCoroutine(DelayedLerp(max, targetHP));
+    }
+
+    private void OnPlayerDeath()
+    {
+        SetDeadBackground(true);
     }
 
     private IEnumerator DelayedLerp(float max, float targetHP)
@@ -204,14 +234,107 @@ public class InGameUIManager : MonoBehaviour
             return;
 
         ConfigureDeadCanvas();
-        deadBackground.SetActive(isActive);
-        deadBackground.transform.localScale = isActive ? Vector3.one : Vector3.zero;
+        SetBossHealthBarsVisible(!isActive);
 
         if (isActive)
         {
-            deadBackground.transform.SetAsLastSibling();
-            Time.timeScale = 0f;
-            AudioListener.pause = true;
+            if (isGameOver)
+                return;
+
+            isGameOver = true;
+            if (deathRoutine != null)
+                StopCoroutine(deathRoutine);
+
+            deathRoutine = StartCoroutine(GameOverSequence());
+            return;
+        }
+
+        isGameOver = false;
+        if (deathRoutine != null)
+        {
+            StopCoroutine(deathRoutine);
+            deathRoutine = null;
+        }
+
+        deadBackground.SetActive(false);
+        deadBackground.transform.localScale = Vector3.zero;
+        playerInput?.SetInputLocked(false);
+        gameOverUI?.Hide();
+    }
+
+    private IEnumerator GameOverSequence()
+    {
+        if (delayRoutine != null)
+        {
+            StopCoroutine(delayRoutine);
+            delayRoutine = null;
+        }
+
+        EnsureGameOverDependencies();
+
+        deadBackground.SetActive(true);
+        deadBackground.transform.localScale = Vector3.one;
+        deadBackground.transform.SetAsLastSibling();
+        playerInput?.SetInputLocked(true);
+        gameOverUI?.PrepareForSequence();
+
+        // Death presentation: brief slow motion, screen darkening, then result panel reveal.
+        Time.timeScale = Mathf.Clamp(deathSlowMotionScale, 0.01f, 1f);
+        AudioListener.pause = false;
+
+        yield return new WaitForSecondsRealtime(deathSlowMotionDuration);
+
+        if (gameOverUI != null)
+            yield return gameOverUI.FadeBackground(deathBackgroundFadeDuration);
+
+        ResultData result = BuildGameOverResult();
+
+        Time.timeScale = 0f;
+        AudioListener.pause = true;
+        gameOverUI?.Show(result);
+        deathRoutine = null;
+    }
+
+    private ResultData BuildGameOverResult()
+    {
+        EnsureGameOverDependencies();
+        // UI receives only ResultData so game state collection stays outside the view.
+        return resultTracker != null
+            ? resultTracker.BuildResult(levelManager, difficultyManager, argumentManager)
+            : new ResultData();
+    }
+
+    private void EnsureGameOverDependencies()
+    {
+        if (deadBackground != null && gameOverUI == null)
+        {
+            gameOverUI = deadBackground.GetComponent<GameOverUI>();
+            if (gameOverUI == null)
+                gameOverUI = deadBackground.AddComponent<GameOverUI>();
+        }
+
+        if (resultTracker == null)
+            resultTracker = FindObjectOfType<GameResultTracker>();
+
+        if (resultTracker == null)
+            resultTracker = gameObject.AddComponent<GameResultTracker>();
+
+        if (difficultyManager == null)
+            difficultyManager = FindObjectOfType<DifficultyLevelManager>();
+
+        if (argumentManager == null)
+            argumentManager = FindObjectOfType<ArgumentDataManager>();
+    }
+
+    private void SetBossHealthBarsVisible(bool visible)
+    {
+        var activeScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+        foreach (BossHit bossHit in Resources.FindObjectsOfTypeAll<BossHit>())
+        {
+            if (bossHit == null || bossHit.gameObject.scene != activeScene)
+                continue;
+
+            bossHit.SetHealthBarVisible(visible);
         }
     }
 
@@ -253,11 +376,23 @@ public class InGameUIManager : MonoBehaviour
         ultraBar.fillAmount = displayedUltra / max;
     }
 
-    public void UpdateSkillTime(int skillTime1, int skillTime2, int skillTime3)
+    public void UpdateSkillTime(float skillTime1, float skillTime2, float skillTime3)
     {
         skillTimers[0].Timer(skillTime1);
         skillTimers[1].Timer(skillTime2);
         skillTimers[2].Timer(skillTime3);
+    }
+
+    public void UpdateSkillIcons(IList<Sprite> icons)
+    {
+        if (icons == null)
+            return;
+
+        int count = Mathf.Min(skillTimers.Count, icons.Count);
+        for (int i = 0; i < count; i++)
+        {
+            skillTimers[i].SetIcon(icons[i]);
+        }
     }
 
     public void UpdateSkillTime(SkillData[] skills)
@@ -269,6 +404,18 @@ public class InGameUIManager : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             skillTimers[i].Timer(Mathf.CeilToInt(skills[i].Cooldown));
+        }
+    }
+
+    public void UpdateSkillTime(float[] cooldowns)
+    {
+        if (cooldowns == null)
+            return;
+
+        int count = Mathf.Min(skillTimers.Count, cooldowns.Length);
+        for (int i = 0; i < count; i++)
+        {
+            skillTimers[i].Timer(cooldowns[i]);
         }
     }
 

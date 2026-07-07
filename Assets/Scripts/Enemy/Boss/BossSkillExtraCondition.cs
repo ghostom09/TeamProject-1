@@ -10,11 +10,7 @@ public class BossSkillExtraCondition
     {
         conditionMap = new Dictionary<(BossType, BossSkillType), Func<GameObject, GameObject, bool>>();
 
-        conditionMap.Add((BossType.warrior, BossSkillType.shortDistance), (boss, target) => {
-            return (boss.GetComponent<BossMove>().isGrounded &&
-                    (boss.transform.position.y - boss.transform.localScale.y)
-                     <= (target.transform.position.y - target.transform.localScale.y));
-        });
+        conditionMap.Add((BossType.warrior, BossSkillType.shortDistance), (boss, target) => true);
     }
 
     public bool CanUse(BossType bossType, BossSkillType skillType, GameObject boss, GameObject target)

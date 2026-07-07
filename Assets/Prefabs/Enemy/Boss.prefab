@@ -287,8 +287,8 @@ MonoBehaviour:
   trackingPrefab: {fileID: 4659991797611177920, guid: 5eba4e0183baf704faa13d80f05b15e1, type: 3}
   spawnPrefab: {fileID: 1017115948029010372, guid: d6d4ef7491c32074290912d20c999ff7, type: 3}
   normalPrefab: {fileID: 4356287555077436408, guid: 8e8cb94469b685f4abae5b3bb0dcbd02, type: 3}
-  warriorNormalEffectPrefab: {fileID: 0}
-  warriorShortEffectPrefab: {fileID: 0}
+  warriorNormalEffectPrefab: {fileID: 4587602256106857841, guid: 4306ea8153183d94286387f6250bdd03, type: 3}
+  warriorShortEffectPrefab: {fileID: 30440434062837041, guid: 431fe7cae59bb284b98bd425439b3a48, type: 3}
   warriorLongEffectPrefab: {fileID: 0}
   warriorUltimateEffectPrefab: {fileID: 9136455418935474037, guid: ce5aded88c6cdb9468c3694d45921019, type: 3}
   isUltimate: 0

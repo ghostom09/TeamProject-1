@@ -6,8 +6,6 @@ public class WarriorUltimateAttack : IBossSkillStrategy
     private float damage;
     private float attackRange;
     
-    private float distSqr;
-    
     private Vector2 dir;
     private BossAttack bossAttack;
         
@@ -31,8 +29,8 @@ public class WarriorUltimateAttack : IBossSkillStrategy
             BossSkillType.ultimate,
             effectPosition,
             dir,
-            attackRange,
-            3.5f);
+            new Vector2(attackRange, attackRange * 0.45f),
+            3f);
 
         yield return new WaitForSeconds(3f);
         

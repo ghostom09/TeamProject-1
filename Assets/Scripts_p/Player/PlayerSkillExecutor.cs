@@ -42,7 +42,7 @@ public class PlayerSkillExecutor : MonoBehaviour
             _actions[type].Init(data, skillData);
         }
 
-        UIManager.Instance?.SetSkillCooldowns(_skills);
+        RefreshSkillCooldownUI();
     }
 
     public void GetDirection(int index)
@@ -86,5 +86,21 @@ public class PlayerSkillExecutor : MonoBehaviour
     public SkillBase GetSkill(SkillType type)
     {
         return _actions[type] as SkillBase;
+    }
+
+    public void RefreshSkillCooldownUI()
+    {
+        if (_skills == null || _actions == null)
+            return;
+
+        float[] cooldowns = new float[_skills.Length];
+        for (int i = 0; i < _skills.Length; i++)
+        {
+            SkillType type = _skills[i].SkillName;
+            SkillBase skill = _actions[type] as SkillBase;
+            cooldowns[i] = skill != null ? skill.Cooldown : _skills[i].Cooldown;
+        }
+
+        UIManager.Instance?.SetSkillCooldowns(cooldowns);
     }
 }

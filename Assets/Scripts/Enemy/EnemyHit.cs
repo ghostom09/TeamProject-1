@@ -194,6 +194,7 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset, IHitEffectRecei
     private void Die()
     {
         isDead = true;
+        GameResultTracker.Instance?.RegisterKill();
         SetTrigger(DieHash, hasDieParam);
         StopAllCoroutines();
         levelManager.AddExp(exp);

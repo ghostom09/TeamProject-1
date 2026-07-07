@@ -2097,8 +2097,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2521,7 +2521,7 @@ MonoBehaviour:
   characters:
   - {fileID: 11400000, guid: 6c9cdfd605f355340ac2b3041233929a, type: 2}
   - {fileID: 11400000, guid: 4906926dc1371e24da7fc7f1e6cd86a4, type: 2}
-  errorPanel: {fileID: 0}
+  errorPanel: {fileID: 249731333}
   itemCount: 3
 --- !u!4 &1584872301
 Transform:
@@ -2696,15 +2696,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: -8027470656829218584, guid: 15a1c198a8cf5d7408dbb0f3b3da956f, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -3412,8 +3412,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharBtnManager
   characters:
-  - {fileID: 11400000, guid: d4a82311216547a4aa4371e7cc07cb4b, type: 2}
-  - {fileID: 11400000, guid: c5c9e685ca62d524d90953334721c190, type: 2}
+  - {fileID: 11400000, guid: 309939c7752fc8b4583a3ce0707927fa, type: 2}
+  - {fileID: 11400000, guid: 7c3fde4b09f22174dbd0a21f6ab3f20c, type: 2}
   charBtn:
   - {fileID: 575004622136530736}
   - {fileID: 1967089729}
@@ -3722,8 +3722,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

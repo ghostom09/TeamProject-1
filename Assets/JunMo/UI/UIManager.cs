@@ -18,6 +18,7 @@ public class UIManager : MonoBehaviour
     [SerializeField]private Button toLobby;
     private InGameUIManager hudManager;
     private SkillData[] currentSkills;
+    private float[] currentCooldowns;
     
     private bool isPaused = false;
     private int playerLevel;
@@ -38,7 +39,7 @@ public class UIManager : MonoBehaviour
         if (hudManager != null)
         {
             hudManager.on_esc += OnEsc;
-            hudManager.UpdateSkillTime(currentSkills);
+            UpdateCurrentSkillCooldownUI();
         }
     }
 
@@ -59,7 +60,7 @@ public class UIManager : MonoBehaviour
         if (hudManager != null)
         {
             hudManager.on_esc += OnEsc;
-            hudManager.UpdateSkillTime(currentSkills);
+            UpdateCurrentSkillCooldownUI();
         }
     }
 
@@ -141,8 +142,11 @@ public class UIManager : MonoBehaviour
     {
         ResumeGame();
         hudManager = null;
-        UnityEngine.SceneManagement.SceneManager.LoadScene(
-            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+        string activeSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        if (SceneManager.Instance != null)
+            SceneManager.Instance.ChangeScene(activeSceneName);
+        else
+            UnityEngine.SceneManagement.SceneManager.LoadScene(activeSceneName);
     }
 
     public void Open(GameObject obj)
@@ -181,17 +185,34 @@ public class UIManager : MonoBehaviour
     private void SwordUI()
     {
         hudManager.UpdateProfile(swordIcon);
+        hudManager.UpdateSkillIcons(swordSkills);
     }
 
     private void GunUI()
     {
         hudManager.UpdateProfile(gunIcon);
+        hudManager.UpdateSkillIcons(gunSkills);
     }
 
     public void SetSkillCooldowns(SkillData[] skills)
     {
         currentSkills = skills;
+        currentCooldowns = null;
         hudManager?.UpdateSkillTime(skills);
+    }
+
+    public void SetSkillCooldowns(float[] cooldowns)
+    {
+        currentCooldowns = cooldowns;
+        hudManager?.UpdateSkillTime(currentCooldowns);
+    }
+
+    private void UpdateCurrentSkillCooldownUI()
+    {
+        if (currentCooldowns != null)
+            hudManager.UpdateSkillTime(currentCooldowns);
+        else
+            hudManager.UpdateSkillTime(currentSkills);
     }
 
     public void UpdateSkillTimer(int index)

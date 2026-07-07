@@ -133,9 +133,11 @@ public class BossMove : MonoBehaviour, IBossReset, IEnemyMover, IDamageable
         if (spriteRenderer == null)
             return;
 
-        float faceDirection = Mathf.Abs(rb2d.linearVelocity.x) > 0.01f
-            ? rb2d.linearVelocity.x
-            : lookSide;
+        float faceDirection = bossType == BossType.magician
+            ? lookSide
+            : Mathf.Abs(rb2d.linearVelocity.x) > 0.01f
+                ? rb2d.linearVelocity.x
+                : lookSide;
 
         spriteRenderer.flipX = faceDirection < 0f;
     }

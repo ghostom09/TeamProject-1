@@ -79,6 +79,7 @@ public class MagicianLongAttack : IBossSkillStrategy
                 var d = hit.collider.GetComponent<IDamageable>();
                 if (d != null)
                 {
+                    GameResultTracker.Instance?.SetDeathReason("Hit by Magician Boss laser");
                     d.TakeDamage(damage); 
                     d.ApplyKnockback(dir, 2f, 0.1f);
                 }

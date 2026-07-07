@@ -7,9 +7,9 @@ public class CharIconSetting : MonoBehaviour
 {
     [SerializeField] private Image profile;
     [SerializeField] private TextMeshProUGUI charName;
-    public void Change(Sprite profile, CharName charName)
+    public void Change(DescriptionData descriptionData)
     {
-        this.profile.sprite = profile;
-        this.charName.SetText(charName.ToString());
+        this.profile.sprite = descriptionData.profile;
+        this.charName.SetText(descriptionData.charName);
     }
 }

@@ -25,6 +25,9 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
 
     public event Action<float, float> OnHealthChanged;
     public event Action<float, float> OnGaugeChanged;
+    public event Action OnDeath;
+
+    private bool isDead;
     
     private void Start()
     {
@@ -53,6 +56,7 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
     public void Init(CharacterData data)
     {
         character = data;
+        isDead = false;
         Stats.Init(data);
         playerSkillExecutor.Init(data.Skills, data);
         move.Init(this, 13);
@@ -101,11 +105,21 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
 
     public void TakeDamage(float amount)
     {
+        if (isDead) return;
         if (debugNoDamage) return;
         if (isInvincible) return;  
         Stats.currentHp = Mathf.Clamp(Stats.currentHp - amount, 0, Stats.MaxHp);
+        CameraShake.Shake(0.24f, 0.18f);
         Debug.Log(Stats.currentHp);
         NotifyHealthChanged();
+
+        if (Stats.currentHp <= 0f)
+        {
+            isDead = true;
+            OnDeath?.Invoke();
+            return;
+        }
+
         StartInvincibility(invincibilityDuration);
     }
 

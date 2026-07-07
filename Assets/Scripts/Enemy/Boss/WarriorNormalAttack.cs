@@ -36,7 +36,7 @@ public class WarriorNormalAttack : IBossSkillStrategy
             BossSkillType.Normal,
             effectPosition,
             direction,
-            attackRange,
+            new Vector2(attackRange, attackRange),
             1f);
 
         yield return new WaitForSeconds(1f); 
@@ -63,6 +63,7 @@ public class WarriorNormalAttack : IBossSkillStrategy
             
             dir = (target.transform.position - boss.transform.position).normalized;
             targetComponent.ApplyKnockback(dir, 8f, 0.25f);
+            GameResultTracker.Instance?.SetDeathReason("Hit by Warrior Boss slash");
             targetComponent.TakeDamage(damage);
 
             hitTargets.Add(targetComponent);

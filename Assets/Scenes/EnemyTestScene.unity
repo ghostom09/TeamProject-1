@@ -1189,6 +1189,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
   illusionPrefab: {fileID: 2161754612098353405, guid: d39f93a1c374f5d4fa3e8d3dfe53e713, type: 3}
+  swordNormalEffectPrefabs: []
   attackTime: 0.1
 --- !u!114 &1073224013
 MonoBehaviour:
@@ -1793,8 +1794,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 087443d8371b8ee48890f3a2ac9f7f20, type: 2}
   _runTimeStats: []
   resetBossStats:
-  - {fileID: 11400000, guid: 3dd4084ddff1f854b9f10dd493872bcd, type: 2}
   - {fileID: 11400000, guid: 7e653eede9be07b44bb96114ca58aedb, type: 2}
+  - {fileID: 11400000, guid: 3dd4084ddff1f854b9f10dd493872bcd, type: 2}
   _runTimeBossStats: []
   tankerMaxProb: 0.25
   rangedMaxProb: 0.25

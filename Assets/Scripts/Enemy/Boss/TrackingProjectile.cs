@@ -109,6 +109,7 @@ public class TrackingProjectile : MonoBehaviour, IDamageable
         {
             if (1 << collision.gameObject.layer == targetLayer)
             {
+                GameResultTracker.Instance?.SetDeathReason("Hit by Magician Boss tracking projectile");
                 target.TakeDamage(damage);
                 Destroy(gameObject);
             }

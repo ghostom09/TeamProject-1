@@ -69,6 +69,8 @@ public class BossProjectile : MonoBehaviour
         {
             if (1 << collision.gameObject.layer == targetLayer)
             {
+                GameResultTracker.Instance?.SetDeathReason(
+                    bossType == BossType.magician ? "Hit by Magician Boss projectile" : "Hit by Warrior Boss sword wave");
                 target.TakeDamage(damage);
                 if(bossType == BossType.magician)
                     Destroy(gameObject);

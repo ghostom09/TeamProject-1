@@ -236,8 +236,6 @@ public class BossAttack : MonoBehaviour, IBossReset
             return;
         }
         
-        bool used = false;
-
         if (timer >= nextSkillTime)
         {
             if (distance <= shortSkill.attackRange * shortSkill.attackRange &&
@@ -408,7 +406,7 @@ public class BossAttack : MonoBehaviour, IBossReset
         BossSkillType skillType,
         Vector2 position,
         Vector2 direction,
-        float scale,
+        Vector2 effectSize,
         float duration)
     {
         GameObject effectPrefab = GetWarriorAttackEffectPrefab(skillType);
@@ -416,16 +414,64 @@ public class BossAttack : MonoBehaviour, IBossReset
         if (effectPrefab == null)
             return null;
 
+        Quaternion rotation = GetWarriorEffectRotation(effectPrefab, direction);
+        GameObject obj = Instantiate(effectPrefab, position, rotation);
+        obj.transform.localScale = GetScaleForWarriorEffect(obj, effectSize);
+        RegisterSpawnedSkillObject(obj);
+        Destroy(obj, GetEffectLifetime(obj, duration));
+
+        return obj;
+    }
+
+    private Quaternion GetWarriorEffectRotation(GameObject effectPrefab, Vector2 direction)
+    {
         float angle = direction.sqrMagnitude > 0.001f
             ? Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg
             : 0f;
 
-        GameObject obj = Instantiate(effectPrefab, position, Quaternion.Euler(0f, 0f, angle));
-        obj.transform.localScale = Vector3.one * Mathf.Max(0.1f, scale);
-        RegisterSpawnedSkillObject(obj);
-        Destroy(obj, duration > 0f ? duration : 1f);
+        return Quaternion.Euler(0f, 0f, angle) * effectPrefab.transform.rotation;
+    }
 
-        return obj;
+    private Vector3 GetScaleForWarriorEffect(GameObject effectObject, Vector2 effectSize)
+    {
+        const float minScale = 0.1f;
+
+        SpriteRenderer renderer = effectObject.GetComponentInChildren<SpriteRenderer>();
+        if (renderer == null || renderer.sprite == null)
+        {
+            return new Vector3(
+                Mathf.Max(minScale, effectSize.x),
+                Mathf.Max(minScale, effectSize.y),
+                1f);
+        }
+
+        Vector2 spriteSize = renderer.sprite.bounds.size;
+        float baseWidth = spriteSize.x > 0f ? spriteSize.x : 1f;
+        float baseHeight = spriteSize.y > 0f ? spriteSize.y : 1f;
+
+        return new Vector3(
+            Mathf.Max(minScale, effectSize.x / baseWidth),
+            Mathf.Max(minScale, effectSize.y / baseHeight),
+            1f);
+    }
+
+    private float GetEffectLifetime(GameObject effectObject, float fallbackDuration)
+    {
+        float fallbackLifetime = fallbackDuration > 0f ? fallbackDuration : 1f;
+
+        Animator effectAnimator = effectObject.GetComponent<Animator>();
+        RuntimeAnimatorController controller = effectAnimator != null ? effectAnimator.runtimeAnimatorController : null;
+        if (controller == null)
+            return fallbackLifetime;
+
+        float animationLifetime = 0f;
+        foreach (AnimationClip clip in controller.animationClips)
+        {
+            if (clip != null)
+                animationLifetime = Mathf.Max(animationLifetime, clip.length);
+        }
+
+        return animationLifetime > 0f ? animationLifetime : fallbackLifetime;
     }
 
     private GameObject GetWarriorAttackEffectPrefab(BossSkillType skillType)
@@ -437,9 +483,13 @@ public class BossAttack : MonoBehaviour, IBossReset
             case BossSkillType.shortDistance:
                 return warriorShortEffectPrefab;
             case BossSkillType.longDistance:
-                return warriorLongEffectPrefab;
+                return warriorLongEffectPrefab != null ? warriorLongEffectPrefab : warriorNormalEffectPrefab;
             case BossSkillType.ultimate:
-                return warriorUltimateEffectPrefab != null ? warriorUltimateEffectPrefab : warriorLongEffectPrefab;
+                return warriorUltimateEffectPrefab != null
+                    ? warriorUltimateEffectPrefab
+                    : warriorNormalEffectPrefab != null
+                        ? warriorNormalEffectPrefab
+                        : warriorLongEffectPrefab;
             default:
                 return null;
         }

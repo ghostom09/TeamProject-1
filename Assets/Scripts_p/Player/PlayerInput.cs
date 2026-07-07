@@ -24,6 +24,7 @@ public class PlayerInput : MonoBehaviour
     public event Action<int> onSkills;
 
     private bool isInputShuffled;
+    private bool isInputLocked;
     private Coroutine inputShuffleRoutine;
     private readonly ShuffleKey[] shuffledActions = new ShuffleKey[7];
     private bool physicalLeftHeld;
@@ -61,6 +62,19 @@ public class PlayerInput : MonoBehaviour
         UIManager.Instance?.HideMagicianUltimateEffect();
     }
 
+    public void SetInputLocked(bool locked)
+    {
+        isInputLocked = locked;
+
+        if (locked)
+        {
+            ResetShuffledInputState();
+            onMove?.Invoke(Vector2.zero);
+            onDash?.Invoke(false);
+            setJumpHeld?.Invoke(false);
+        }
+    }
+
     private IEnumerator InputShuffleRoutine(float duration)
     {
         isInputShuffled = true;
@@ -72,6 +86,8 @@ public class PlayerInput : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
+        if (isInputLocked) return;
+
         if (isInputShuffled)
         {
             Vector2 move = context.canceled ? Vector2.zero : context.ReadValue<Vector2>();
@@ -89,6 +105,8 @@ public class PlayerInput : MonoBehaviour
 
     public void OnJump(InputAction.CallbackContext context)
     {
+        if (isInputLocked) return;
+
         if (isInputShuffled)
         {
             HandlePhysicalKey(ShuffleKey.Jump, context.performed, context.canceled);
@@ -109,12 +127,16 @@ public class PlayerInput : MonoBehaviour
 
     public void OnDash(InputAction.CallbackContext context)
     {
+        if (isInputLocked) return;
+
         if (context.performed) onDash?.Invoke(true);
         else if(context.canceled) onDash?.Invoke(false);
     }
 
     public void OnAttack(InputAction.CallbackContext context)
     {
+        if (isInputLocked) return;
+
         if (isInputShuffled)
         {
             HandlePhysicalKey(ShuffleKey.Attack, context.started, context.canceled);
@@ -129,6 +151,8 @@ public class PlayerInput : MonoBehaviour
 
     public void OnSkill_1(InputAction.CallbackContext context)
     {
+        if (isInputLocked) return;
+
         if (isInputShuffled)
         {
             HandlePhysicalKey(ShuffleKey.Skill1, context.performed, context.canceled);
@@ -140,6 +164,8 @@ public class PlayerInput : MonoBehaviour
 
     public void OnSkill_2(InputAction.CallbackContext context)
     {
+        if (isInputLocked) return;
+
         if (isInputShuffled)
         {
             HandlePhysicalKey(ShuffleKey.Skill2, context.performed, context.canceled);
@@ -151,6 +177,8 @@ public class PlayerInput : MonoBehaviour
 
     public void OnSkill_3(InputAction.CallbackContext context)
     {
+        if (isInputLocked) return;
+
         if (isInputShuffled)
         {
             HandlePhysicalKey(ShuffleKey.Skill3, context.performed, context.canceled);

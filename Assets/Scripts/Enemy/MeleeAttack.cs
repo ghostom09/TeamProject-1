@@ -31,6 +31,7 @@ public class MeleeAttack : IEnemyAttackStrategy
 
         lastAttackTime = Time.time;
 
+        GameResultTracker.Instance?.SetDeathReason("Defeated by melee enemy");
         target.GetComponent<IDamageable>()?.TakeDamage(damage);
         return true;
     }

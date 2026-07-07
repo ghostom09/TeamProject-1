@@ -32,6 +32,7 @@ public class PlayerInput : MonoBehaviour
     private bool shuffledLeftHeld;
     private bool shuffledRightHeld;
     private bool shuffledJumpHeld;
+    private bool jumpHeld;
 
     public void ActivateInputShuffle(float duration)
     {
@@ -69,6 +70,7 @@ public class PlayerInput : MonoBehaviour
         if (locked)
         {
             ResetShuffledInputState();
+            jumpHeld = false;
             onMove?.Invoke(Vector2.zero);
             onDash?.Invoke(false);
             setJumpHeld?.Invoke(false);
@@ -113,13 +115,15 @@ public class PlayerInput : MonoBehaviour
             return;
         }
 
-        if (context.performed)
+        if ((context.started || context.performed) && !jumpHeld)
         {
+            jumpHeld = true;
             onJump?.Invoke();
             setJumpHeld?.Invoke(true);
         }
         else if (context.canceled)
         {
+            jumpHeld = false;
             setJumpHeld?.Invoke(false);
         }
         
@@ -356,5 +360,7 @@ public class PlayerInput : MonoBehaviour
             shuffledJumpHeld = false;
             setJumpHeld?.Invoke(false);
         }
+
+        jumpHeld = false;
     }
 }

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9abad1e31d4f6a8468642f1214131b54, type: 3}
   m_Name: SwordCC
   m_EditorClassIdentifier: Assembly-CSharp::SkillArgumentData
-  itemName: sword
-  description: sdafsafas
+  itemName: Crescent Slash
+  description: one, two, three
   icon: {fileID: -3304320421086532018, guid: 45b7c51fb4a41864195c093bcbf893ec, type: 3}
   weight: 10
   allowedJobs: 00000000

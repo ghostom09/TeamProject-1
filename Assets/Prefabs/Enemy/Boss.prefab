@@ -280,8 +280,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossAttack
   animator: {fileID: 0}
-  projectilePrefab: {fileID: 6264492411796773607, guid: e665e2afb1ab6ab45b708f17612e4de3, type: 3}
-  trakingProjectilePrefab: {fileID: 6030724739248269696, guid: a5a7f2ce384d5904b81cb711a156b695, type: 3}
+  projectilePrefab: {fileID: 8689310066013559322, guid: 75a69f61b7992574fbe5b7dcd534ec78, type: 3}
+  trakingProjectilePrefab: {fileID: 8689310066013559322, guid: e7f6adc4400e641408856c4024dd45de, type: 3}
   ultimateProjectilePrefab: {fileID: 2135655623327401634, guid: fd0b289a5e514404f91b88af64f06b47, type: 3}
   laserPrefab: {fileID: 6809408423566606063, guid: 41e3ca76d44a2e340b2034532c1e54e6, type: 3}
   trackingPrefab: {fileID: 4659991797611177920, guid: 5eba4e0183baf704faa13d80f05b15e1, type: 3}

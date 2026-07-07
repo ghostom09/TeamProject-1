@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: RangedEnemy
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   enemyType: 3
+  sprite: {fileID: -8721889297217858571, guid: 11b198a959599694c978b69eeb97d1c7, type: 3}
+  animatorController: {fileID: 9100000, guid: e7fdeb878e082054ab0bc6ae2c504980, type: 2}
   health: 25
   speed: 2.2
   damage: 8

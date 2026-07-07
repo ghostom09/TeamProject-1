@@ -12,7 +12,6 @@ public class PlayerSword : MonoBehaviour
     [SerializeField] private GameObject swordIllusions;
     [SerializeField] private GameObject swordIllusions2;
     [SerializeField] private GameObject bigSwordIllusions;
-    [SerializeField] private GameObject playerIllusions;
     [SerializeField] private SpriteRenderer me;
     [SerializeField] private TrailRenderer trail;
     [SerializeField] private RectTransform background;
@@ -20,8 +19,6 @@ public class PlayerSword : MonoBehaviour
     [SerializeField] private Vector2 backgroundMapCenter = Vector2.zero;
     [SerializeField] private Vector2 backgroundMapSize = new Vector2(120f, 80f);
     
-    private List<GameObject> Illusions = new();
-    private int illusionsCnt = 5;
     private Vector2 playerPos;
     private SpriteRenderer worldBackground;
     private float backgroundProgress;
@@ -127,9 +124,6 @@ public class PlayerSword : MonoBehaviour
                 swordUltra.Initialize(dir, 100);
             }
 
-            Illusions.Add(ObjectPoolManager.Instance.Get
-                (ObjectName.PlayerAvatar, pos, Quaternion.identity));
-            
             yield return new WaitForSeconds(0.12f);
         }
         ObjectPoolManager.Instance.Release(ObjectName.UltraSwordIllusions, obj);
@@ -148,10 +142,6 @@ public class PlayerSword : MonoBehaviour
 
     private IEnumerator EndOfAttack()
     {
-        foreach (var sword in Illusions)
-        {
-            ObjectPoolManager.Instance.Release(ObjectName.PlayerAvatar, sword);
-        }
         GameObject bigSword = ObjectPoolManager.Instance.
             Get(ObjectName.UltraSwordFinal, playerPos, Quaternion.identity);
 

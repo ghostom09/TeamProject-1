@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9abad1e31d4f6a8468642f1214131b54, type: 3}
   m_Name: GunUltra
   m_EditorClassIdentifier: Assembly-CSharp::SkillArgumentData
-  itemName: gun
-  description: sfasfasd
+  itemName: Golden Paradox
+  description: Powerful
   icon: {fileID: -4426485749366131722, guid: 08b5d511763f0304494d37a7b9188740, type: 3}
   weight: 10
   allowedJobs: 01000000

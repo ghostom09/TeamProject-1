@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9abad1e31d4f6a8468642f1214131b54, type: 3}
   m_Name: GunTrigger
   m_EditorClassIdentifier: Assembly-CSharp::SkillArgumentData
-  itemName: gun
-  description: asdsadaasd
+  itemName: Trigger
+  description: Skill Cool Time Down
   icon: {fileID: 4472781410086503819, guid: 903fffe776cacc14990a43df73d28f1b, type: 3}
   weight: 10
   allowedJobs: 01000000

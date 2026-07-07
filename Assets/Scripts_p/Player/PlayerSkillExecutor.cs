@@ -19,6 +19,16 @@ public class PlayerSkillExecutor : MonoBehaviour
 
     private CharacterData data;
 
+    private void OnEnable()
+    {
+        PlayerLevelManager.OnLevelUp += OnPlayerLevelUp;
+    }
+
+    private void OnDisable()
+    {
+        PlayerLevelManager.OnLevelUp -= OnPlayerLevelUp;
+    }
+
     public void Init(SkillData[] skills, CharacterData data)
     {
         _skills = skills;
@@ -43,6 +53,12 @@ public class PlayerSkillExecutor : MonoBehaviour
         }
 
         RefreshSkillCooldownUI();
+        RefreshSkillUnlockUI();
+    }
+
+    private void OnPlayerLevelUp(int level)
+    {
+        RefreshSkillUnlockUI();
     }
 
     public void GetDirection(int index)
@@ -72,15 +88,41 @@ public class PlayerSkillExecutor : MonoBehaviour
 
     private bool CanUseSkill(int index, SkillType type)
     {
-        // if (index == 0)
-        //     return true;
-        //
-        // if (ArgumentDataManager.Instance == null || _levelManager == null)
-        //     return true;
-        //
-        // int unlockLevel = ArgumentDataManager.Instance.GetSkillUnlockLevel(type);
-        // return _levelManager.CurrentLevel >= unlockLevel;
-        return true;
+        if (_levelManager == null)
+            return true;
+
+        int unlockLevel = GetSkillUnlockLevel(type);
+        bool isUnlocked = IsSkillUnlocked(type);
+
+        if (!isUnlocked)
+            Debug.Log($"Skill {type} unlocks at level {unlockLevel}. Current level: {_levelManager.CurrentLevel}");
+
+        return isUnlocked;
+    }
+
+    private bool IsSkillUnlocked(SkillType type)
+    {
+        if (_levelManager == null)
+            return true;
+
+        return _levelManager.CurrentLevel >= GetSkillUnlockLevel(type);
+    }
+
+    private int GetSkillUnlockLevel(SkillType type)
+    {
+        if (ArgumentDataManager.Instance != null)
+            return ArgumentDataManager.Instance.GetSkillUnlockLevel(type);
+
+        return type switch
+        {
+            SkillType.Sword1 => 6,
+            SkillType.Sword2 => 3,
+            SkillType.SwordUlt => 10,
+            SkillType.Gun1 => 3,
+            SkillType.Gun2 => 6,
+            SkillType.GunUlt => 10,
+            _ => 1
+        };
     }
 
     public SkillBase GetSkill(SkillType type)
@@ -102,5 +144,19 @@ public class PlayerSkillExecutor : MonoBehaviour
         }
 
         UIManager.Instance?.SetSkillCooldowns(cooldowns);
+    }
+
+    private void RefreshSkillUnlockUI()
+    {
+        if (_skills == null)
+            return;
+
+        bool[] unlocks = new bool[_skills.Length];
+        for (int i = 0; i < _skills.Length; i++)
+        {
+            unlocks[i] = IsSkillUnlocked(_skills[i].SkillName);
+        }
+
+        UIManager.Instance?.SetSkillUnlocks(unlocks);
     }
 }

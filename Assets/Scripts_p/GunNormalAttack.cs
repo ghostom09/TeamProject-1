@@ -11,6 +11,8 @@ public class GunNormalAttack : INormalAttack
 
     private LayerMask hitLayer;
 
+    public int LastAttackComboIndex => 0;
+
     public void Init(CharacterData data)
     {
         this.data = data;

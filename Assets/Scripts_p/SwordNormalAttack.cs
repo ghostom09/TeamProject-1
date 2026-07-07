@@ -13,6 +13,8 @@ public class SwordNormalAttack : INormalAttack
 
     private LayerMask enemyLayer;
 
+    public int LastAttackComboIndex { get; private set; }
+
     public void Init(CharacterData data)
     {
         this.data = data;
@@ -59,6 +61,7 @@ public class SwordNormalAttack : INormalAttack
             return false;
 
         lastAttackTime = Time.time;
+        LastAttackComboIndex = comboIndex;
 
         DoComboAttack(player, user, dir);
 

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec22eef79916f4f4fb2596b03b31aaa3, type: 3}
   m_Name: Speed
   m_EditorClassIdentifier: Assembly-CSharp::StatArgumentData
-  itemName: speed
-  description: asfsa
-  icon: {fileID: -1316839025742549532, guid: 5ccbf8878d49c5d45a8fed53dc69fdc4, type: 3}
+  itemName: Speed
+  description: Increase Speed
+  icon: {fileID: -5692190684166456222, guid: b7837bf2c78b1b84596b9b7dfd2f667c, type: 3}
   weight: 10
   allowedJobs: 
   value: 10

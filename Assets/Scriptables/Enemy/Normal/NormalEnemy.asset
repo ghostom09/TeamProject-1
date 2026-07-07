@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: NormalEnemy
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   enemyType: 1
+  sprite: {fileID: 8328990304374409369, guid: 24771d17800404e4fb2c271cee809691, type: 3}
+  animatorController: {fileID: 9100000, guid: e5984ee8c0dc8b244887a94c7a6ebfd2, type: 2}
   health: 35
   speed: 2.8
   damage: 9

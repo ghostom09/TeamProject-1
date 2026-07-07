@@ -1,5 +1,6 @@
 using System.Collections;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
@@ -14,6 +15,7 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
     private static readonly int AttackHash = Animator.StringToHash("Attack");
     private static readonly int HitHash = Animator.StringToHash("Hit");
     private static readonly int DieHash = Animator.StringToHash("Die");
+    private static readonly int JumpHash = Animator.StringToHash("Jump");
     
     [SerializeField] private PlayerSkillExecutor playerSkillExecutor;
     [SerializeField] private CharacterData character;
@@ -21,8 +23,16 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
     [SerializeField] private PlayerMove move;
     [SerializeField] private Animator animator;
     [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private BoxCollider2D bodyCollider;
+    [SerializeField] private bool autoFitColliderToSprite = true;
     
     private Coroutine invincibleCoroutine;
+    private Sprite lastColliderSprite;
+    private PlayerAnimationClips currentAnimations;
+    private AnimatorOverrideController currentOverrideController;
+    private AnimationClip originalAttackClip;
+    private AnimationClip currentAttackClip;
+    private float facingDirection = 1f;
 
     public PlayerStats Stats { get; private set; } = new PlayerStats();
     
@@ -46,14 +56,32 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
     private bool hasAttackParam;
     private bool hasHitParam;
     private bool hasDieParam;
+    private bool hasJumpParam;
 
     private void Awake()
     {
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
 
-        if (spriteRenderer == null)
-            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        if (animator == null)
+            animator = spriteRenderer != null
+                ? spriteRenderer.gameObject.AddComponent<Animator>()
+                : gameObject.AddComponent<Animator>();
+
+        if (bodyCollider == null)
+            bodyCollider = GetComponent<BoxCollider2D>();
+
+        if (playerSkillExecutor == null)
+            playerSkillExecutor = GetComponent<PlayerSkillExecutor>();
+
+        if (attacker == null)
+            attacker = GetComponent<PlayerAttack>();
+
+        if (move == null)
+            move = GetComponent<PlayerMove>();
 
         CacheAnimatorParameters();
     }
@@ -86,11 +114,12 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
     {
         character = data;
         isDead = false;
+        currentAnimations = data.Animations;
         ApplyCharacterVisual(data);
         Stats.Init(data);
-        playerSkillExecutor.Init(data.Skills, data);
-        move.Init(this, 13);
-        attacker.Init(data);
+        playerSkillExecutor?.Init(data.Skills, data);
+        move?.Init(this, 13);
+        attacker?.Init(data);
         ArgumentDataManager.Instance?.GetJob(data.JobType);
         UIManager.Instance?.SetCharacter(data);
         NotifyHealthChanged();
@@ -240,6 +269,11 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
         }
     }
 
+    private void LateUpdate()
+    {
+        UpdateSpriteColliderIfNeeded();
+    }
+
     public void NotifyHealthChanged()
     {
         OnHealthChanged?.Invoke(Stats.currentHp, Stats.MaxHp);
@@ -258,11 +292,79 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
         if (animator != null && data.AnimatorController != null)
         {
             animator.runtimeAnimatorController = data.AnimatorController;
+            ApplyCharacterAnimationClips(data);
             CacheAnimatorParameters();
+        }
+        else if (data.AnimatorController == null)
+        {
+            Debug.LogWarning($"{data.name} CharacterData에 AnimatorController가 비어 있습니다.");
         }
 
         if (spriteRenderer != null && data.DefaultSprite != null)
             spriteRenderer.sprite = data.DefaultSprite;
+
+        UpdateSpriteCollider();
+    }
+
+    private void UpdateSpriteColliderIfNeeded()
+    {
+        if (!autoFitColliderToSprite || spriteRenderer == null || spriteRenderer.sprite == lastColliderSprite)
+            return;
+
+        UpdateSpriteCollider();
+    }
+
+    private void UpdateSpriteCollider()
+    {
+        if (!autoFitColliderToSprite || spriteRenderer == null || bodyCollider == null || spriteRenderer.sprite == null)
+            return;
+
+        Bounds spriteBounds = spriteRenderer.sprite.bounds;
+        Vector3 worldCenter = spriteRenderer.transform.TransformPoint(spriteBounds.center);
+        Vector3 worldSize = Vector3.Scale(spriteBounds.size, spriteRenderer.transform.lossyScale);
+        Vector3 localCenter = bodyCollider.transform.InverseTransformPoint(worldCenter);
+        Vector3 localSize = bodyCollider.transform.InverseTransformVector(worldSize);
+
+        bodyCollider.offset = localCenter;
+        bodyCollider.size = new Vector2(Mathf.Abs(localSize.x), Mathf.Abs(localSize.y));
+        lastColliderSprite = spriteRenderer.sprite;
+    }
+
+    private void ApplyCharacterAnimationClips(CharacterData data)
+    {
+        if (animator == null || data.Animations == null || !data.Animations.HasAnyClip())
+            return;
+
+        AnimatorOverrideController overrideController = new AnimatorOverrideController(data.AnimatorController);
+        List<KeyValuePair<AnimationClip, AnimationClip>> overrides = new List<KeyValuePair<AnimationClip, AnimationClip>>();
+        overrideController.GetOverrides(overrides);
+        originalAttackClip = null;
+        currentAttackClip = null;
+
+        for (int i = 0; i < overrides.Count; i++)
+        {
+            AnimationClip originalClip = overrides[i].Key;
+
+            if (originalClip == null)
+                continue;
+
+            if (originalClip.name == "Attack")
+                originalAttackClip = originalClip;
+
+            AnimationClip replacementClip = data.Animations.GetClipOrFallback(originalClip.name);
+
+            if (replacementClip != null)
+            {
+                overrides[i] = new KeyValuePair<AnimationClip, AnimationClip>(originalClip, replacementClip);
+
+                if (originalClip.name == "Attack")
+                    currentAttackClip = replacementClip;
+            }
+        }
+
+        overrideController.ApplyOverrides(overrides);
+        currentOverrideController = overrideController;
+        animator.runtimeAnimatorController = overrideController;
     }
 
     public void UpdateMoveAnimation(Vector2 velocity, Vector2 input, bool isGrounded)
@@ -270,26 +372,73 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
         if (animator == null)
             return;
 
+        float animationYVelocity = isGrounded ? 0f : velocity.y;
+        bool isMovingHorizontally = Mathf.Abs(input.x) > 0.01f && Mathf.Abs(velocity.x) > 0.05f;
+
         if (hasSpeedParam)
-            animator.SetFloat(SpeedHash, Mathf.Abs(velocity.x));
+            animator.SetFloat(SpeedHash, isMovingHorizontally ? Mathf.Abs(velocity.x) : 0f);
 
         if (hasMoveXParam)
             animator.SetFloat(MoveXHash, input.x);
 
         if (hasYVelocityParam)
-            animator.SetFloat(YVelocityHash, velocity.y);
+            animator.SetFloat(YVelocityHash, animationYVelocity);
 
         if (hasIsMovingParam)
-            animator.SetBool(IsMovingHash, Mathf.Abs(input.x) > 0.01f);
+            animator.SetBool(IsMovingHash, isMovingHorizontally);
 
         if (hasIsGroundedParam)
             animator.SetBool(IsGroundedHash, isGrounded);
+
+        ForceIdleWhenStopped(isMovingHorizontally, isGrounded);
     }
 
-    public void PlayAttackAnimation()
+    private void ForceIdleWhenStopped(bool isMovingHorizontally, bool isGrounded)
     {
-        if (animator != null && hasAttackParam)
-            animator.SetTrigger(AttackHash);
+        if (!isGrounded || isMovingHorizontally || animator == null || animator.runtimeAnimatorController == null)
+            return;
+
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.IsName("Run"))
+            animator.CrossFade("Idle", 0f);
+    }
+
+    public void SetFacingDirection(float direction)
+    {
+        if (spriteRenderer == null || Mathf.Abs(direction) < 0.01f)
+            return;
+
+        facingDirection = Mathf.Sign(direction);
+        spriteRenderer.flipX = facingDirection < 0f;
+    }
+
+    public void PlayAttackAnimation(int comboIndex = 0)
+    {
+        if (animator == null || !hasAttackParam || currentAnimations == null || !currentAnimations.HasAttackClip())
+            return;
+
+        ApplyAttackAnimationClip(comboIndex);
+        animator.SetTrigger(AttackHash);
+    }
+
+    private void ApplyAttackAnimationClip(int comboIndex)
+    {
+        if (currentOverrideController == null || originalAttackClip == null || currentAnimations == null)
+            return;
+
+        AnimationClip attackClip = currentAnimations.GetAttackClip(comboIndex);
+
+        if (attackClip == null || attackClip == currentAttackClip)
+            return;
+
+        currentOverrideController[originalAttackClip] = attackClip;
+        currentAttackClip = attackClip;
+    }
+
+    public void PlayJumpAnimation()
+    {
+        if (animator != null && hasJumpParam && (currentAnimations == null || currentAnimations.HasAnyJumpClip()))
+            animator.SetTrigger(JumpHash);
     }
 
     private void PlayHitAnimation()
@@ -314,6 +463,7 @@ public class Player : MonoBehaviour, IDamageable, IPlayerStatUp
         hasAttackParam = HasAnimatorParameter(AttackHash);
         hasHitParam = HasAnimatorParameter(HitHash);
         hasDieParam = HasAnimatorParameter(DieHash);
+        hasJumpParam = HasAnimatorParameter(JumpHash);
     }
 
     private bool HasAnimatorParameter(int parameterHash)

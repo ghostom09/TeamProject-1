@@ -347,6 +347,9 @@ public class InGameUIManager : MonoBehaviour
         deadCanvas.worldCamera = null;
         deadCanvas.overrideSorting = true;
         deadCanvas.sortingOrder = deadCanvasSortingOrder;
+
+        if (!deadBackground.TryGetComponent(out GraphicRaycaster _))
+            deadBackground.AddComponent<GraphicRaycaster>();
     }
 
     public void UpdateExperience(int currentExp, int max)
@@ -392,6 +395,18 @@ public class InGameUIManager : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             skillTimers[i].SetIcon(icons[i]);
+        }
+    }
+
+    public void UpdateSkillLocks(bool[] unlocked)
+    {
+        if (unlocked == null)
+            return;
+
+        int count = Mathf.Min(skillTimers.Count, unlocked.Length);
+        for (int i = 0; i < count; i++)
+        {
+            skillTimers[i].SetLocked(!unlocked[i]);
         }
     }
 

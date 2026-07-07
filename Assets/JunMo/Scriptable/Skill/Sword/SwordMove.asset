@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9abad1e31d4f6a8468642f1214131b54, type: 3}
   m_Name: SwordMove
   m_EditorClassIdentifier: Assembly-CSharp::SkillArgumentData
-  itemName: sword
-  description: asdsadaasd
+  itemName: Flash Step
+  description: teleport?
   icon: {fileID: 4695575502169663789, guid: 5398b0e8afb3c9a418af0a35a17de9d6, type: 3}
   weight: 10
   allowedJobs: 00000000

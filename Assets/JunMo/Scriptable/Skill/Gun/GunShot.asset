@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9abad1e31d4f6a8468642f1214131b54, type: 3}
   m_Name: GunShot
   m_EditorClassIdentifier: Assembly-CSharp::SkillArgumentData
-  itemName: gun
-  description: sdafsafas
+  itemName: Golden Shot
+  description: Boom!!!
   icon: {fileID: 4672150231360456796, guid: 1e96023a341a21b4d83b051ccd1b7b30, type: 3}
   weight: 10
   allowedJobs: 01000000

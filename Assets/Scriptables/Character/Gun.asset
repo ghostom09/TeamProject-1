@@ -23,6 +23,19 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f0ac6a64fa8c9e3479800ea1d189dd59, type: 2}
   - {fileID: 11400000, guid: 991ce46b4a95b594ba099cc54455fef7, type: 2}
   Ult: {fileID: 11400000, guid: 5aec454ca94c30e46857dad851f19b13, type: 2}
+  AnimatorController: {fileID: 9100000, guid: b207a2eafaaf9614ca9137d8119912d9, type: 2}
+  DefaultSprite: {fileID: 3538029095050827656, guid: 029b60ce373da2b4d892f96c500f53da, type: 3}
+  Animations:
+    Idle: {fileID: 7400000, guid: 0d87afb34af30ed4da5b4924bb397396, type: 2}
+    Run: {fileID: 7400000, guid: 0758cf11bd4e6e6439f7357015033cde, type: 2}
+    Attack: {fileID: 7400000, guid: cd5a7f9426654cd488a36e91d86976ca, type: 2}
+    Attack1: {fileID: 0}
+    Attack2: {fileID: 0}
+    Attack3: {fileID: 0}
+    Die: {fileID: 7400000, guid: f53dd8b1a52c5c7479c16b1db352e3da, type: 2}
+    JumpReady: {fileID: 7400000, guid: f7abf77f8e7196f4993d78d13a3f8454, type: 2}
+    JumpUp: {fileID: 7400000, guid: 6947ce646a7b0174a9ab60aa61658672, type: 2}
+    JumpDown: {fileID: 7400000, guid: a8b59d8c96aa91a459d126549ddf4f2d, type: 2}
   RisingMoveSpeed: 0
   RisingDamage: 0.07
   RisingRange: 0.08

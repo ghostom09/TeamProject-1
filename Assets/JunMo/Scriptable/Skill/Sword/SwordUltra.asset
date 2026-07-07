@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9abad1e31d4f6a8468642f1214131b54, type: 3}
   m_Name: SwordUltra
   m_EditorClassIdentifier: Assembly-CSharp::SkillArgumentData
-  itemName: sword
-  description: sfasfasd
+  itemName: Blade Unity
+  description: Powerful
   icon: {fileID: 714796993877209443, guid: f61bf83527fa3524ca8b6bbbf438fd79, type: 3}
   weight: 10
   allowedJobs: 00000000

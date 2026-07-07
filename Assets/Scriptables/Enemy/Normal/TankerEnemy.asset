@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: TankerEnemy
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   enemyType: 2
+  sprite: {fileID: 3666330124787985626, guid: b3554b77749de5e4d936318e199e42d5, type: 3}
+  animatorController: {fileID: 9100000, guid: 763ad38b2933e5a42923108873a88494, type: 2}
   health: 80
   speed: 1.6
   damage: 6

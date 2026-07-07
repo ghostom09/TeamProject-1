@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: SupoterEnemy
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   enemyType: 4
+  sprite: {fileID: 968792148186817186, guid: 7efb6e92bd687fd43b60d54bcaccb993, type: 3}
+  animatorController: {fileID: 9100000, guid: d31be6758cd6330488fa625be8988305, type: 2}
   health: 30
   speed: 2.7
   damage: 0

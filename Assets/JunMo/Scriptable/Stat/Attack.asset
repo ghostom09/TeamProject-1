@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec22eef79916f4f4fb2596b03b31aaa3, type: 3}
   m_Name: Attack
   m_EditorClassIdentifier: Assembly-CSharp::StatArgumentData
-  itemName: attack
-  description: asfsa
-  icon: {fileID: -1856773366626861424, guid: 915a5f54a26e5c943a35419e58b17270, type: 3}
+  itemName: Attack
+  description: Increase Damage
+  icon: {fileID: -7137921518882015988, guid: eb11488a84ad7d14db30b011205ca058, type: 3}
   weight: 10
   allowedJobs: 
   value: 10

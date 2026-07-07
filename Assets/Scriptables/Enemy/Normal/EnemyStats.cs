@@ -16,6 +16,9 @@ public class EnemyStats : ScriptableObject
     public EnemyType enemyType;
     public Sprite sprite;
     public RuntimeAnimatorController animatorController;
+    public bool useSpriteBoundsForCollider = true;
+    public Vector2 colliderOffset;
+    public Vector2 colliderSize;
     public float health;
     public float speed;
     public float damage;

@@ -50,7 +50,15 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        defaultGravity = rb.gravityScale;
+
+        if (groundCheck == null)
+            groundCheck = transform;
+
+        if (player == null)
+            player = GetComponent<Player>();
+
+        if (rb != null)
+            defaultGravity = rb.gravityScale;
     }
 
     public void Init(Player player, float jumpForce)
@@ -61,7 +69,13 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
 
     public void SetMove(Vector2 move)
     {
+        if (Mathf.Abs(move.x) < 0.01f)
+            move.x = 0f;
+
         movement = move;
+
+        if (player != null && Mathf.Abs(move.x) > 0.01f)
+            player.SetFacingDirection(move.x);
     }
 
     public void SetJumpPressed()
@@ -81,6 +95,9 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
 
     private void FixedUpdate()
     {
+        if (rb == null)
+            return;
+
         UpdateGround();
         ApplyFallLimit();
         HandleMove();
@@ -91,6 +108,12 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
 
     private void UpdateGround()
     {
+        if (groundCheck == null)
+        {
+            IsGrounded = false;
+            return;
+        }
+
         IsGrounded = Physics2D.OverlapBox(
             groundCheck.position,
             groundBoxSize,
@@ -159,6 +182,7 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
     private void Jump()
     {
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+        player?.PlayJumpAnimation();
 
         jumpBufferCounter = 0;
         coyoteCounter = 0;
@@ -168,6 +192,9 @@ public class PlayerMove : MonoBehaviour, IPlayerMover
     private void HandleMove()
     {
         if (moveLockType == MoveLockType.FullLock || isKnocked)
+            return;
+
+        if (player == null)
             return;
 
         float baseSpeed = player.Stats.MoveSpeed;

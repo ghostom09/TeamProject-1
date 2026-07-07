@@ -61,7 +61,7 @@ public class PlayerAttack : MonoBehaviour
         
         if (_normal.TryAttack(gameObject, dir))
         {
-            _player?.PlayAttackAnimation();
+            _player?.PlayAttackAnimation(_normal.LastAttackComboIndex);
             CameraShake.Shake(0.06f, 0.08f);
         }
     }

@@ -19,6 +19,7 @@ public class UIManager : MonoBehaviour
     private InGameUIManager hudManager;
     private SkillData[] currentSkills;
     private float[] currentCooldowns;
+    private bool[] currentSkillUnlocks;
     
     private bool isPaused = false;
     private int playerLevel;
@@ -40,6 +41,7 @@ public class UIManager : MonoBehaviour
         {
             hudManager.on_esc += OnEsc;
             UpdateCurrentSkillCooldownUI();
+            UpdateCurrentSkillLockUI();
         }
     }
 
@@ -61,6 +63,7 @@ public class UIManager : MonoBehaviour
         {
             hudManager.on_esc += OnEsc;
             UpdateCurrentSkillCooldownUI();
+            UpdateCurrentSkillLockUI();
         }
     }
 
@@ -218,6 +221,20 @@ public class UIManager : MonoBehaviour
     public void UpdateSkillTimer(int index)
     {
         hudManager?.UpdateSkillTimer(index);
+    }
+
+    public void SetSkillUnlocks(bool[] unlocked)
+    {
+        currentSkillUnlocks = unlocked;
+        UpdateCurrentSkillLockUI();
+    }
+
+    private void UpdateCurrentSkillLockUI()
+    {
+        if (hudManager == null || currentSkillUnlocks == null)
+            return;
+
+        hudManager.UpdateSkillLocks(currentSkillUnlocks);
     }
 
     public void ShowMagicianUltimateEffect(float duration)

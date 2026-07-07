@@ -11,6 +11,7 @@ public class SkillTimer : MonoBehaviour
     private float skillTime;
     private float cooldownEndTime;
     private bool isCoolingDown;
+    private bool isLocked;
     private Coroutine timer;
 
     private void Awake()
@@ -28,7 +29,22 @@ public class SkillTimer : MonoBehaviour
         skillIcon.sprite = sprite;
         skillIcon.enabled = sprite != null;
         skillIcon.preserveAspect = true;
+        UpdateLockView();
         skillIcon.transform.SetAsFirstSibling();
+    }
+
+    public void SetLocked(bool locked)
+    {
+        isLocked = locked;
+        UpdateLockView();
+    }
+
+    private void UpdateLockView()
+    {
+        if (skillIcon == null)
+            return;
+
+        skillIcon.color = isLocked ? Color.black : Color.white;
     }
 
     private void EnsureSkillIcon()

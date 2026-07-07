@@ -66,7 +66,7 @@ public class GameOverUI : MonoBehaviour
         {
             backgroundGroup.alpha = 0f;
             backgroundGroup.blocksRaycasts = true;
-            backgroundGroup.interactable = false;
+            backgroundGroup.interactable = true;
         }
 
         if (panelGroup != null)
@@ -97,7 +97,11 @@ public class GameOverUI : MonoBehaviour
         }
 
         if (backgroundGroup != null)
+        {
             backgroundGroup.alpha = 1f;
+            backgroundGroup.blocksRaycasts = true;
+            backgroundGroup.interactable = true;
+        }
     }
 
     public void Show(ResultData result)
@@ -201,6 +205,12 @@ public class GameOverUI : MonoBehaviour
             panelGroup.interactable = true;
         }
 
+        if (backgroundGroup != null)
+        {
+            backgroundGroup.blocksRaycasts = true;
+            backgroundGroup.interactable = true;
+        }
+
         SetButtonsInteractable(true);
         showRoutine = null;
     }
@@ -268,10 +278,7 @@ public class GameOverUI : MonoBehaviour
 
         ResumeBeforeSceneChange();
         UnityEngine.SceneManagement.Scene activeScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
-        if (SceneManager.Instance != null)
-            SceneManager.Instance.ChangeScene(activeScene.name);
-        else
-            UnityEngine.SceneManagement.SceneManager.LoadScene(activeScene.name);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(activeScene.name);
     }
 
     private void GoCharacterSelect()

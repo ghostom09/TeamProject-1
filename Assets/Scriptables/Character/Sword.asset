@@ -23,6 +23,19 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9096fe3d961bb134782929f569e4daba, type: 2}
   - {fileID: 11400000, guid: 39ae18f8fe18a9e48a5f1b9e120b786b, type: 2}
   Ult: {fileID: 11400000, guid: 586d6ffe4af425e488e051996840c60a, type: 2}
+  AnimatorController: {fileID: 9100000, guid: c035b3bc40ca24f42af8c6672015a724, type: 2}
+  DefaultSprite: {fileID: 901394698356797641, guid: cac56c92dd411194baa190042f421f58, type: 3}
+  Animations:
+    Idle: {fileID: 7400000, guid: a068c6c8beb4c484f875788bb02f38ef, type: 2}
+    Run: {fileID: 7400000, guid: 14e55b0fdbcf0e0408bb966e05a60c9d, type: 2}
+    Attack: {fileID: 7400000, guid: 4a3fc659370f69a43a706659af23b51e, type: 2}
+    Attack1: {fileID: 7400000, guid: 4a3fc659370f69a43a706659af23b51e, type: 2}
+    Attack2: {fileID: 7400000, guid: da3dfd83bf84c2340949a8dd79a28f9c, type: 2}
+    Attack3: {fileID: 7400000, guid: 758e49aff93bbb442b6276b8af714a74, type: 2}
+    Die: {fileID: 7400000, guid: 1e1f78f4f5af0d3438da0be0b7717646, type: 2}
+    JumpReady: {fileID: 7400000, guid: 909cfe3f7a3e6fe459903408de78ce45, type: 2}
+    JumpUp: {fileID: 7400000, guid: 197bc7f530bc8714d9da4cfb99587d33, type: 2}
+    JumpDown: {fileID: 7400000, guid: 7f1a33e7cf94a0f46905d0e5aa2946e2, type: 2}
   RisingMoveSpeed: 0.01
   RisingDamage: 0.05
   RisingRange: 0

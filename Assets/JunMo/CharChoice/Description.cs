@@ -21,7 +21,7 @@ public class Description : MonoBehaviour
         {
             skills[i].sprite = data.skills[i];
         }
-        profile.sprite = data.profile;
+        profile.sprite = data.character;
         charName.text = data.charName;
         description.text = data.description;
     }

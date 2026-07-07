@@ -26,12 +26,12 @@ public class UIManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null)
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            Destroy(Instance.gameObject);
         }
-        else Destroy(gameObject);
+
+        Instance = this;
     }
 
     private void OnEnable()

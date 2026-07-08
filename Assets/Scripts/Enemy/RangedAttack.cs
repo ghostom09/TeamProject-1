@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class RangedAttack : IEnemyAttackStrategy
 {
+    private const float ProjectileSpawnOffset = 0.6f;
+
     private float damage;
     private float attackSpeed;
     private float attackRange;
@@ -15,6 +17,12 @@ public class RangedAttack : IEnemyAttackStrategy
 
     private Rigidbody2D rb2d;
     private EnemyMove enemyMove;
+    private GameObject projectilePrefab;
+
+    public RangedAttack(GameObject projectilePrefab)
+    {
+        this.projectilePrefab = projectilePrefab;
+    }
 
     public void Init(EnemyStats stats, EnemyMove move)
     {
@@ -36,14 +44,15 @@ public class RangedAttack : IEnemyAttackStrategy
 
         lastAttackTime = Time.time;
 
-        Shoot(self.transform, direction);
+        Shoot(self.transform, target, direction);
         return true;
     }
     
-    private void Shoot(Transform self, Vector2 dir)
+    private void Shoot(Transform self, Transform target, Vector2 dir)
     {
-        self.GetComponent<MonoBehaviour>().StartCoroutine(ShootCoroutine(self, dir));
+        self.GetComponent<MonoBehaviour>().StartCoroutine(ShootCoroutine(self, target, dir));
     }
+
     private void DoHitscan(Transform self, Vector2 dir)
     {
         RaycastHit2D hit = Physics2D.Raycast(
@@ -64,14 +73,37 @@ public class RangedAttack : IEnemyAttackStrategy
         }
     }
     
-    private IEnumerator ShootCoroutine(Transform self, Vector2 dir)
+    private void SpawnProjectile(Transform self, Transform target, Vector2 dir)
+    {
+        if (projectilePrefab == null || target == null)
+        {
+            DoHitscan(self, dir);
+            return;
+        }
+
+        Vector2 shotDir = dir.normalized;
+        Vector2 spawnPosition = (Vector2)self.position + shotDir * ProjectileSpawnOffset;
+        GameObject obj = Object.Instantiate(projectilePrefab, spawnPosition, Quaternion.identity);
+
+        BossProjectile projectile = obj.GetComponent<BossProjectile>();
+        if (projectile == null)
+        {
+            Object.Destroy(obj);
+            DoHitscan(self, dir);
+            return;
+        }
+
+        projectile.InitEnemyProjectile(damage, attackRange, shotDir, target.gameObject);
+    }
+
+    private IEnumerator ShootCoroutine(Transform self, Transform target, Vector2 dir)
     {
         enemyMove.SetMoveLock(true);
         yield return new WaitForSeconds(shootDelay);
         
         Debug.DrawRay(self.position, dir.normalized * attackRange, Color.cyan, 0.2f);
 
-        DoHitscan(self, dir);
+        SpawnProjectile(self, target, dir);
         
         enemyMove.SetMoveLock(false);
     }

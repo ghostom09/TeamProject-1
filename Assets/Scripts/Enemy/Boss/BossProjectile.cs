@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class BossProjectile : MonoBehaviour
+public class BossProjectile : MonoBehaviour, IDamageable
 {
     private float damage;
     private float maxDistance;
@@ -9,10 +9,13 @@ public class BossProjectile : MonoBehaviour
     [SerializeField] private float speed = 8f;
     private bool isInitialized = false;
     private Rigidbody2D rb2d;
+    [SerializeField] private int projectileHealth = 1;
+    private bool canBeDamaged = true;
     
     private LayerMask targetLayer;
     
-    private BossType bossType;
+    private bool destroyOnHit;
+    private string deathReason;
 
     private void Awake()
     {
@@ -46,9 +49,21 @@ public class BossProjectile : MonoBehaviour
         
         rb2d.linearVelocity = dir.normalized * speed;
         targetLayer = 1<<target.layer;
-        this.bossType = bossType;
+        canBeDamaged = true;
+        destroyOnHit = bossType == BossType.magician;
+        deathReason = bossType == BossType.magician
+            ? "Hit by Magician Boss projectile"
+            : "Hit by Warrior Boss sword wave";
         
         isInitialized = true;
+    }
+
+    public void InitEnemyProjectile(float damage, float range, Vector2 dir, GameObject target)
+    {
+        Init(damage, range, dir, target, BossType.magician);
+        canBeDamaged = false;
+        destroyOnHit = true;
+        deathReason = "Defeated by ranged enemy projectile";
     }
 
     private void Update()
@@ -69,12 +84,25 @@ public class BossProjectile : MonoBehaviour
         {
             if (1 << collision.gameObject.layer == targetLayer)
             {
-                GameResultTracker.Instance?.SetDeathReason(
-                    bossType == BossType.magician ? "Hit by Magician Boss projectile" : "Hit by Warrior Boss sword wave");
+                GameResultTracker.Instance?.SetDeathReason(deathReason);
                 target.TakeDamage(damage);
-                if(bossType == BossType.magician)
+                if (destroyOnHit)
                     Destroy(gameObject);
             }
         }
     }
+
+    public void TakeDamage(float damage)
+    {
+        if (!canBeDamaged)
+            return;
+
+        projectileHealth--;
+        if (projectileHealth <= 0)
+            Destroy(gameObject);
+    }
+
+    public void ApplySlow(float percent, float duration) {}
+
+    public void ApplyKnockback(Vector2 dir, float power, float duration) {}
 }

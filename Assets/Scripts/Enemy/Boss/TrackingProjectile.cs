@@ -4,10 +4,7 @@ using System.Collections;
 public class TrackingProjectile : MonoBehaviour, IDamageable
 {
     private float damage;
-    private float maxDistance;
-    private Vector2 startPosition;
     [SerializeField] private float speed = 6f;
-    [SerializeField] private float maxLifetime = 12f;
     private bool isInitialized = false;
     
     [SerializeField] private float fireInterval = 5f;
@@ -18,7 +15,6 @@ public class TrackingProjectile : MonoBehaviour, IDamageable
 
     private Transform targetTransform;
     private float randomOffset;
-    private float lifeTimer;
     private bool isFired = false; 
 
     public void Init(float damage, float range, GameObject target, Vector2 starting)
@@ -30,11 +26,8 @@ public class TrackingProjectile : MonoBehaviour, IDamageable
         }
 
         this.damage = damage;
-        maxDistance = range;
         targetLayer = 1 << target.layer;
         targetTransform = target.transform;
-        startPosition = starting;
-        lifeTimer = 0f;
         fireTimer = 0f;
         isFired = false;
         
@@ -57,14 +50,6 @@ public class TrackingProjectile : MonoBehaviour, IDamageable
             Fire();
         }
         if (!isInitialized) return;
-
-        lifeTimer += Time.deltaTime;
-        if (lifeTimer >= maxLifetime ||
-            (maxDistance > 0f && Vector2.Distance(startPosition, transform.position) >= maxDistance))
-        {
-            Destroy(gameObject);
-            return;
-        }
         
         if (!isFired)
         {

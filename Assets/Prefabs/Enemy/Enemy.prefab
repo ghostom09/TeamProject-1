@@ -5218,6 +5218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3fb08e9af8dd84479b7d0d92268632c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack
+  rangedProjectilePrefab: {fileID: 6264492411796773607, guid: e665e2afb1ab6ab45b708f17612e4de3, type: 3}
 --- !u!114 &1005599512042913434
 MonoBehaviour:
   m_ObjectHideFlags: 0

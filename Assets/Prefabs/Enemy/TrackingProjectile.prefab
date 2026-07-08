@@ -192,6 +192,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrackingProjectile
   speed: 4
-  maxLifetime: 12
   fireInterval: 2
   projectileHealth: 1

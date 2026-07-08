@@ -6,6 +6,7 @@ public class EnemyAttack : MonoBehaviour, IEnemyReset
     private static readonly int AttackHash = Animator.StringToHash("Attack");
 
     [SerializeField] private Animator animator;
+    [SerializeField] private GameObject rangedProjectilePrefab;
 
     private IEnemyAttackStrategy strategy;
 
@@ -42,7 +43,7 @@ public class EnemyAttack : MonoBehaviour, IEnemyReset
         {
             EnemyType.normal  => new MeleeAttack(),
             EnemyType.tanker  => new MeleeAttack(),
-            EnemyType.ranged  => new RangedAttack(),
+            EnemyType.ranged  => new RangedAttack(rangedProjectilePrefab),
             EnemyType.support  => new SupportAttack(),
             _ => null
         };

@@ -63,13 +63,17 @@ public class EnemySpawnerManager : MonoBehaviour
     {
         for (int i = 0; i < initialPoolSize; i++)
         {
-            GameObject obj = Instantiate(enemyPrefab, poolParent);
-            obj.SetActive(false);
-
-            pool.Enqueue(obj.GetComponent<Enemy>());
+            pool.Enqueue(CreateEnemyInstance());
         }
         bossObj = Instantiate(bossPrefab, transform.position, Quaternion.identity, poolParent);
         bossObj.SetActive(false);
+    }
+
+    private Enemy CreateEnemyInstance()
+    {
+        GameObject obj = Instantiate(enemyPrefab, poolParent);
+        obj.SetActive(false);
+        return obj.GetComponent<Enemy>();
     }
     
     public void ReturnToPool(Enemy enemy)
@@ -236,18 +240,16 @@ public class EnemySpawnerManager : MonoBehaviour
         }
         else
         {
-            GameObject obj = Instantiate(enemyPrefab, poolParent);
-            enemy = obj.GetComponent<Enemy>();
+            enemy = CreateEnemyInstance();
         }
 
-        enemy.transform.position = position;
-        enemy.gameObject.SetActive(true);
-        
         EnemyStats stats = GetRandomEnemy();
         if (boss)
             stats = _runTimeStats[normalIndex];
 
+        enemy.transform.position = position;
         enemy.Init(stats, target, this);
+        enemy.gameObject.SetActive(true);
 
         ActiveEnemy++;
     }

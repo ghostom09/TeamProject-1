@@ -16,6 +16,12 @@ public class Enemy : MonoBehaviour, IEnemyReset
     private EnemyHit hit;
     
     public EnemyStats enemyStats;
+
+    private void OnEnable()
+    {
+        if (enemyStats != null)
+            StartCoroutine(ApplyColliderNextFrame(enemyStats));
+    }
     
     private void Awake()
     {
@@ -47,7 +53,8 @@ public class Enemy : MonoBehaviour, IEnemyReset
 
         ApplyVisuals(enemyStats);
         ApplyCollider(enemyStats);
-        StartCoroutine(ApplyColliderNextFrame(enemyStats));
+        if (gameObject.activeInHierarchy)
+            StartCoroutine(ApplyColliderNextFrame(enemyStats));
 
         move.SetAnimator(animator);
         attack.SetAnimator(animator);

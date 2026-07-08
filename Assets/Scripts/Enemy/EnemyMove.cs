@@ -100,6 +100,7 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
         movingInterval = attackRange * Random.Range(0.7f, 0.9f);
         
         movingTarget = target;
+        ResetMovementState();
         SetMoveLock(false);
     }
     
@@ -224,6 +225,25 @@ public class EnemyMove : MonoBehaviour, IEnemyMover, IDamageable, IEnemyReset
         }
 
         UpdateAnimator();
+    }
+
+    private void ResetMovementState()
+    {
+        if (knockRoutine != null)
+        {
+            StopCoroutine(knockRoutine);
+            knockRoutine = null;
+        }
+
+        isJumping = false;
+        isleftWall = false;
+        isrightWall = false;
+        isSide = false;
+        leftSide = false;
+        rightSide = false;
+
+        if (rb2d != null)
+            rb2d.linearVelocity = Vector2.zero;
     }
     
     public void ApplyKnockback(Vector2 dir, float power, float duration)

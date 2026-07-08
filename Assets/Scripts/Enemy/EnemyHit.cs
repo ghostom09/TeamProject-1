@@ -55,13 +55,7 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset, IHitEffectRecei
 
     private void OnEnable()
     {
-        isDead = false;
-        ResetTrigger(DieHash, hasDieParam);
-        ResetTrigger(HitHash, hasHitParam);
-        SetCollidersEnabled(true);
-        enemyMove?.SetMoveLock(false);
-        SetTrigger(ReviveHash, hasReviveParam);
-        StopChildParticles();
+        ResetForSpawn();
     }
 
     public void SetAnimator(Animator targetAnimator)
@@ -83,11 +77,19 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset, IHitEffectRecei
         spawnerManager = m;
         color = renderer.color;
         levelManager = target.GetComponent<PlayerLevelManager>();
+        ResetForSpawn();
+    }
+
+    public void ResetForSpawn()
+    {
         isDead = false;
         ResetTrigger(DieHash, hasDieParam);
         ResetTrigger(HitHash, hasHitParam);
+        ResetTrigger(ReviveHash, hasReviveParam);
+        ResetAnimatorState();
         SetCollidersEnabled(true);
-        SetTrigger(ReviveHash, hasReviveParam);
+        enemyMove?.SetMoveLock(false);
+        StopChildParticles();
     }
 
     public void TakeDamage(float dmg)
@@ -286,6 +288,15 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset, IHitEffectRecei
     {
         if (animator != null && hasParameter)
             animator.ResetTrigger(parameterHash);
+    }
+
+    private void ResetAnimatorState()
+    {
+        if (animator == null || animator.runtimeAnimatorController == null)
+            return;
+
+        animator.Rebind();
+        animator.Update(0f);
     }
 
     private void SetCollidersEnabled(bool isEnabled)

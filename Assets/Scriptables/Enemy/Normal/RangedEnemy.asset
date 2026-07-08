@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80d18b770d1292f468264a4794af2708, type: 3}
+  m_Name: RangedEnemy
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
+  enemyType: 3
+  sprite: {fileID: -8721889297217858571, guid: 11b198a959599694c978b69eeb97d1c7, type: 3}
+  animatorController: {fileID: 9100000, guid: e7fdeb878e082054ab0bc6ae2c504980, type: 2}
+  useSpriteBoundsForCollider: 1
+  colliderOffset: {x: 0, y: 0}
+  colliderSize: {x: 0, y: 0}
+  health: 25
+  speed: 2.2
+  damage: 7
+  attackRange: 5
+  attackSpeed: 1
+  jumpForce: 13
+  exp: 3

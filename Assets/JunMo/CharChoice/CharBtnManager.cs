@@ -1,0 +1,54 @@
+using UnityEngine;
+using System.Collections.Generic;
+using UnityEngine.UI;
+
+public class CharBtnManager : MonoBehaviour
+{
+    [SerializeField] private List<DescriptionData> characters;
+    [SerializeField] private List<CharIconSetting> charBtn;
+    [SerializeField] private List<Button> charBtns;
+    [SerializeField] private List<GameObject> descriptions;
+    [SerializeField] private Button lobbyBtn;
+    void Start()
+    {
+        SetButton();
+        SetCharData();
+    }
+
+    private void SetButton()
+    {
+        for (int i = 0; i < charBtn.Count; i++)
+        {
+            int index = i;
+            charBtns[i].onClick.AddListener(() => OnClick(index));
+        }
+        lobbyBtn.onClick.AddListener(CloseChoice);
+    }
+
+    private void CloseChoice()
+    {
+        SceneManager.Instance.ChangeScene(SceneName.MainMenu);
+    }
+
+    private void OnClick(int index)
+    {
+        OffImage();
+        descriptions[index].SetActive(true);
+    }
+
+    private void OffImage()
+    {
+        foreach (GameObject obj in descriptions)
+        {
+            obj.SetActive(false);
+        }
+    }
+    
+    private void SetCharData()
+    {
+        for (int i = 0; i < characters.Count; i++)
+        {
+            charBtn[i].Change(characters[i]);
+        }
+    }
+}

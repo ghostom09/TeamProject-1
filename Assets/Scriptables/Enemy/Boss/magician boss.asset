@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9989d626cc7007b40b978055d0b506c0, type: 3}
+  m_Name: magician boss
+  m_EditorClassIdentifier: Assembly-CSharp::BossStats
+  bossType: 2
+  sprite: {fileID: -8326972625193024646, guid: 6c7eeedc1860c134ea863ba3d0716acf, type: 3}
+  animatorController: {fileID: 9100000, guid: 8ae18378516be754980bbb9a5cef9f92, type: 2}
+  useSpriteBoundsForCollider: 1
+  colliderOffset: {x: 0, y: 0}
+  colliderSize: {x: 0, y: 0}
+  health: 750
+  speed: 2
+  jumpForce: 15
+  exp: 30
+  skillInterval: 1.5
+  skills:
+  - {fileID: 11400000, guid: 03dd1d6102fca464fa3c79d51409861c, type: 2}
+  - {fileID: 11400000, guid: 27f7b11cabd27e94d803bf7b2b9140ed, type: 2}
+  - {fileID: 11400000, guid: cff9f28a68d768f46a63f9317cfdff97, type: 2}
+  - {fileID: 11400000, guid: ea4380c09ca8be641b8b2d9c580df540, type: 2}
+  - {fileID: 11400000, guid: 676f5bff69945b7408dc91f6663bb894, type: 2}

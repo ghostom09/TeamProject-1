@@ -1,0 +1,135 @@
+using UnityEngine;
+
+public class GunNormalAttack : INormalAttack
+{
+    private const float BulletHitRadius = 0.1f;
+
+    private float lastAttackTime;
+    private CharacterData data;
+
+    private bool enhanced;
+
+    private LayerMask hitLayer;
+
+    public int LastAttackComboIndex => 0;
+
+    public void Init(CharacterData data)
+    {
+        this.data = data;
+        hitLayer = LayerMask.GetMask("Enemy", "Wall", "Bullet");
+    }
+
+    public void SetEnhancedMode(bool value)
+    {
+        enhanced = value;
+        Debug.Log($"Gun enhanced mode: {enhanced}");
+    }
+
+    public bool TryAttack(GameObject user, Vector2 dir)
+    {
+        Player player = user.GetComponent<Player>();
+
+        float attackInterval = 1f / player.Stats.AttackSpeed;
+
+        if (Time.time < lastAttackTime + attackInterval)
+            return false;
+
+        lastAttackTime = Time.time;
+
+        Shoot(player, user, dir.normalized);
+
+        return true;
+    }
+
+    private void Shoot(Player player, GameObject user, Vector2 dir)
+    {
+        Vector2 origin = user.transform.position;
+
+        float damage = enhanced ? player.Stats.Damage * 2.2f : player.Stats.Damage;
+        float range = player.Stats.Range;
+
+        if (enhanced)
+            DoPiercingHitscan(origin, dir, damage, range);
+        else
+            DoSingleHitscan(origin, dir, damage, range);
+    }
+
+    private void DoSingleHitscan(Vector2 origin, Vector2 dir, float damage, float range)
+    {
+        RaycastHit2D hit = Physics2D.CircleCast(
+            origin,
+            BulletHitRadius,
+            dir,
+            range,
+            hitLayer
+        );
+
+        float visualDistance = hit.collider != null ? hit.distance : range;
+        SkillController.Instance.GunNormalAttack(origin, dir, visualDistance);
+
+        Debug.DrawRay(origin, dir * range, Color.cyan, 0.2f);
+
+        if (hit.collider == null)
+            return;
+
+        IDamageable target = GetDamageable(hit.collider);
+        if (target != null)
+        {
+            target.TakeDamage(damage);
+            target.ApplyKnockback(dir, 3f, 0.15f);
+            CameraShake.Shake(0.085f, 0.08f);
+        }
+    }
+
+    private void DoPiercingHitscan(Vector2 origin, Vector2 dir, float damage, float range)
+    {
+        SkillController.Instance.GunUltraAttack(origin, dir);
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(
+            origin,
+            BulletHitRadius,
+            dir,
+            range * 2,
+            hitLayer
+        );
+
+        Debug.DrawRay(origin, dir * range * 2, Color.cyan, 0.2f);
+
+        bool didHit = false;
+
+        foreach (var hit in hits)
+        {
+            IDamageable target = GetDamageable(hit.collider);
+            if (target != null)
+            {
+                target.TakeDamage(damage);
+                target.ApplyKnockback(dir, 2f, 0.08f);
+
+                NotifyGunUltraHitEffect(hit.collider, origin, dir);
+                didHit = true;
+            }
+        }
+
+        if (didHit)
+            CameraShake.Shake(0.1f, 0.1f);
+    }
+
+    private IDamageable GetDamageable(Collider2D hitCollider)
+    {
+        if (hitCollider.TryGetComponent(out IDamageable target))
+            return target;
+
+        return hitCollider.GetComponentInParent<IDamageable>();
+    }
+
+    private void NotifyGunUltraHitEffect(Collider2D hitCollider, Vector2 origin, Vector2 dir)
+    {
+        if (hitCollider.TryGetComponent(out IHitEffectReceiver effectReceiver))
+        {
+            effectReceiver.PlayGunUltraNormalHitEffect(origin, dir);
+            return;
+        }
+
+        effectReceiver = hitCollider.GetComponentInParent<IHitEffectReceiver>();
+        effectReceiver?.PlayGunUltraNormalHitEffect(origin, dir);
+    }
+}

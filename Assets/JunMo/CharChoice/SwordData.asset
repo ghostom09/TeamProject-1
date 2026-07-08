@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4424bdc6e4f522944a28162624ed55f1, type: 3}
+  m_Name: SwordData
+  m_EditorClassIdentifier: Assembly-CSharp::DescriptionData
+  description: Use a Sword
+  profile: {fileID: 6049650341417161021, guid: 219f330eec7674644a5047e5e89f70b3, type: 3}
+  character: {fileID: 8489164638026775100, guid: 3bbe2ea645e1645408f11975277da6b9, type: 3}
+  charName: Ender
+  skills:
+  - {fileID: -3304320421086532018, guid: 45b7c51fb4a41864195c093bcbf893ec, type: 3}
+  - {fileID: 4695575502169663789, guid: 5398b0e8afb3c9a418af0a35a17de9d6, type: 3}
+  - {fileID: 714796993877209443, guid: f61bf83527fa3524ca8b6bbbf438fd79, type: 3}

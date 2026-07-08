@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9abad1e31d4f6a8468642f1214131b54, type: 3}
+  m_Name: GunUltra
+  m_EditorClassIdentifier: Assembly-CSharp::SkillArgumentData
+  itemName: Golden Paradox
+  description: Powerful
+  icon: {fileID: -4426485749366131722, guid: 08b5d511763f0304494d37a7b9188740, type: 3}
+  weight: 10
+  allowedJobs: 01000000
+  maxLevel: 5
+  level: 1
+  playerMinLevel: 10
+  skillType: 5
+  levelValues:
+  - 20
+  - 25
+  - 30

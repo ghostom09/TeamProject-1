@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 
 public class SwordIllusionsAttack : MonoBehaviour
 {
-    private const float RetargetRadius = 7f;
+    private const float RetargetRadius = 1000f;
 
     private float _damage;
     private float _speed;

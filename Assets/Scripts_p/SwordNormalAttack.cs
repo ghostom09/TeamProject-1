@@ -4,7 +4,7 @@ using UnityEngine;
 public class SwordNormalAttack : INormalAttack
 {
     private const float EffectMinScale = 0.1f;
-    private const float EffectRangeVisualScale = 0.88f;
+    private const float EffectRangeVisualScale = 0.8f;
     private int comboIndex = 0;
     private float lastAttackTime;
     private const float ComboResetTime = 1.5f;

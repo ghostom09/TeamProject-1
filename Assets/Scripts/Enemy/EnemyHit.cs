@@ -56,7 +56,10 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset, IHitEffectRecei
     private void OnEnable()
     {
         isDead = false;
+        ResetTrigger(DieHash, hasDieParam);
+        ResetTrigger(HitHash, hasHitParam);
         SetCollidersEnabled(true);
+        enemyMove?.SetMoveLock(false);
         SetTrigger(ReviveHash, hasReviveParam);
         StopChildParticles();
     }
@@ -81,6 +84,8 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset, IHitEffectRecei
         color = renderer.color;
         levelManager = target.GetComponent<PlayerLevelManager>();
         isDead = false;
+        ResetTrigger(DieHash, hasDieParam);
+        ResetTrigger(HitHash, hasHitParam);
         SetCollidersEnabled(true);
         SetTrigger(ReviveHash, hasReviveParam);
     }
@@ -227,8 +232,21 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset, IHitEffectRecei
 
     private IEnumerator ReturnToPoolAfterDeathAnimation()
     {
-        yield return new WaitForSeconds(deathAnimationDelay);
+        yield return null;
+        yield return new WaitForSeconds(GetDeathAnimationDelay());
         ReturnToPool();
+    }
+
+    private float GetDeathAnimationDelay()
+    {
+        if (animator == null)
+            return deathAnimationDelay;
+
+        AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
+        if (state.shortNameHash == DieHash || state.IsName("Die"))
+            return Mathf.Max(deathAnimationDelay, state.length);
+
+        return deathAnimationDelay;
     }
 
     private void ReturnToPool()
@@ -262,6 +280,12 @@ public class EnemyHit : MonoBehaviour, IDamageable, IEnemyReset, IHitEffectRecei
     {
         if (animator != null && hasParameter)
             animator.SetTrigger(parameterHash);
+    }
+
+    private void ResetTrigger(int parameterHash, bool hasParameter)
+    {
+        if (animator != null && hasParameter)
+            animator.ResetTrigger(parameterHash);
     }
 
     private void SetCollidersEnabled(bool isEnabled)

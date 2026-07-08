@@ -2014,7 +2014,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DifficultyLevelManager
   interval: 15
-  difficultyLevel: 1
+  difficultyLevel: 19
   spawnManager: {fileID: 1174447580}
 --- !u!4 &294410109
 Transform:
@@ -10403,8 +10403,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 087443d8371b8ee48890f3a2ac9f7f20, type: 2}
   _runTimeStats: []
   resetBossStats:
-  - {fileID: 11400000, guid: 7e653eede9be07b44bb96114ca58aedb, type: 2}
   - {fileID: 11400000, guid: 3dd4084ddff1f854b9f10dd493872bcd, type: 2}
+  - {fileID: 11400000, guid: 7e653eede9be07b44bb96114ca58aedb, type: 2}
   _runTimeBossStats: []
   tankerMaxProb: 0.25
   rangedMaxProb: 0.25
@@ -10412,7 +10412,7 @@ MonoBehaviour:
   enemyProb: 0.001
   enemyMaxProb: 0.0045
   initialPoolSize: 30
-  maxActiveEnemy: 30
+  maxActiveEnemy: 0
   activeEnemyLimit: 4
   ActiveEnemy: 0
 --- !u!4 &1174447581

@@ -10,6 +10,8 @@ public class BossAttack : MonoBehaviour, IBossReset
     private static readonly int UltimateHash = Animator.StringToHash("Ultimate");
     private static readonly int IdleStateHash = Animator.StringToHash("Idle");
 
+    public GameObject debugBox;
+    
     [SerializeField] private Animator animator;
 
     private GameObject target;
@@ -41,6 +43,8 @@ public class BossAttack : MonoBehaviour, IBossReset
     
     private float nextSkillTime;
     private float skillInterval;
+
+    [SerializeField] private Vector3 ultOffset = new Vector3(0,0,45);
     
     private Vector2 dir;
     private float distance;
@@ -229,13 +233,13 @@ public class BossAttack : MonoBehaviour, IBossReset
     private void ChooseSkill()
     {
         if (isAttacking) return;
-        
+    
         if (isUltimate && !usedUltimate)
         {
             TryUltimateSkill();
             return;
         }
-        
+    
         if (timer >= nextSkillTime)
         {
             if (distance <= shortSkill.attackRange * shortSkill.attackRange &&
@@ -252,16 +256,17 @@ public class BossAttack : MonoBehaviour, IBossReset
                 TryLongSkill();
                 return;
             }
+            if (distance <= normalAttack.attackRange * normalAttack.attackRange &&
+                timer >= normalCooldown)
+            {
+                TryNormalAttack();
+                return;
+            }
         }
-        
+    
         if (timer >= passiveCooldown)
         {
             TryPassiveSkill();
-        }
-        
-        if (distance <= normalAttack.attackRange * normalAttack.attackRange && timer >= normalCooldown)
-        {
-            TryNormalAttack();
         }
     }
 
@@ -544,7 +549,7 @@ public class BossAttack : MonoBehaviour, IBossReset
             return;
         }
         
-        projectile.Init(dmg, range, dir, target, BossType.warrior);
+        projectile.Init(dmg, range, (Vector3)dir+ultOffset, target, BossType.warrior);
         RegisterSpawnedSkillObject(obj);
     }
     

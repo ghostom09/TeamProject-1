@@ -15,10 +15,13 @@ MonoBehaviour:
   enemyType: 2
   sprite: {fileID: 3666330124787985626, guid: b3554b77749de5e4d936318e199e42d5, type: 3}
   animatorController: {fileID: 9100000, guid: 763ad38b2933e5a42923108873a88494, type: 2}
+  useSpriteBoundsForCollider: 1
+  colliderOffset: {x: 0, y: 0}
+  colliderSize: {x: 0, y: 0}
   health: 80
   speed: 1.6
-  damage: 6
-  attackRange: 1.5
+  damage: 5
+  attackRange: 1.25
   attackSpeed: 0.5
   jumpForce: 13
-  exp: 4
+  exp: 5

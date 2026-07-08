@@ -41,7 +41,7 @@ public class WarriorLongAttack : IBossSkillStrategy
             BossSkillType.longDistance,
             effectPosition,
             direction,
-            new Vector2(attackRange, attackRange),
+            new Vector2(attackRange*0.7f, attackRange*0.7f),
             attackDelay - effectDelay);
 
         yield return new WaitForSeconds(attackDelay - effectDelay); 

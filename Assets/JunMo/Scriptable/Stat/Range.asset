@@ -16,6 +16,6 @@ MonoBehaviour:
   description: Increase Range
   icon: {fileID: 8886274261251624857, guid: 172e280d1925e8148a46e342087b2aae, type: 3}
   weight: 10
-  allowedJobs: 
-  value: 10
+  allowedJobs: 01000000
+  value: 0.1
   statType: 4

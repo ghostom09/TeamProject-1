@@ -12,6 +12,7 @@ public class WarriorShortAttack : IBossSkillStrategy
     
     private Vector2 boxSize;
     private Vector2 dir;
+    private BoxCollider2D bossCollider;
 
     public void Init(GameObject boss, BossSkills data, BossAttack bossAttack, GameObject target)
     {
@@ -19,7 +20,8 @@ public class WarriorShortAttack : IBossSkillStrategy
         attackRange = data.attackRange;
         this.bossAttack = bossAttack;
         targetLayer = 1 << target.layer;
-        boxSize = new Vector2(attackRange, Mathf.Max(0.5f, boss.transform.localScale.y / 2f));
+        boxSize = new Vector2(attackRange+2, Mathf.Max(0.5f, boss.transform.localScale.y / 2f));
+        bossCollider =  boss.GetComponent<BoxCollider2D>();
     }
 
     public void TryAttack(GameObject boss, GameObject target, Vector2 direction, System.Action onComplete)
@@ -32,29 +34,35 @@ public class WarriorShortAttack : IBossSkillStrategy
     {
         Debug.Log("단거리 공격 시작");
         
-        Vector2 attackDirection = direction.sqrMagnitude > 0.001f
-            ? direction.normalized
-            : Vector2.right;
-        Vector2 boxCenter = (Vector2)boss.transform.position + attackDirection * (attackRange * 0.5f);
-        float boxAngle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
+        yield return new WaitForSeconds(1.5f);
+        
+        Vector2 feetPosition;
+        if (bossCollider != null)
+        {
+            feetPosition = new Vector2(bossCollider.bounds.center.x, bossCollider.bounds.min.y);
+        }
+        else
+        {
+            feetPosition = (Vector2)boss.transform.position;
+        }
+
+        Vector2 boxCenter = feetPosition + new Vector2(0, boxSize.y / 2f);
+        float boxAngle = 0f;
 
         HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
         
-        yield return new WaitForSeconds(1.5f);
-
         bossAttack?.SpawnWarriorAttackEffect(
             BossSkillType.shortDistance,
             boxCenter,
-            attackDirection,
+            Vector2.left,
             boxSize,
-            1f);
+            0.75f);
         
         Collider2D[] hits = 
             Physics2D.OverlapBoxAll(boxCenter, 
                 boxSize, 
                 boxAngle, 
                 targetLayer);
-        
         foreach (var hit in hits)
         {
             if (!hit.TryGetComponent(out IDamageable targetComponent))

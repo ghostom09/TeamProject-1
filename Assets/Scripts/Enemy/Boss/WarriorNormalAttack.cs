@@ -36,10 +36,10 @@ public class WarriorNormalAttack : IBossSkillStrategy
             BossSkillType.Normal,
             effectPosition,
             direction,
-            new Vector2(attackRange, attackRange),
-            1f);
+            new Vector2(attackRange*0.7f, attackRange*0.7f),
+            0.75f);
 
-        yield return new WaitForSeconds(1f); 
+        yield return new WaitForSeconds(0.75f); 
 
         Collider2D[] hits = 
             Physics2D.OverlapCircleAll(boss.transform.position, 

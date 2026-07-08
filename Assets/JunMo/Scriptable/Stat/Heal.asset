@@ -17,5 +17,5 @@ MonoBehaviour:
   icon: {fileID: 972836936691788215, guid: fd92ddbdfd53ea04da84b57430700431, type: 3}
   weight: 10
   allowedJobs: 
-  value: 10
+  value: 20
   statType: 5

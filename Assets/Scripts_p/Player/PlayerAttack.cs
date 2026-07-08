@@ -45,7 +45,7 @@ public class PlayerAttack : MonoBehaviour
         return new[]
         {
             UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Weapon/PlayerNormalAtk.prefab"),
-            UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Weapon/PlayerNormalAtk2.prefab")
+            //UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Weapon/PlayerNormalAtk2.prefab")
         };
 #else
         return swordNormalEffectPrefabs;

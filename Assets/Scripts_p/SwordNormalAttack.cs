@@ -79,7 +79,7 @@ public class SwordNormalAttack : INormalAttack
         float attackRadius = range * 0.5f;
 
         Vector2 center = origin + dir * attackRadius;
-        SpawnAttackEffect(center, dir, attackRadius);
+        SpawnAttackEffect(user.transform, center - origin, dir, attackRadius);
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(
             center,
@@ -126,7 +126,7 @@ public class SwordNormalAttack : INormalAttack
         return hit.GetComponentInParent<IDamageable>();
     }
 
-    private void SpawnAttackEffect(Vector2 position, Vector2 dir, float attackRadius)
+    private void SpawnAttackEffect(Transform owner, Vector2 offset, Vector2 dir, float attackRadius)
     {
         GameObject prefab = GetEffectPrefab();
         if (prefab == null)
@@ -136,9 +136,11 @@ public class SwordNormalAttack : INormalAttack
             ? Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + EffectAngleOffset
             : 0f;
 
+        Vector2 position = (Vector2)owner.position + offset;
         GameObject effect = Object.Instantiate(prefab, position, Quaternion.Euler(0f, 0f, angle));
         float scale = GetScaleForEffectRadius(effect, attackRadius);
         effect.transform.localScale = new Vector3(scale, scale, 1f);
+        effect.AddComponent<SwordAttackEffectFollower>().Init(owner, offset);
 
         Object.Destroy(effect, GetEffectLifetime(effect));
     }
@@ -201,5 +203,25 @@ public class SwordNormalAttack : INormalAttack
         }
 
         return lifetime > 0f ? lifetime : fallbackLifetime;
+    }
+}
+
+public class SwordAttackEffectFollower : MonoBehaviour
+{
+    private Transform owner;
+    private Vector2 offset;
+
+    public void Init(Transform targetOwner, Vector2 targetOffset)
+    {
+        owner = targetOwner;
+        offset = targetOffset;
+    }
+
+    private void LateUpdate()
+    {
+        if (owner == null)
+            return;
+
+        transform.position = (Vector2)owner.position + offset;
     }
 }

@@ -4,9 +4,12 @@ using Unity.VisualScripting;
 
 public class SwordIllusionsAttack : MonoBehaviour
 {
-   private float _damage;
+    private const float RetargetRadius = 7f;
+
+    private float _damage;
     private float _speed;
     private Transform _target;
+    private LayerMask _enemyLayer;
 
     private bool _isFired;
 
@@ -15,10 +18,12 @@ public class SwordIllusionsAttack : MonoBehaviour
     private Vector3 _relativeOffset;
     
     private TrailRenderer _trail;
+    private Coroutine _lifeRoutine;
 
     private void OnEnable()
     {
         _trail = GetComponentInChildren<TrailRenderer>();
+        _enemyLayer = LayerMask.GetMask("Enemy");
     }
 
     private void OnDisable()
@@ -39,7 +44,7 @@ public class SwordIllusionsAttack : MonoBehaviour
     {
         _target = target;
         _isFired = true;
-        StartCoroutine(SwordBoom());
+        _lifeRoutine = StartCoroutine(SwordBoom());
     }
 
     private IEnumerator SwordBoom()
@@ -55,7 +60,7 @@ public class SwordIllusionsAttack : MonoBehaviour
             return;
         }
 
-        if (!_target)
+        if (!HasValidTarget() && !TryRetarget())
         {
             ObjectPoolManager.Instance.Release(ObjectName.SwordIllusions, gameObject);
             return;
@@ -82,8 +87,61 @@ public class SwordIllusionsAttack : MonoBehaviour
             {
                 target.TakeDamage(_damage);
             }
-            StopCoroutine(SwordBoom());
+
+            if (_lifeRoutine != null)
+                StopCoroutine(_lifeRoutine);
+
             ObjectPoolManager.Instance.Release(ObjectName.SwordIllusions, gameObject);
         }
+    }
+
+    private bool HasValidTarget()
+    {
+        if (_target == null || !_target.gameObject.activeInHierarchy)
+            return false;
+
+        Collider2D[] colliders = _target.GetComponents<Collider2D>();
+        if (colliders == null || colliders.Length == 0)
+            return true;
+
+        foreach (Collider2D col in colliders)
+        {
+            if (col != null && col.enabled)
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool TryRetarget(Transform ignoredTarget = null)
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, RetargetRadius, _enemyLayer);
+
+        Transform nextTarget = null;
+        float bestDistance = float.MaxValue;
+
+        foreach (Collider2D hit in hits)
+        {
+            if (hit == null || !hit.gameObject.activeInHierarchy)
+                continue;
+
+            Transform candidate = hit.transform;
+            if (candidate == ignoredTarget || candidate == _target)
+                continue;
+
+            if (!hit.TryGetComponent<IDamageable>(out _) &&
+                hit.GetComponentInParent<IDamageable>() == null)
+                continue;
+
+            float distance = ((Vector2)candidate.position - (Vector2)transform.position).sqrMagnitude;
+            if (distance >= bestDistance)
+                continue;
+
+            bestDistance = distance;
+            nextTarget = candidate;
+        }
+
+        _target = nextTarget;
+        return _target != null;
     }
 }

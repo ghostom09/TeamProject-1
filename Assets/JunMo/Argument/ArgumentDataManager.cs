@@ -192,6 +192,11 @@ public class ArgumentDataManager : MonoBehaviour
         return 1;
     }
 
+    public bool HasSkill(SkillType skillType)
+    {
+        return ownedSkills.ContainsKey(skillType);
+    }
+
     public List<AugmentData> GetOwnedAugments()
     {
         return new List<AugmentData>(selectedAugments);

@@ -22,11 +22,13 @@ public class PlayerSkillExecutor : MonoBehaviour
     private void OnEnable()
     {
         PlayerLevelManager.OnLevelUp += OnPlayerLevelUp;
+        ArgumentDataManager.OnArgumentClicked += OnArgumentClicked;
     }
 
     private void OnDisable()
     {
         PlayerLevelManager.OnLevelUp -= OnPlayerLevelUp;
+        ArgumentDataManager.OnArgumentClicked -= OnArgumentClicked;
     }
 
     public void Init(SkillData[] skills, CharacterData data)
@@ -59,6 +61,12 @@ public class PlayerSkillExecutor : MonoBehaviour
     private void OnPlayerLevelUp(int level)
     {
         RefreshSkillUnlockUI();
+    }
+
+    private void OnArgumentClicked(ArgumentResult result)
+    {
+        if (result.kind == ArgumentKind.Skill)
+            RefreshSkillUnlockUI();
     }
 
     public void GetDirection(int index)
@@ -105,7 +113,13 @@ public class PlayerSkillExecutor : MonoBehaviour
         if (_levelManager == null)
             return true;
 
-        return _levelManager.CurrentLevel >= GetSkillUnlockLevel(type);
+        if (_levelManager.CurrentLevel < GetSkillUnlockLevel(type))
+            return false;
+
+        if (ArgumentDataManager.Instance == null)
+            return false;
+
+        return ArgumentDataManager.Instance.HasSkill(type);
     }
 
     private int GetSkillUnlockLevel(SkillType type)
@@ -115,8 +129,8 @@ public class PlayerSkillExecutor : MonoBehaviour
 
         return type switch
         {
-            SkillType.Sword1 => 6,
-            SkillType.Sword2 => 3,
+            SkillType.Sword1 => 3,
+            SkillType.Sword2 => 6,
             SkillType.SwordUlt => 10,
             SkillType.Gun1 => 3,
             SkillType.Gun2 => 6,

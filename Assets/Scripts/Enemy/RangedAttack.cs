@@ -4,6 +4,8 @@ using UnityEngine;
 public class RangedAttack : IEnemyAttackStrategy
 {
     private const float ProjectileSpawnOffset = 0.6f;
+    private const float ProjectileScale = 0.32f;
+    private const float ProjectileSpeed = 12f;
 
     private float damage;
     private float attackSpeed;
@@ -84,6 +86,7 @@ public class RangedAttack : IEnemyAttackStrategy
         Vector2 shotDir = dir.normalized;
         Vector2 spawnPosition = (Vector2)self.position + shotDir * ProjectileSpawnOffset;
         GameObject obj = Object.Instantiate(projectilePrefab, spawnPosition, Quaternion.identity);
+        obj.transform.localScale = new Vector3(ProjectileScale, ProjectileScale, 1f);
 
         BossProjectile projectile = obj.GetComponent<BossProjectile>();
         if (projectile == null)
@@ -93,7 +96,7 @@ public class RangedAttack : IEnemyAttackStrategy
             return;
         }
 
-        projectile.InitEnemyProjectile(damage, attackRange, shotDir, target.gameObject);
+        projectile.InitEnemyProjectile(damage, attackRange, shotDir, target.gameObject, ProjectileSpeed);
     }
 
     private IEnumerator ShootCoroutine(Transform self, Transform target, Vector2 dir)

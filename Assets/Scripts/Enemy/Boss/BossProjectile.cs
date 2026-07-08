@@ -60,7 +60,16 @@ public class BossProjectile : MonoBehaviour, IDamageable
 
     public void InitEnemyProjectile(float damage, float range, Vector2 dir, GameObject target)
     {
+        InitEnemyProjectile(damage, range, dir, target, speed);
+    }
+
+    public void InitEnemyProjectile(float damage, float range, Vector2 dir, GameObject target, float projectileSpeed)
+    {
+        float previousSpeed = speed;
+        speed = projectileSpeed;
         Init(damage, range, dir, target, BossType.magician);
+        speed = previousSpeed;
+
         canBeDamaged = false;
         destroyOnHit = true;
         deathReason = "Defeated by ranged enemy projectile";

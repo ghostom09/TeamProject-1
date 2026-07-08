@@ -2014,7 +2014,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DifficultyLevelManager
   interval: 15
-  difficultyLevel: 19
+  difficultyLevel: 1
   spawnManager: {fileID: 1174447580}
 --- !u!4 &294410109
 Transform:
@@ -10412,7 +10412,7 @@ MonoBehaviour:
   enemyProb: 0.001
   enemyMaxProb: 0.0045
   initialPoolSize: 30
-  maxActiveEnemy: 0
+  maxActiveEnemy: 30
   activeEnemyLimit: 4
   ActiveEnemy: 0
 --- !u!4 &1174447581

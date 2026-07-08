@@ -4,6 +4,7 @@ using UnityEngine;
 public class SwordNormalAttack : INormalAttack
 {
     private const float EffectMinScale = 0.1f;
+    private const float EffectRangeVisualScale = 0.88f;
     private int comboIndex = 0;
     private float lastAttackTime;
     private const float ComboResetTime = 1.5f;
@@ -145,7 +146,7 @@ public class SwordNormalAttack : INormalAttack
     private float GetScaleForEffectRadius(GameObject effect, float attackRadius)
     {
         SpriteRenderer renderer = effect.GetComponentInChildren<SpriteRenderer>();
-        float attackDiameter = attackRadius * 2f;
+        float attackDiameter = attackRadius * 2f * EffectRangeVisualScale;
         if (renderer == null || renderer.sprite == null)
             return Mathf.Max(EffectMinScale, attackDiameter);
 
